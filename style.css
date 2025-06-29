@@ -100,6 +100,17 @@ textarea {
     resize: vertical;
 }
 
+table {
+  overflow-x: auto; /* 水平溢出时显示滚动条 */
+  -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+  white-space: nowrap; /* 防止内容换行 */
+  width: 100%; /* 确保宽度不超出视口 */
+}
+
+table::-webkit-scrollbar {
+  height: 5px;
+}
+
 .attributes-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
