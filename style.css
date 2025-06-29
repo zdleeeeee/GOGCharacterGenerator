@@ -100,15 +100,30 @@ textarea {
     resize: vertical;
 }
 
-table {
-  overflow-x: auto; /* 水平溢出时显示滚动条 */
-  -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
-  white-space: nowrap; /* 防止内容换行 */
-  width: 100%; /* 确保宽度不超出视口 */
+.table-auto {
+    overflow-x: auto;
+    /* 水平溢出时显示滚动条 */
+    -webkit-overflow-scrolling: touch;
+    /* iOS平滑滚动 */
+    width: 100%;
+    /* 确保宽度不超出视口 */
 }
 
-table::-webkit-scrollbar {
-  height: 5px;
+.table-auto table {
+    width: 100%;
+    min-width: 500px;
+    /* 设置表格最小宽度，超过这个宽度会出现滚动条 */
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.table-auto::-webkit-scrollbar {
+    height: 5px;
+}
+
+.table-auto::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
 }
 
 .attributes-grid {
@@ -241,6 +256,14 @@ table::-webkit-scrollbar {
     /* 确保这个容器也跨两列 */
 }
 
+.equipment-inventory-container>.section,
+.blessing-grid>.form-group {
+    min-width: 0;
+    /* 关键修复：覆盖默认的 min-width: auto */
+    overflow: hidden;
+    /* 创建新的BFC */
+}
+
 /* 基本信息网格布局 */
 .character-info-grid {
     display: grid;
@@ -308,6 +331,15 @@ table::-webkit-scrollbar {
 
 /* 响应式调整 */
 @media (max-width: 768px) {
+    .table-auto {
+        font-size: 14px;
+    }
+
+    .table-auto th,
+    .table-auto td {
+        padding: 6px 8px;
+    }
+
     .portrait-preview {
         width: 150px;
         height: 200px;
@@ -603,7 +635,7 @@ table::-webkit-scrollbar {
     font-size: 14px;
 }
 
-.data-btn, 
+.data-btn,
 .data-btn-danger {
     display: block;
     width: 100%;
@@ -668,7 +700,7 @@ table::-webkit-scrollbar {
 }
 
 .roster-list {
-    margin:0 auto;
+    margin: 0 auto;
     display: block;
     padding: 10px;
     z-index: 1104;
@@ -689,7 +721,7 @@ table::-webkit-scrollbar {
 
 /* 图鉴列表项样式 */
 .roster-item {
-    margin:0 auto;
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
