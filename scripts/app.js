@@ -327,6 +327,7 @@ class GOGCharacterApp {
         });
 
         this.renderInventory(this.currentCharacter.inventory);
+        this.updateTotalWeight();
         this.showToast(`物品${inventory.name}已添加`);
     }
 
