@@ -76,17 +76,43 @@ class GOGCharacterApp {
         const container = document.getElementById('blessings-list');
         container.innerHTML = window.staticData.blessings.map(blessing => `
       <div class="blessing-item" data-name="${blessing.name}">
-        <div class="item-header">
+        <div class="blessing-header">
             <h5>${blessing.name}</h5>
+            <div class="header-actions">
             <button class="btn-apply-blessing">应用</button>
+            <span class="toggle-icon">+</span>
+            </div>
         </div>
+        <div class="blessing-details" style="display:none">
         <div class="blessing-system">
-          ${blessing.skills.map(level => `
-            <p><strong>${level.name}:</strong> ${level.description}</p>
-          `).join('')}
-        </div>
+            ${blessing.system.map(level => `
+                <p><strong>Lv.${level.level}:</strong> ${level.attribute} - ${level.skill}</p>
+                `).join('')}
+            </div>
+                <div class="blessing-skills">
+                    <h5>权柄技能</h5>
+                    ${blessing.skills.map(skill => `
+                        <p><strong>${skill.name}:</strong> ${skill.description}</p>
+                    `).join('')}
+                </div>
+            </div>
       </div>
     `).join('');
+        // 点击标题切换折叠状态
+        container.querySelectorAll('.blessing-header').forEach(header => {
+            header.addEventListener('click', (e) => {
+                // 防止点击应用按钮时触发折叠
+                if (e.target.closest('.btn-apply-blessing')) return;
+
+                const item = header.closest('.blessing-item');
+                const details = item.querySelector('.blessing-details');
+                const toggleIcon = header.querySelector('.toggle-icon');
+
+                const isHidden = details.style.display === 'none';
+                details.style.display = isHidden ? 'block' : 'none';
+                toggleIcon.textContent = isHidden ? '-' : '+';
+            });
+        });
     }
     renderSkillsList() {
         const container = document.getElementById('skills-list');
@@ -927,7 +953,7 @@ class GOGCharacterApp {
                     this.renderEquipmentsList();
                 } else if (tabName === 'inventory' && !document.getElementById('inventory-list').innerHTML) {
                     this.renderInventoryList();
-                } 
+                }
             });
         });
 
