@@ -854,16 +854,23 @@ textarea {
     font-size: 12px;
 }
 
-.item-header {
+.item-header,
+.blessing-header {
     display: flex;
     justify-content: space-between;
 }
-.item-header h5
+.item-header h5,
+.blessing-header h5
 {
     padding-left: 5px;
     padding-top: 5px;
     margin: 0px;
     font-size: 14px;
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .toggle-icon {
