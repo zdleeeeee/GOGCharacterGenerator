@@ -155,6 +155,7 @@ textarea {
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
+    overflow-x: hidden;
 }
 
 .skills-list th,
