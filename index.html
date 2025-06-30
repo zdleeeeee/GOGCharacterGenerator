@@ -13,7 +13,7 @@
 <body>
     <div id="toast" class="toast-hidden">角色已保存！</div>
 
-    <div class="container">
+    <div class="container" id="main-container">
 
         <header>
             <h1 style="color:#333333">GOG 角色档案</h1>
@@ -38,14 +38,27 @@
                     <i class="fas fa-book"></i>
                     <span class="nav-text">图鉴</span>
                 </button>
-                <!-- 角色列表面板 -->
+                <!-- 图鉴面板 -->
                 <div id="roster-panel" class="roster-panel">
                     <div class="panel-header">
-                        <h4>角色列表</h4>
+                        <div class="roster-tabs">
+                            <button class="tab-btn active" data-tab="characters">角色</button>
+                            <button class="tab-btn" data-tab="blessings">赐福</button>
+                            <button class="tab-btn" data-tab="skills">技能</button>
+                            <button class="tab-btn" data-tab="equipments">装备</button>
+                            <button class="tab-btn" data-tab="inventory">背包</button>
+                        </div>
                     </div>
-                    <div id="characters-list" class="roster-list">
-                        <!-- 动态加载角色列表 -->
-                    </div>
+
+                    <div id="characters-list" class="roster-list tab-content active"></div>
+
+                    <div id="blessings-list" class="roster-list tab-content"></div>
+
+                    <div id="skills-list" class="roster-list tab-content"></div>
+
+                    <div id="equipments-list" class="roster-list tab-content"></div>
+
+                    <div id="inventory-list" class="roster-list tab-content"></div>
                 </div>
 
                 <!-- 数据管理按钮 (带下拉面板) -->
@@ -349,8 +362,8 @@
                             <table class="blessing-skills-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 30%;">名称</th>
-                                        <th style="width: 70%;">描述</th>
+                                        <th style="width: 15%;">名称</th>
+                                        <th style="width: 85%;">描述</th>
                                     </tr>
                                 </thead>
                                 <tbody id="blessing-skills-container">
@@ -444,6 +457,7 @@
     <script src="scripts/models.js"></script>
     <script src="scripts/import-export.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/data.js"></script>
 </body>
 
 </html>
