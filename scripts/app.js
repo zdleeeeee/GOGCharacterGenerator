@@ -119,6 +119,7 @@ class GOGCharacterApp {
 
         // 渲染背包物品
         this.renderInventory(character.inventory);
+        this.updateTotalWeight();
 
     }
 
@@ -228,7 +229,7 @@ class GOGCharacterApp {
                 input.value = value;
 
                 // 添加事件监听
-                input.addEventListener('input', () => {
+                input.addEventListener('change', () => {
                     if (!this.currentCharacter.attributes) {
                         this.currentCharacter.attributes = {};
                     }
@@ -254,7 +255,7 @@ class GOGCharacterApp {
                 input.value = value;
 
                 // 添加事件监听
-                input.addEventListener('input', () => {
+                input.addEventListener('change', () => {
                     if (!this.currentCharacter.attributes) {
                         this.currentCharacter.attributes = {};
                     }
@@ -594,13 +595,22 @@ class GOGCharacterApp {
             const row = document.createElement('tr');
             row.innerHTML = `
       <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
-      <td><input type="number" min="0" step="0.1" value="${item.weight || 0}"></td>
+      <td><input type="number" min="0" step="0.5" value="${item.weight || 0}"></td>
       <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
       <td><input type="number" min="1" value="${item.quantity || 1}"></td>
       <td><button class="btn btn-danger" data-index="${index}">删除</button></td>
     `;
             inventoryContainer.appendChild(row);
         });
+    }
+
+    // 计算总负重
+    updateTotalWeight() {
+        const inventory = this.collectTableData('inventory-container', ['name', 'weight', 'description', 'quantity']);
+        const totalWeight = inventory.reduce((sum, item) => sum + (parseFloat(item.weight) || 0) * (parseFloat(item.quantity) || 0), 0.0);
+
+        const displayElement = document.getElementById('total-weight');
+        displayElement.textContent = totalWeight;
     }
 
     // 删除状态标签
@@ -899,6 +909,21 @@ class GOGCharacterApp {
         document.getElementById('skills-container').addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-danger')) {
                 setTimeout(() => this.updateSkillProficiencyLeft(), 0);
+            }
+        });
+
+        // 背包表格变化时更新总重
+        document.getElementById('inventory-container').addEventListener('input', (e) => {
+            if (e.target.type === 'number') {
+                this.updateTotalWeight();
+            }
+        })
+        document.getElementById('add-item').addEventListener('click', () => {
+            setTimeout(() => this.updateTotalWeight(), 0);
+        });
+        document.getElementById('inventory-container').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-danger')) {
+                setTimeout(() => this.updateTotalWeight(), 0);
             }
         });
 
