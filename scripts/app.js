@@ -504,7 +504,7 @@ class GOGCharacterApp {
                     }
 
                     this.currentCharacter.attributes[attr][type] = parseInt(input.value) || 0;
-                    this.renderAttributes(this.currentCharacter.attributes);
+                    this.renderAttributes(this.collectAttributes());
                     //this.updateMaxValues();
                     //this.updateSkillProficiencyLeft();
                 });
