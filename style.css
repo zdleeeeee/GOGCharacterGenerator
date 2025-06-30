@@ -560,7 +560,7 @@ textarea {
     bottom: 0;
     left: 0px;
     right: 0px;
-    height: 45px;
+    height: 40px;
     background: #ffffff;
     border: 1px solid #bbbbbb;
     padding: 8px 0;
@@ -678,9 +678,9 @@ textarea {
     left: 0px;
     right: 0px;
     min-width: 300px;
-    height: 500px;
+    height: 480px;
     background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(10px);
     border-radius: 12px 12px 0px 0px;
     box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.1);
     z-index: 1103;
@@ -695,7 +695,8 @@ textarea {
     height: min-content;
 }
 
-.panel-header h4 {
+.panel-header h4,
+.panel-header .roster-tab {
     margin: 0 auto;
     color: #333333;
 }
@@ -703,10 +704,10 @@ textarea {
 .roster-list {
     margin: 0 auto;
     display: block;
-    padding: 10px;
+    padding: 0;
     z-index: 1104;
     min-height: 0;
-    height: 400px;
+    height: 380px;
     overflow-x: scroll;
     overflow-y: scroll;
 }
@@ -771,8 +772,8 @@ textarea {
 .btn-export,
 .btn-delete {
     flex: 1;
-    background: #aaaaaa;
-    color: white;
+    background: #eeeeee;
+    color: #666666;
     border: none;
     padding: 6px 12px;
     margin: 0px;
@@ -786,10 +787,11 @@ textarea {
 .btn-load:hover,
 .btn-export:hover,
 .btn-delete:hover {
-    background: #999999;
+    background: #dddddd;
 }
 
 .character-actions {
+    margin-top: 10px;
     display: flex;
     flex: 1 0 100%;
     display: flex;
@@ -803,6 +805,110 @@ textarea {
         right: 0;
         transform: none;
     }
+}
+
+/* roster-tabs */
+.roster-tabs {
+    display: flex;
+    max-width: 550px;
+    margin: 0px auto;
+    justify-content: space-around;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    border-bottom: 2px solid #3498db;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    border-bottom: none;
+    padding: 10px;
+    max-width: 500px;
+    margin: 0px auto;
+}
+
+/* 列表项样式 */
+.blessing-item,
+.skill-item,
+.equipment-item,
+.inventory-item {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+}
+
+.blessing-item p {
+    color: #666666;
+    font-size: 12px;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+}
+.item-header h5
+{
+    padding-left: 5px;
+    padding-top: 5px;
+    margin: 0px;
+    font-size: 14px;
+}
+
+.toggle-icon {
+    cursor: pointer;
+    margin: 10px;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    color: #666666;
+    background: #eeeeee;
+}
+
+.toggle-icon:hover {
+    background: #dddddd;
+}
+
+.btn-apply-blessing,
+.btn-add-skill,
+.btn-add-equipment,
+.btn-add-inventory {
+    margin: 0px 0px 0px 0px;
+    padding: 6px 12px;
+    font-size: 12px;
+    text-align: center;
+    min-width: max-content;
+    max-height: min-content;
+    color: #666666;
+    background: #eeeeee;
+}
+.btn-apply-blessing:hover,
+.btn-add-skill:hover,
+.btn-add-equipment:hover,
+.btn-add-inventory:hover {
+    background: #dddddd;
+}
+
+.skill-description,
+.equipment-description,
+.inventory-description {
+    font-size: 12px;
+    color: #666666;
+    padding-left: 5px;
 }
 
 /* 提示 */
