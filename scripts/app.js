@@ -1,5 +1,8 @@
 // app.js - 主应用逻辑
 class GOGCharacterApp {
+    static MAX_ATTRIBUTE_BASE = 10;
+    static MAX_ATTRIBUTE_VALUE = 20;
+
     constructor() {
         this.db = new CharacterDB();
         this.dataHandler = new DataHandler(this.db);
@@ -399,7 +402,7 @@ class GOGCharacterApp {
             document.getElementById(`attr-${attr}-base`).value = base;
             document.getElementById(`attr-${attr}-status`).value = statusAdj;
             document.getElementById(`attr-${attr}-blessing`).value = blessingAdj;
-            document.getElementById(`attr-${attr}-total`).textContent = Math.min(20, Math.max(0, base + statusAdj + blessingAdj));
+            document.getElementById(`attr-${attr}-total`).textContent = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, base + statusAdj + blessingAdj));
         });
 
         // 渲染健康和魔力
@@ -413,12 +416,12 @@ class GOGCharacterApp {
         const strBase = parseInt(document.getElementById('attr-STR-base').value) || 0;
         const strStatus = parseInt(document.getElementById('attr-STR-status').value) || 0;
         const strBlessing = parseInt(document.getElementById('attr-STR-blessing').value) || 0;
-        const strTotal = Math.min(20, Math.max(0, strBase + strStatus + strBlessing));
+        const strTotal = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, strBase + strStatus + strBlessing));
 
         const magBase = parseInt(document.getElementById('attr-MAG-base').value) || 0;
         const magStatus = parseInt(document.getElementById('attr-MAG-status').value) || 0;
         const magBlessing = parseInt(document.getElementById('attr-MAG-blessing').value) || 0;
-        const magTotal = Math.min(20, Math.max(magBase + magStatus + magBlessing));
+        const magTotal = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, magBase + magStatus + magBlessing));
 
         const hpBase = parseInt(document.getElementById('attr-HP-base').value) || 0;
         const mpBase = parseInt(document.getElementById('attr-MP-base').value) || 0;
@@ -502,6 +505,9 @@ class GOGCharacterApp {
                     if (!this.currentCharacter.attributes[attr]) {
                         this.currentCharacter.attributes[attr] = {};
                     }
+                    if (type === 'base') {
+                        input.value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, input.value);
+                    }
 
                     this.currentCharacter.attributes[attr][type] = parseInt(input.value) || 0;
                     this.renderAttributes(this.collectAttributes());
@@ -528,6 +534,9 @@ class GOGCharacterApp {
                     }
                     if (!this.currentCharacter.attributes[type]) {
                         this.currentCharacter.attributes[type] = {};
+                    }
+                    if (subType === 'base') {
+                        input.value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, input.value);
                     }
 
                     this.currentCharacter.attributes[type][subType] = parseInt(input.value) || 0;
@@ -816,7 +825,7 @@ class GOGCharacterApp {
         const intBase = parseInt(document.getElementById('attr-INT-base').value) || 0;
         const intStatus = parseInt(document.getElementById('attr-INT-status').value) || 0;
         const intBlessing = parseInt(document.getElementById('attr-INT-blessing').value) || 0;
-        const intTotal = Math.min(20, Math.max(0, intBase + intStatus + intBlessing));
+        const intTotal = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, intBase + intStatus + intBlessing));
 
         // 计算最大可用熟练度
         const maxProficiency = intTotal * intTotal;
