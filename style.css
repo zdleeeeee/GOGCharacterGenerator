@@ -330,7 +330,6 @@ textarea {
     align-content: start;
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
     .table-auto {
         font-size: 14px;
@@ -346,10 +345,6 @@ textarea {
         height: 200px;
     }
 
-    .character-info-grid {
-        grid-template-columns: 1fr;
-    }
-
     .portrait-preview {
         width: 150px;
         height: 200px;
@@ -363,9 +358,7 @@ textarea {
     .blessing-grid {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 768px) {
     .character-sheet {
         grid-template-columns: 1fr;
     }
@@ -376,9 +369,10 @@ textarea {
 
     .equipment-inventory-container {
         grid-template-columns: 1fr;
-        /* 小屏幕下变为单列 */
     }
+}
 
+@media (max-width: 1100px) {
     .basic-attribution-container {
         grid-template-columns: 1fr;
     }
