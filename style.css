@@ -351,6 +351,7 @@ textarea {
         margin: 0 auto;
     }
 
+    .character-info-grid,
     .character-form-fields {
         grid-template-columns: 1fr;
     }
