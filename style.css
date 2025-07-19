@@ -17,7 +17,7 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1150px;
     margin: 0 auto;
     padding-bottom: 40px;
     z-index: 1;
@@ -46,6 +46,7 @@ h1 {
 th,
 td {
     font-size: 14px;
+    padding: 0px;
 }
 
 button {
@@ -163,7 +164,7 @@ textarea {
 .skills-list td,
 .items-list th,
 .items-list td {
-    padding: 8px;
+    padding: 6px;
     border: 1px solid #dddddd;
     text-align: left;
     overflow-x: hidden;
@@ -344,7 +345,7 @@ textarea {
 
     .table-auto th,
     .table-auto td {
-        padding: 6px 8px;
+        padding: 6px;
     }
 
     .character-info-grid {
@@ -397,13 +398,13 @@ textarea {
 
 .blessing-table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 6px;
     text-align: left;
 }
 
 .blessing-table th {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 6px 12px;
     text-align: center;
     background-color: #f2f2f2;
 }
@@ -438,7 +439,7 @@ textarea {
 }
 
 .auto-height-cell {
-    padding: 8px;
+    padding: 0px;
     min-width: 100px;
 }
 
@@ -449,7 +450,8 @@ textarea {
     /* 关键属性 */
     max-height: 300px;
     overflow-y: auto;
-    padding: 8px;
+    padding: 6px;
+    
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.5;
@@ -465,7 +467,7 @@ textarea {
 .blessing-skills-table th,
 .blessing-skills-table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 6px;
 }
 
 .blessing-skills-table th {
