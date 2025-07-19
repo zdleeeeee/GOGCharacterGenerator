@@ -1597,6 +1597,12 @@ class GOGCharacterApp {
             }
         });
 
+        document.getElementById('export-pdf').addEventListener('click', async () => {
+            if (this.currentCharacter) {
+                await this.dataHandler.exportToPDF(this.currentCharacter.id);
+            }
+        });
+
         // 导入角色
         document.getElementById('import-character').addEventListener('change', async (e) => {
             const file = e.target.files[0];
