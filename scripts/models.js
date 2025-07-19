@@ -22,13 +22,13 @@ class Character {
       name: '',
       description: ''
     }));  // 权柄特技数据结构
-    this.soul = this.soul || 100;
+    this.soul = data.soul || 0;
 
     this.age = data.age || 1;
     this.alignment = data.alignment || '守序善良';
     this.nationality = data.nationality || '';
     this.class = data.class || '';  // 职业
-    this.description = this.description || '';
+    this.description = data.description || '';
     this.attributes = data.attributes || {
       STR: { base: 5, statusAdj: 0, blessingAdj: 0 },
       DEX: { base: 5, statusAdj: 0, blessingAdj: 0 },
@@ -42,9 +42,17 @@ class Character {
     };
 
     this.status = data.status || [];
-    this.skills = data.skills || [];
+    this.skills = data.skills || {
+      STR: [], // 力量类技能
+      DEX: [], // 敏捷类技能
+      INT: [], // 智慧类技能
+      CHA: [], // 魅力类技能
+      WIS: [], // 感知类技能
+      MAG: []  // 法力类技能
+    };
     this.equipment = data.equipment || [];
     this.inventory = data.inventory || [];
+    this.logs = data.logs || [];
     this.createdAt = data.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();
   }
