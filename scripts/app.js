@@ -13,7 +13,7 @@ class GOGCharacterApp {
     async init() {
         await this.db.openDB();
         this.renderCharacterList();
-        this.setupEventListeners();
+
 
         this.currentCharacter = new Character();
         this.renderCharacterDetail(this.currentCharacter);
@@ -21,6 +21,7 @@ class GOGCharacterApp {
         this.renderSkillsList();
         this.renderEquipmentsList();
         this.renderInventoryList();
+        this.setupEventListeners();
     }
 
     // 切换图鉴面板
@@ -64,8 +65,12 @@ class GOGCharacterApp {
       <div class="roster-item" data-id="${char.id}">
         <div class="roster-avatar" style="background-image: url('${char.portrait || 'default-avatar.jpg'}')"></div>
         <div class="roster-info">
-          <h5>${char.name}</h5>
-          <p><span>${char.class}</span> <span>${char.blessing}Lv.${char.blessinglevel}</span></p>
+          <h5>${char.name}<span style="font-size: 14px; color: #666666; font-weight: normal;">(pl. ${char.player})</span></h5>
+          <div style="display: grid;grid-template-columns: repeat(3,1fr); margin-top:10px;">
+            <span>${char.class}</span>
+            <span>${char.blessing}Lv.${char.blessinglevel}</span>
+            <span>soul: ${char.soul}%</span>
+          </div>
         </div>
         <div class="character-actions">
           <button class="btn-load" style="border-radius: 8px 0px 0px 8px ;">加载</button>
@@ -77,7 +82,62 @@ class GOGCharacterApp {
     }
     renderBlessingsList() {
         const container = document.getElementById('blessings-list');
-        container.innerHTML = window.staticData.blessings.map(blessing => `
+        container.innerHTML = '';
+
+        // 添加搜索框和筛选器
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'blessing-search-container';
+        searchContainer.innerHTML = `
+        <div class="search-controls" style="grid-template-columns: 88% 10%;">
+            <input type="text" id="blessing-search-input" placeholder="搜索赐福名称或描述">
+            <button id="clear-blessing-search" class="btn-clear-search">重置</button>
+        </div>
+    `;
+        container.appendChild(searchContainer);
+
+        const blessingsListContainer = document.createElement('div');
+        blessingsListContainer.id = 'blessings-list-content';
+        container.appendChild(blessingsListContainer);
+
+        this.filterAndRenderBlessings();
+
+        // 添加事件监听
+        document.getElementById('blessing-search-input').addEventListener('input', () => {
+            this.filterAndRenderBlessings();
+        });
+
+        document.getElementById('clear-blessing-search').addEventListener('click', () => {
+            document.getElementById('blessing-search-input').value = '';
+            this.filterAndRenderBlessings();
+        });
+    }
+
+    filterAndRenderBlessings() {
+        const searchTerm = document.getElementById('blessing-search-input').value.toLowerCase();
+        const container = document.getElementById('blessings-list-content');
+        container.innerHTML = '';
+
+        const filteredBlessings = window.staticData.blessings.filter(blessing => {
+            if (!searchTerm) return true;
+
+            // 检查名称和描述
+            const nameMatch = blessing.name && blessing.name.toLowerCase().includes(searchTerm);
+
+            // 检查系统描述
+            const systemMatch = blessing.system && blessing.system.some(level =>
+                (level.attribute && level.attribute.toLowerCase().includes(searchTerm))
+            );
+
+            // 检查技能描述
+            const skillsMatch = blessing.skills && blessing.skills.some(skill =>
+                (skill.name && skill.name.toLowerCase().includes(searchTerm)) ||
+                (skill.description && skill.description.toLowerCase().includes(searchTerm))
+            );
+
+            return nameMatch || systemMatch || skillsMatch;
+        });
+
+        container.innerHTML = filteredBlessings.map(blessing => `
       <div class="blessing-item" data-name="${blessing.name}">
         <div class="blessing-header">
             <h5>${blessing.name}</h5>
@@ -116,12 +176,90 @@ class GOGCharacterApp {
                 toggleIcon.textContent = isHidden ? '-' : '+';
             });
         });
+
+        if (filteredBlessings.length === 0) {
+            container.innerHTML = '<div class="no-results">没有找到匹配的赐福</div>';
+        }
     }
+
     renderSkillsList() {
         const container = document.getElementById('skills-list');
         container.innerHTML = '';
 
-        Object.entries(window.staticData.skills).forEach(([category, skills]) => {
+        // 添加搜索框和筛选器
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'skill-search-container';
+        searchContainer.innerHTML = `
+        <div class="search-controls">
+            <input type="text" id="skill-search-input" placeholder="搜索技能名称、职业或描述">
+            <select id="skill-class-filter">
+                <option value="">所有职业</option>
+                ${[...new Set(Object.values(window.staticData.skills).flat().map(s => s.class))].map(c =>
+            `<option value="${c}">${c}</option>`
+        ).join('')}
+            </select>
+            <button id="clear-skill-search" class="btn-clear-search">重置</button>
+        </div>
+    `;
+        container.appendChild(searchContainer);
+
+        // 创建技能列表容器
+        const skillsListContainer = document.createElement('div');
+        skillsListContainer.id = 'skills-list-content';
+        container.appendChild(skillsListContainer);
+
+        // 初始渲染
+        this.filterAndRenderSkills();
+
+        // 添加事件监听
+        document.getElementById('skill-search-input').addEventListener('input', () => {
+            this.filterAndRenderSkills();
+        });
+
+        document.getElementById('skill-class-filter').addEventListener('change', () => {
+            this.filterAndRenderSkills();
+        });
+
+        document.getElementById('clear-skill-search').addEventListener('click', () => {
+            document.getElementById('skill-search-input').value = '';
+            document.getElementById('skill-class-filter').value = '';
+            this.filterAndRenderSkills();
+        });
+    }
+    filterAndRenderSkills() {
+        const searchTerm = document.getElementById('skill-search-input').value.toLowerCase();
+        const selectedClass = document.getElementById('skill-class-filter').value;
+
+        const container = document.getElementById('skills-list-content');
+        container.innerHTML = '';
+
+        // 获取所有技能并应用筛选
+        const allSkills = Object.entries(window.staticData.skills).flatMap(([category, skills]) =>
+            skills.map(skill => ({ ...skill, category }))
+        );
+
+        const filteredSkills = allSkills.filter(skill => {
+            // 按职业筛选
+            if (selectedClass && skill.class !== selectedClass) return false;
+
+            // 通用搜索
+            if (!searchTerm) return true;
+
+            return (
+                skill.name.toLowerCase().includes(searchTerm) ||
+                skill.class.toLowerCase().includes(searchTerm) ||
+                skill.description.toLowerCase().includes(searchTerm)
+            );
+        });
+
+        // 按类别分组
+        const skillsByCategory = filteredSkills.reduce((acc, skill) => {
+            if (!acc[skill.category]) acc[skill.category] = [];
+            acc[skill.category].push(skill);
+            return acc;
+        }, {});
+
+        Object.entries(skillsByCategory).forEach(([category, skills]) => {
             const categoryElement = document.createElement('div');
             categoryElement.className = 'skill-category';
 
@@ -131,14 +269,14 @@ class GOGCharacterApp {
             header.innerHTML = `
         <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">+</span>
+            <span class="toggle-icon">-</span>
         </div>
       `;
 
-            // 创建技能列表容器（初始隐藏）
+            // 创建技能列表容器
             const listContainer = document.createElement('div');
             listContainer.className = 'skill-items-container';
-            listContainer.style.display = 'none';
+            listContainer.style.display = 'block';
 
             // 填充技能项
             listContainer.innerHTML = skills.map(skill => `
@@ -150,6 +288,7 @@ class GOGCharacterApp {
           </div>
           <button class="btn-add-skill" 
                   data-name="${skill.name}"
+                  data-class="${skill.class}"
                   data-description="${skill.description}">
             添加
           </button>
@@ -169,31 +308,88 @@ class GOGCharacterApp {
             categoryElement.appendChild(listContainer);
             container.appendChild(categoryElement);
         });
+
+        if (filteredSkills.length === 0) {
+            container.innerHTML = '<div class="no-results">没有找到匹配的技能</div>';
+        }
     }
+
     renderEquipmentsList() {
         const container = document.getElementById('equipments-list');
         container.innerHTML = '';
 
-        Object.entries(window.staticData.equipments).forEach(([category, equipments]) => {
+        // 添加搜索框和筛选器
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'equipment-search-container';
+        searchContainer.innerHTML = `
+        <div class="search-controls" style="grid-template-columns: 88% 10%;">
+            <input type="text" id="equipment-search-input" placeholder="搜索装备名称、类型或描述">
+            <button id="clear-equipment-search" class="btn-clear-search">重置</button>
+        </div>
+    `;
+        container.appendChild(searchContainer);
+
+        const equipmentsListContainer = document.createElement('div');
+        equipmentsListContainer.id = 'equipments-list-content';
+        container.appendChild(equipmentsListContainer);
+
+        this.filterAndRenderEquipments();
+
+        // 添加事件监听
+        document.getElementById('equipment-search-input').addEventListener('input', () => {
+            this.filterAndRenderEquipments();
+        });
+
+        document.getElementById('clear-equipment-search').addEventListener('click', () => {
+            document.getElementById('equipment-search-input').value = '';
+            this.filterAndRenderEquipments();
+        });
+    }
+
+    filterAndRenderEquipments() {
+        const searchTerm = document.getElementById('equipment-search-input').value.toLowerCase();
+        const container = document.getElementById('equipments-list-content');
+        container.innerHTML = '';
+
+        const allEquipments = Object.entries(window.staticData.equipments).flatMap(([category, equipments]) =>
+            equipments.map(equipment => ({ ...equipment, category }))
+        );
+
+        const filteredEquipments = allEquipments.filter(equipment => {
+            if (!searchTerm) return true;
+
+            return (
+                equipment.name.toLowerCase().includes(searchTerm) ||
+                equipment.type.toLowerCase().includes(searchTerm) ||
+                equipment.modifier.toLowerCase().includes(searchTerm) ||
+                equipment.description.toLowerCase().includes(searchTerm)
+            );
+        });
+
+        // 按类别分组
+        const equipmentsByCategory = filteredEquipments.reduce((acc, equipment) => {
+            if (!acc[equipment.category]) acc[equipment.category] = [];
+            acc[equipment.category].push(equipment);
+            return acc;
+        }, {});
+
+        Object.entries(equipmentsByCategory).forEach(([category, equipments]) => {
             const categoryElement = document.createElement('div');
             categoryElement.className = 'equipment-category';
 
-            // 创建分类标题（可点击折叠）
             const header = document.createElement('div');
             header.className = 'equipment-category-header';
             header.innerHTML = `
         <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">+</span>
+            <span class="toggle-icon">-</span>
         </div>
       `;
 
-            // 创建技能列表容器（初始隐藏）
             const listContainer = document.createElement('div');
             listContainer.className = 'equipment-items-container';
-            listContainer.style.display = 'none';
+            listContainer.style.display = 'block';
 
-            // 填充技能项
             listContainer.innerHTML = equipments.map(equipment => `
         <div class="equipment-item">
         <div class="item-header">
@@ -209,13 +405,11 @@ class GOGCharacterApp {
             添加
           </button>
         </div>
-          <div class="equipment-description">类型：${equipment.type}</div>
           <div class="equipment-description">属性影响：${equipment.modifier}</div>
           <div class="equipment-description">${equipment.description}</div>
         </div>
       `).join('');
 
-            // 点击标题切换折叠状态
             header.addEventListener('click', () => {
                 const isHidden = listContainer.style.display === 'none';
                 listContainer.style.display = isHidden ? 'block' : 'none';
@@ -226,31 +420,87 @@ class GOGCharacterApp {
             categoryElement.appendChild(listContainer);
             container.appendChild(categoryElement);
         });
+
+        if (filteredEquipments.length === 0) {
+            container.innerHTML = '<div class="no-results">没有找到匹配的装备</div>';
+        }
     }
+
     renderInventoryList() {
         const container = document.getElementById('inventory-list');
         container.innerHTML = '';
 
-        Object.entries(window.staticData.inventory).forEach(([category, inventory]) => {
+        // 添加搜索框和筛选器
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'inventory-search-container';
+        searchContainer.innerHTML = `
+        <div class="search-controls" style="grid-template-columns: 88% 10%;">
+            <input type="text" id="inventory-search-input" placeholder="搜索物品名称或描述">
+            <button id="clear-inventory-search" class="btn-clear-search">重置</button>
+        </div>
+    `;
+        container.appendChild(searchContainer);
+
+        const inventoryListContainer = document.createElement('div');
+        inventoryListContainer.id = 'inventory-list-content';
+        container.appendChild(inventoryListContainer);
+
+        this.filterAndRenderInventory();
+
+        // 添加事件监听
+        document.getElementById('inventory-search-input').addEventListener('input', () => {
+            this.filterAndRenderInventory();
+        });
+
+        document.getElementById('clear-inventory-search').addEventListener('click', () => {
+            document.getElementById('inventory-search-input').value = '';
+            this.filterAndRenderInventory();
+        });
+    }
+
+    filterAndRenderInventory() {
+        const searchTerm = document.getElementById('inventory-search-input').value.toLowerCase();
+        const container = document.getElementById('inventory-list-content');
+        container.innerHTML = '';
+
+        const allInventory = Object.entries(window.staticData.inventory).flatMap(([category, inventory]) =>
+            inventory.map(Inventory => ({ ...Inventory, category }))
+        );
+
+        const filteredInventory = allInventory.filter(inventory => {
+            if (!searchTerm) return true;
+
+            return (
+                inventory.name.toLowerCase().includes(searchTerm) ||
+                inventory.weight.toLowerCase().includes(searchTerm) ||
+                inventory.description.toLowerCase().includes(searchTerm)
+            );
+        });
+
+        // 按类别分组
+        const inventoryByCategory = filteredInventory.reduce((acc, inventory) => {
+            if (!acc[inventory.category]) acc[inventory.category] = [];
+            acc[inventory.category].push(inventory);
+            return acc;
+        }, {});
+
+        Object.entries(inventoryByCategory).forEach(([category, inventory]) => {
             const categoryElement = document.createElement('div');
             categoryElement.className = 'inventory-category';
 
-            // 创建分类标题（可点击折叠）
             const header = document.createElement('div');
             header.className = 'inventory-category-header';
             header.innerHTML = `
         <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">+</span>
+            <span class="toggle-icon">-</span>
         </div>
       `;
 
-            // 创建技能列表容器（初始隐藏）
             const listContainer = document.createElement('div');
             listContainer.className = 'inventory-items-container';
-            listContainer.style.display = 'none';
+            listContainer.style.display = 'block';
 
-            // 填充技能项
             listContainer.innerHTML = inventory.map(Inventory => `
         <div class="inventory-item">
         <div class="item-header">
@@ -269,7 +519,6 @@ class GOGCharacterApp {
         </div>
       `).join('');
 
-            // 点击标题切换折叠状态
             header.addEventListener('click', () => {
                 const isHidden = listContainer.style.display === 'none';
                 listContainer.style.display = isHidden ? 'block' : 'none';
@@ -280,6 +529,10 @@ class GOGCharacterApp {
             categoryElement.appendChild(listContainer);
             container.appendChild(categoryElement);
         });
+
+        if (filteredInventory.length === 0) {
+            container.innerHTML = '<div class="no-results">没有找到匹配的物品</div>';
+        }
     }
     applyBlessing(blessingName) {
         const blessing = window.staticData.blessings.find(b => b.name === blessingName);
@@ -296,19 +549,68 @@ class GOGCharacterApp {
         this.renderBlessingSkills(blessing.skills);
         this.showToast(`${blessing.name}权柄已应用`);
     }
-    addSkillToCharacter(skill) {
-        this.currentCharacter.skills = this.currentCharacter.skills || [];
-        this.currentCharacter.skills.push({
-            name: skill.name,
-            proficiency: 1,
-            description: skill.description,
-            uses: 0
+    addSkillToCharacter(skillData) {
+        const categories = [];
+        const catemess = [];
+
+        Object.entries(window.staticData.skills).forEach(([cat, skills]) => {
+            if (skills.some(s => (s.name === skillData.name && s.class === skillData.class))) {
+                categories.push(this.mapCategoryNameToKey(cat));
+                catemess.push(`${cat}`);
+            }
         });
 
+        if (categories.length === 0) {
+            categories.push('INT');
+            catemess.push(`智慧`);
+        }
+
+        let toastmessage = `技能${skillData.name}已添加到类别` + catemess.join('、') + `中`;
+
+        categories.forEach(category => {
+            if (!this.currentCharacter.skills[category]) {
+                this.currentCharacter.skills[category] = [];
+            }
+
+            this.currentCharacter.skills[category].push({
+                name: skillData.name,
+                proficiency: 0,
+                description: skillData.description,
+                uses: 0
+            });
+
+        })
+
         this.renderSkills(this.currentCharacter.skills);
-        this.updateSkillProficiencyLeft();
-        this.showToast(`技能${skill.name}已添加`);
+        // this.updateSkillProficiencyLeft();
+        this.showToast(toastmessage);
     }
+    // 辅助方法：将中文类别名映射为属性键名
+    mapCategoryNameToKey(categoryName) {
+        const map = {
+            '力量': 'STR',
+            '敏捷': 'DEX',
+            '智慧': 'INT',
+            '魅力': 'CHA',
+            '感知': 'WIS',
+            '法力': 'MAG'
+        };
+        return map[categoryName] || 'INT';
+    }
+
+    // 辅助方法：将属性键名转换为中文类别名
+    getCategoryName(categoryKey) {
+        const map = {
+            STR: '力量',
+            DEX: '敏捷',
+            INT: '智慧',
+            CHA: '魅力',
+            WIS: '感知',
+            MAG: '法力'
+        };
+        return map[categoryKey] || categoryKey;
+    }
+
     addEquipmentToCharacter(equipment) {
         this.currentCharacter.equipments = this.currentCharacter.equipments || [];
         this.currentCharacter.equipments.push({
@@ -341,8 +643,43 @@ class GOGCharacterApp {
 
         input.value = this.currentCharacter[property] || '';
         input.addEventListener('input', () => {
-            this.currentCharacter[property] = input.value;
+            this.currentCharacter[property] = input.type === 'number' ? parseInt(input.value) || 0 : input.value;
+            // 如果是灵魂完整度，更新状态标签
+            if (inputId === 'blessing-soul') {
+                this.updateSoulStatus();
+            }
         });
+
+        // 如果是灵魂完整度，初始化状态标签
+        if (inputId === 'blessing-soul') {
+            this.updateSoulStatus();
+            document.getElementById('blessing-soul').value = this.currentCharacter.soul || 0;
+        }
+    }
+    updateSoulStatus() {
+        const soulValue = this.currentCharacter.soul || 0;
+        const statusElement = document.getElementById('soul-status');
+
+        // 根据灵魂完整度范围设置不同状态
+        if (soulValue >= 80) {
+            statusElement.textContent = '清醒';
+            statusElement.style.backgroundColor = '#4ba361'; // 绿色
+        } else if (soulValue >= 60) {
+            statusElement.textContent = '尚可';
+            statusElement.style.backgroundColor = '#a3c14b'; // 黄绿色
+        } else if (soulValue >= 40) {
+            statusElement.textContent = '略显疯癫';
+            statusElement.style.backgroundColor = '#c1a34b'; // 黄色
+        } else if (soulValue >= 20) {
+            statusElement.textContent = '疯子';
+            statusElement.style.backgroundColor = '#c18d4b'; // 橙色
+        } else if (soulValue >= 1) {
+            statusElement.textContent = '理智的反义词';
+            statusElement.style.backgroundColor = '#c14b4b'; // 红色
+        } else if (soulValue === 0) {
+            statusElement.textContent = '永恒沉眠';
+            statusElement.style.backgroundColor = '#666666'; // 灰色
+        }
     }
 
     // 渲染角色详情
@@ -358,14 +695,21 @@ class GOGCharacterApp {
         this.bindInputToCharacter('character-nationality', 'nationality');
         this.bindInputToCharacter('character-class', 'class');
         this.bindInputToCharacter('character-blessing', 'blessing');
-        this.bindInputToCharacter('character-description', 'description');
+        const descElement = document.getElementById('character-description');
+        if (descElement) {
+            descElement.innerText = this.currentCharacter.description || '';
+            descElement.addEventListener('input', () => {
+                this.currentCharacter.description = descElement.innerText;
+            });
+        }
         this.bindInputToCharacter('blessing-level', 'blessinglevel');
         this.bindInputToCharacter('blessing-soul', 'soul');
 
         // 动态表格绑定
         this.setupTableBindings();
-
         this.bindAttributeInputs();
+
+        this.bindLogEvents();
 
         // 渲染属性
         this.renderAttributes(character.attributes);
@@ -390,6 +734,8 @@ class GOGCharacterApp {
         this.renderInventory(character.inventory);
         this.updateTotalWeight();
 
+        // 渲染日志系统
+        this.renderLogs(character.logs);
     }
 
     // 渲染属性
@@ -562,21 +908,79 @@ class GOGCharacterApp {
         container.addEventListener('input', (e) => {
             const row = e.target.closest('tr');
             if (!row) return;
+            // 对于技能，需要特殊处理类别
+            if (property === 'skills') {
+                // 确保有有效的类别
+                const category = row.dataset.category;
+                const index = parseInt(row.dataset.index);
 
-            const index = Array.from(container.children).indexOf(row);
-            if (index === -1) return;
+                if (!category || isNaN(index)) return;
 
-            // 更新对应数据
-            const inputs = row.querySelectorAll('input, .auto-height-content');
-            fields.forEach((field, i) => {
-                let value = inputs[i].value;
-                if (inputs[i].classList.contains('auto-height-content')) {
-                    value = inputs[i].innerText;
+                const inputs = row.querySelectorAll('input, .auto-height-content');
+                fields.forEach((field, i) => {
+                    let value = inputs[i].value;
+                    if (inputs[i].classList.contains('auto-height-content')) {
+                        value = inputs[i].innerText;
+                    }
+                    this.currentCharacter.skills[category][index][field] = this.convertFieldValue(field, value);
+                });
+
+                // 安全更新数据
+                if (!this.currentCharacter.skills[categoryKey]) {
+                    this.currentCharacter.skills[categoryKey] = [];
                 }
+            }
+            else {
+                const index = Array.from(container.children).indexOf(row);
+                if (index === -1) return;
 
-                this.currentCharacter[property][index][field] = this.convertFieldValue(field, value);
-            });
+                // 更新对应数据
+                const inputs = row.querySelectorAll('input, .auto-height-content');
+                fields.forEach((field, i) => {
+                    let value = inputs[i].value;
+                    if (inputs[i].classList.contains('auto-height-content')) {
+                        value = inputs[i].innerText;
+                    }
+                    this.currentCharacter[property][index][field] = this.convertFieldValue(field, value);
+                });
+            }
 
+        });
+    }
+
+    // 绑定日志事件方法
+    bindLogEvents() {
+        document.getElementById('log-sections').addEventListener('input', (e) => {
+            if (e.target.classList.contains('log-title')) {
+                const logSection = e.target.closest('.log-section');
+                const logId = parseInt(logSection.dataset.id);
+
+                const log = this.currentCharacter.logs.find(l => parseInt(l.id) === logId);
+                if (log) log.title = e.target.innerText;
+            }
+        });
+
+        document.getElementById('log-sections').addEventListener('input', (e) => {
+            if (e.target.classList.contains('log-content')) {
+                const logSection = e.target.closest('.log-section');
+                const logId = parseInt(logSection.dataset.id);
+
+                const log = this.currentCharacter.logs.find(l => parseInt(l.id) === logId);
+                if (log) log.content = e.target.innerText;
+            }
+        });
+
+        document.getElementById('log-sections').addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-log')) {
+                const logSection = e.target.closest('.log-section');
+                const logId = parseInt(logSection.dataset.id);
+
+                this.currentCharacter.logs = this.currentCharacter.logs.filter(
+                    log => parseInt(log.id) !== logId
+                );
+
+                this.renderLogs(this.currentCharacter.logs);
+            }
         });
     }
 
@@ -740,6 +1144,11 @@ class GOGCharacterApp {
             return [];
         }
 
+        // 特殊处理技能表格
+        if (containerId === 'skills-container') {
+            return this.collectSkillsData();
+        }
+
         const rows = container.querySelectorAll('tbody > tr');
         const data = [];
 
@@ -767,6 +1176,40 @@ class GOGCharacterApp {
         });
 
         return data;
+    }
+    collectSkillsData() {
+        const skillsData = {
+            STR: [],
+            DEX: [],
+            INT: [],
+            CHA: [],
+            WIS: [],
+            MAG: []
+        };
+
+        // 获取所有技能行（跳过类别标题行）
+        const container = document.getElementById('skills-container');
+        const skillRows = container.querySelectorAll('tr.skill-row');
+
+        skillRows.forEach(row => {
+            const category = row.dataset.category;
+            const inputs = row.querySelectorAll('input, .auto-height-content');
+
+            if (inputs.length >= 4) { // name, proficiency, uses, description
+                const skill = {
+                    name: inputs[0].innerText.trim(),
+                    proficiency: parseInt(inputs[1].value) || 0,
+                    uses: parseInt(inputs[2].value) || 0,
+                    description: inputs[3].innerText.trim()
+                };
+
+                if (skillsData[category]) {
+                    skillsData[category].push(skill);
+                }
+            }
+        });
+
+        return skillsData;
     }
 
     convertFieldValue(field, value) {
@@ -801,22 +1244,47 @@ class GOGCharacterApp {
         });
     }
 
+    // 删除状态标签
+    removeStatusTag(status) {
+        this.currentCharacter.status = this.currentCharacter.status.filter(s => s !== status);
+        this.renderStatusTags(this.currentCharacter.status);
+    }
+
     // 渲染技能列表
     renderSkills(skillsArray) {
         const skillsContainer = document.getElementById('skills-container');
         skillsContainer.innerHTML = '';
 
-        skillsArray.forEach((skill, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-      <td><div class="auto-height-content" contenteditable="true">${skill.name || ''}</div></td>
-      <td><input type="number" min="1" max="5" value="${skill.proficiency || 1}"></td>
-      <td><input type="number" min="0" value="${skill.uses || 0}"></td>
-      <td><div class="auto-height-content" contenteditable="true">${skill.description || ''}</div></td>
-      <td><button class="btn btn-danger" data-index="${index}">删除</button></td>
-    `;
-            skillsContainer.appendChild(row);
+        Object.entries(skillsArray).forEach(([category, skills]) => {
+            if (skills.length === 0) return;
+
+            // 添加类别标题行
+            const categoryRow = document.createElement('tr');
+            categoryRow.className = 'skill-category-row';
+            categoryRow.innerHTML = `
+            <td colspan="5" class="skill-category-header" style="margin:0 auto;text-align: center;background: #f2f2f2">
+                <strong>${this.getCategoryName(category)}类技能</strong>
+            </td>
+        `;
+            skillsContainer.appendChild(categoryRow);
+
+            // 添加该类别下的技能
+            skills.forEach((skill, index) => {
+                const row = document.createElement('tr');
+                row.className = 'skill-row';
+                row.dataset.category = category;
+                row.dataset.index = index;
+                row.innerHTML = `
+                <td><div class="auto-height-content" contenteditable="true">${skill.name || ''}</div></td>
+                <td><input type="number" min="0" max="5" value="${skill.proficiency || 0}"></td>
+                <td><input type="number" min="0" value="${skill.uses || 0}"></td>
+                <td><div class="auto-height-content" contenteditable="true">${skill.description || ''}</div></td>
+                <td><button class="btn btn-danger" data-category="${category}" data-index="${index}">删除</button></td>
+            `;
+                skillsContainer.appendChild(row);
+            });
         });
+
     }
 
     // 计算剩余熟练点数
@@ -831,8 +1299,15 @@ class GOGCharacterApp {
         const maxProficiency = intTotal * intTotal;
 
         // 计算已分配熟练度
-        const skills = this.collectTableData('skills-container', ['name', 'proficiency', 'uses', 'description']);
-        const usedProficiency = skills.reduce((sum, skill) => sum + (parseInt(skill.proficiency) || 0), 0);
+        let usedProficiency = 0;
+        const skillsData = this.collectSkillsData();
+        if (skillsData) {
+            Object.values(skillsData).forEach(categorySkills => {
+                categorySkills.forEach(skill => {
+                    usedProficiency += parseInt(skill.proficiency) || 0;
+                });
+            });
+        }
 
         // 计算剩余并更新显示
         const remaining = maxProficiency - usedProficiency;
@@ -894,10 +1369,24 @@ class GOGCharacterApp {
         displayElement.textContent = totalWeight;
     }
 
-    // 删除状态标签
-    removeStatusTag(status) {
-        this.currentCharacter.status = this.currentCharacter.status.filter(s => s !== status);
-        this.renderStatusTags(this.currentCharacter.status);
+    // 渲染日志
+    renderLogs(logArray) {
+        const container = document.getElementById('log-sections');
+        container.innerHTML = '';
+        logArray = logArray || [];
+        logArray.forEach(log => {
+            const logElement = document.createElement('div');
+            logElement.className = 'log-section';
+            logElement.dataset.id = log.id;
+            logElement.innerHTML = `
+                <div class="log-header">
+                    <div class="log-title auto-height-content" contenteditable="true">${log.title}</div>
+                    <button class="delete-log">删除</button>
+                </div>
+                <div class="log-content auto-height-content" contenteditable="true">${log.content}</div>
+            `;
+            container.appendChild(logElement);
+        });
     }
 
     showToast(message, duration = 2000) {
@@ -1005,7 +1494,8 @@ class GOGCharacterApp {
             if (e.target.classList.contains('btn-add-skill')) {
                 const skillData = {
                     name: e.target.dataset.name,
-                    description: e.target.dataset.description
+                    class: e.target.dataset.class,
+                    description: e.target.dataset.description + "；职业：" + e.target.dataset.class,
                 };
                 this.addSkillToCharacter(skillData);
             }
@@ -1061,7 +1551,8 @@ class GOGCharacterApp {
                     blessingSystem: this.collectBlessingData(),
                     blessingSkills: this.collectBlessingSkills(),
                     soul: parseInt(document.getElementById('blessing-soul').value),
-                    attributes: this.collectAttributes()
+                    attributes: this.collectAttributes(),
+                    logs: this.currentCharacter.logs || []
                 };
 
                 // 如果是现有角色，保留id
@@ -1073,7 +1564,7 @@ class GOGCharacterApp {
                 const character = new Character(characterData);
 
                 // 收集动态数据（技能、装备、物品）
-                character.skills = this.collectTableData('skills-container', ['name', 'proficiency', 'uses', 'description']);
+                character.skills = this.collectSkillsData();
                 character.equipment = this.collectTableData('equipment-container', ['name', 'type', 'modifier', 'description']);
                 character.inventory = this.collectTableData('inventory-container', ['name', 'weight', 'description', 'quantity']);
 
@@ -1204,13 +1695,15 @@ class GOGCharacterApp {
 
         // 添加技能
         document.getElementById('add-skill').addEventListener('click', () => {
-            this.currentCharacter.skills.push({
+            const category = document.getElementById('skill-category-select').value;
+            this.currentCharacter.skills[category].push({
                 name: '',
-                proficiency: 1,
+                proficiency: 0,
                 uses: 0,
                 description: ''
             });
             this.renderSkills(this.currentCharacter.skills);
+            this.updateSkillProficiencyLeft();
         });
 
         // 添加装备
@@ -1235,17 +1728,36 @@ class GOGCharacterApp {
             this.renderInventory(this.currentCharacter.inventory);
         });
 
-        // 删除技能/装备/物品的通用处理
-        ['skills-container', 'equipment-container', 'inventory-container'].forEach(containerId => {
+        // 添加日志
+        document.getElementById('add-log').addEventListener('click', () => {
+            this.currentCharacter.logs.push({
+                id: Date.now(),
+                title: '',
+                content: ''
+            });
+            this.renderLogs(this.currentCharacter.logs);
+        });
+
+        // 删除技能/装备/物品的处理
+        ['equipment-container', 'inventory-container'].forEach(containerId => {
             document.getElementById(containerId).addEventListener('click', (e) => {
                 if (e.target.classList.contains('btn-danger')) {
                     const index = parseInt(e.target.dataset.index);
-                    const property = containerId.split('-')[0]; // 'skills', 'equipment' 或 'inventory'
+                    const property = containerId.split('-')[0]; //'equipment' 或 'inventory'
 
                     this.currentCharacter[property].splice(index, 1);
                     this[`render${property.charAt(0).toUpperCase() + property.slice(1)}`](this.currentCharacter[property]);
                 }
             });
+        });
+        document.getElementById('skills-container').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-danger')) {
+                const category = e.target.dataset.category;
+                const index = parseInt(e.target.dataset.index);
+                this.currentCharacter.skills[category].splice(index, 1);
+                this.renderSkills(this.currentCharacter.skills);
+                this.updateSkillProficiencyLeft();
+            }
         });
 
         // 技能表格变化时更新剩余熟练度
@@ -1253,16 +1765,6 @@ class GOGCharacterApp {
             if (e.target.classList.contains('auto-height-content') ||
                 e.target.type === 'number') {
                 this.updateSkillProficiencyLeft();
-            }
-        });
-
-        // 添加/删除技能时更新
-        document.getElementById('add-skill').addEventListener('click', () => {
-            setTimeout(() => this.updateSkillProficiencyLeft(), 0);
-        });
-        document.getElementById('skills-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
-                setTimeout(() => this.updateSkillProficiencyLeft(), 0);
             }
         });
 
