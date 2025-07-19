@@ -16,10 +16,131 @@ class DataHandler {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = `GOG角色_${character.name}.json`;
+    a.download = `GOG角色档案_${character.name}.json`;
     a.click();
 
     setTimeout(() => URL.revokeObjectURL(url), 100);
+  }
+
+  // 导出为PDF
+  async exportToPDF(id) {
+    const element = document.getElementById('main-container');
+    const toast = document.getElementById('toast');
+
+    // 显示加载提示
+    toast.textContent = '正在生成PDF...';
+    toast.className = 'toast-visible';
+
+    // 临时隐藏不需要的元素
+    const elementsToHide = document.querySelectorAll('.bottom-nav, #toast, .roster-panel');
+    elementsToHide.forEach(el => el.style.visibility = 'hidden');
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      // 1. 定义要分段渲染的部分
+      const sections = element.querySelectorAll('.section'); // 获取所有区块
+
+      // 2. 设置PDF样式和初始位置
+      let yPosition = 15; // 初始Y位置(mm)
+      const pageWidth = pdf.internal.pageSize.getWidth() - 20; // 页面宽度减去边距
+      const maxPageHeight = pdf.internal.pageSize.getHeight() - 20; // 最大页面高度
+
+      // 4. 分段处理每个区块
+      for (let i = 0; i < sections.length; i++) {
+        let section = (i === 4) ? element.querySelector('.equipment-inventory-container') : sections[i];
+
+        // 临时显示当前区块(确保滚动到正确位置)
+        section.style.visibility = 'visible';
+        section.scrollIntoView({ behavior: 'instant', block: 'start' });
+
+        // 等待浏览器重绘
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // 渲染当前区块为canvas
+        const canvas = await html2canvas(section, {
+          scale: 1,
+          logging: true,
+          useCORS: true,
+          backgroundColor: '#FFFFFF',
+          windowHeight: element.scrollHeight + 50, // 额外增加高度
+          ignoreElements: function (el) {
+            return false;
+          },
+          onclone: function (clonedDoc) {
+            // 克隆文档时调整输入框样式
+            clonedDoc.querySelectorAll('input, textarea').forEach(input => {
+              input.style.padding = '8px';
+              input.style.lineHeight = '1.5';
+              input.style.height = 'auto';
+              input.style.boxSizing = 'border-box';
+            });
+
+            clonedDoc.querySelectorAll('select').forEach(select => {
+              // 强制展开select样式
+              select.style.height = 'auto';
+              select.style.padding = '10px';
+              select.style.lineHeight = '1.5';
+              select.style.appearance = 'none';
+              select.style.WebkitAppearance = 'none';
+              select.style.MozAppearance = 'none';
+              select.style.borderRadius = '4px';
+              select.style.boxShadow = 'none';
+
+              // 为每个option添加样式
+              Array.from(select.options).forEach(option => {
+                option.style.padding = '8px';
+                option.style.backgroundColor = '#fff';
+              });
+            });
+          }
+        });
+
+        // 计算图片尺寸(保持比例)
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = pageWidth;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+        // 检查当前页剩余空间是否足够
+        if (yPosition + imgHeight > maxPageHeight) {
+          pdf.addPage(); // 添加新页
+          yPosition = 15; // 重置Y位置
+        }
+
+        // 添加图片到PDF
+        pdf.addImage(
+          imgData,
+          'JPEG',
+          10, // x位置(左margin)
+          yPosition,
+          imgWidth,
+          imgHeight
+        );
+
+        yPosition += imgHeight + 10; // 更新Y位置并添加间距
+
+        // 恢复区块样式
+        section.style.visibility = '';
+
+        if (i === 4) {
+          i++;
+        }
+      }
+
+      // 5. 保存PDF
+      const charName = document.getElementById('character-name').value || '未命名角色';
+      pdf.save(`GOG角色档案_${charName}.pdf`);
+
+    } catch (err) {
+      console.error('分段导出PDF失败:', err);
+      toast.textContent = 'PDF导出失败！';
+    } finally {
+      // 恢复隐藏的元素
+      elementsToHide.forEach(el => el.style.visibility = 'visible');
+      setTimeout(() => { toast.className = 'toast-hidden'; }, 2000);
+    }
   }
 
   // 批量导出所有角色
@@ -109,4 +230,4 @@ class DataHandler {
     // 保存到数据库
     await this.db.saveCharacter(character);
   }
-}
+};
