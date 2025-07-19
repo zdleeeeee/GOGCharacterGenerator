@@ -9,6 +9,8 @@
     <style>
         @import url(style.css);
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -64,6 +66,9 @@
                             </label>
                             <button id="export-character" class="data-btn" style="border-radius: 0px;">
                                 <i class="fas fa-file-export"></i>导出当前角色
+                            </button>
+                            <button id="export-pdf" class="data-btn" style="border-radius: 0px;">
+                                <i class="fas fa-file-pdf"></i>导出当前为PDF
                             </button>
                             <button id="export-all" class="data-btn" style="border-radius: 0px;">
                                 <i class="fas fa-download"></i>导出全部角色
