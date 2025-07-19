@@ -39,6 +39,15 @@ h3 {
     color: #333333;
 }
 
+h1 {
+    font-size: 24px;
+}
+
+th,
+td {
+    font-size: 14px;
+}
+
 button {
     background-color: #ffffff;
     margin: none;
@@ -75,8 +84,10 @@ button:hover {
 label {
     display: block;
     margin: none;
+    font-size: 14px;
     padding: none;
     font-weight: bold;
+    color: #666666;
 }
 
 input[type="text"],
@@ -153,7 +164,7 @@ textarea {
 .items-list th,
 .items-list td {
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd;
     text-align: left;
     overflow-x: hidden;
 }
@@ -171,7 +182,6 @@ textarea {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    width: auto;
     text-align: center;
     min-height: min-content;
     min-width: max-content;
@@ -179,8 +189,8 @@ textarea {
 }
 
 .btn:hover {
-    color: #333333;
-    background-color: #dddddd;
+    color: #666666;
+    background-color: #eeeeee;
 }
 
 .btn-danger {
@@ -197,8 +207,8 @@ textarea {
 }
 
 .btn-danger:hover {
-    background-color: #ee9999;
-    color: #333333;
+    background-color: #e74c3c;
+    color: #ffffff;
 }
 
 .actions {
@@ -331,13 +341,14 @@ textarea {
 }
 
 @media (max-width: 768px) {
-    .table-auto {
-        font-size: 14px;
-    }
 
     .table-auto th,
     .table-auto td {
         padding: 6px 8px;
+    }
+
+    .character-info-grid {
+        grid-template-columns: 1fr;
     }
 
     .portrait-preview {
@@ -351,7 +362,6 @@ textarea {
         margin: 0 auto;
     }
 
-    .character-info-grid,
     .character-form-fields {
         grid-template-columns: 1fr;
     }
@@ -435,6 +445,7 @@ textarea {
 .auto-height-content {
     min-height: 20px;
     height: min-content;
+    font-size: 14px;
     /* 关键属性 */
     max-height: 300px;
     overflow-y: auto;
@@ -489,11 +500,13 @@ textarea {
     display: inline-block;
     text-align: center;
     font-weight: bold;
+    font-size: 16px;
 }
 
 .current-value {
     text-align: center;
     font-weight: bold;
+    font-size: 16px;
 }
 
 .max-value {
@@ -556,7 +569,8 @@ textarea {
     left: 0px;
     right: 0px;
     height: 40px;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
     border-top: 1px solid #bbbbbb;
     padding: 8px 0;
     z-index: 3;
@@ -666,10 +680,10 @@ textarea {
     text-align: center;
 }
 
-/* 角色列表面板 */
+/* 图鉴面板 */
 .roster-panel {
     position: fixed;
-    bottom: 45px;
+    bottom: 50px;
     left: 0px;
     right: 0px;
     min-width: 300px;
@@ -678,7 +692,7 @@ textarea {
     backdrop-filter: blur(10px);
     border-radius: 12px 12px 0px 0px;
     box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1103;
+    z-index: 4;
     display: none;
 }
 
@@ -749,18 +763,15 @@ textarea {
 }
 
 .roster-info h5 {
+    font-size: 16px;
     margin: 0 0 4px 0;
-    color: #2c3e50;
-}
-
-.roster-info p {
-    margin: 0;
-    color: #7f8c8d;
-    font-size: 12px;
+    color: #333333;
 }
 
 .roster-info span {
+    font-size: 12px;
     margin-left: 10px;
+    color: #666666;
 }
 
 .btn-load,
@@ -854,14 +865,15 @@ textarea {
     display: flex;
     justify-content: space-between;
 }
+
 .item-header h5,
-.blessing-header h5
-{
+.blessing-header h5 {
     padding-left: 5px;
     padding-top: 5px;
     margin: 0px;
     font-size: 14px;
 }
+
 .header-actions {
     display: flex;
     align-items: center;
@@ -889,20 +901,75 @@ textarea {
 .btn-add-skill,
 .btn-add-equipment,
 .btn-add-inventory {
-    margin: 0px 0px 0px 0px;
+    margin: 0;
     padding: 6px 12px;
     font-size: 12px;
     text-align: center;
-    min-width: max-content;
+    width: max-content;
     max-height: min-content;
     color: #666666;
-    background: #eeeeee;
+    background: #eeeeee80;
 }
+
+.btn-clear-search {
+    margin: 0;
+    padding: 6px 12px;
+    font-size: 13px;
+    text-align: center;
+    width: max-content;
+    height: 100%;
+    color: #666666;
+    background: #eeeeee80;
+}
+
 .btn-apply-blessing:hover,
 .btn-add-skill:hover,
+.btn-clear-search:hover,
 .btn-add-equipment:hover,
 .btn-add-inventory:hover {
-    background: #dddddd;
+    background: #dddddd80;
+}
+
+.search-controls {
+    display: grid;
+    grid-template-columns: 56% 30% 10%;
+    gap: 2%;
+    padding: 12px;
+}
+
+.search-controls input,
+.search-controls select {
+    background: #eeeeee80;
+    color: #333333;
+}
+
+.form-group select:hover,
+.form-group input:hover,
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+}
+.search-controls input:hover,
+.search-controls select:hover,
+.search-controls input:focus,
+.search-controls select:focus {
+    background: #dddddd80;
+    outline: none;
+}
+
+.no-results {
+    max-width: max-content;
+    margin: 20px auto;
+}
+
+@media (max-width: 768px) {
+    .search-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-clear-search {
+        width: 100%;
+    }
 }
 
 .skill-description,
@@ -911,6 +978,49 @@ textarea {
     font-size: 12px;
     color: #666666;
     padding-left: 5px;
+}
+
+/* 日志系统 */
+.log-section {
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.log-header {
+    border-radius: 8px 8px 0px 0px;
+    background: #f2f2f2;
+    display: flex;
+}
+
+.log-title {
+    flex-grow: 1;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 15px;
+}
+
+.delete-log {
+    min-width: max-content;
+    padding: 8px 15px;
+    color: #666666;
+    border-left: 1px solid #eeeeee;
+    border-radius: 0px 8px 0px 0px;
+    background: #f2f2f2;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.delete-log:hover {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+.log-content {
+    padding: 8px 15px;
 }
 
 /* 提示 */
