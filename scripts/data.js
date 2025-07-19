@@ -22,22 +22,28 @@ window.staticData = {
     ],
 
     skills: {
-        "通用魔攻": [
-            { name: "火焰箭", class: "法师", description: "发射一支火焰箭" },
-            
+        "力量": [
+            { name: "攀爬精通", class: "通用", description: "敏捷/力量" },
+            { name: "拳击精通", class: "武者类通用", description: "力量" },
         ],
-        "通用物攻": [
-            { name: "刀剑精通", class: "战士", description: "ddd" }
+        "敏捷": [
+            { name: "攀爬精通", class: "通用", description: "敏捷/力量" }
         ],
-        "通用肉功": [
-            { name: "拳击", class: "战士", description: "拳击伤害增加" }
+        "智慧": [
+            { name: "魅惑", class: "通用", description: "魅力/智慧" },
+            { name: "气象学精通", class: "通用", description: "智慧" }
         ],
-        "通用治疗": [
-            { name: "初级治疗", class: "牧师", description: "恢复少量生命值" }
+        "魅力": [
+            { name: "魅惑", class: "通用", description: "魅力/智慧" },
+            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力" }
         ],
-        
-        "通用辅助": [
-            { name: "隐身术", class: "游侠", description: "暂时隐藏身形" }
+        "感知": [
+            { name: "透视术", class: "法师类通用", description: "感知/法力" }
+        ],
+        "法力": [
+            { name: "火球术", class: "法师类通用", description: "法力；效果：火属性伤害" },
+            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力" },
+            { name: "水球弹", class: "玉鳞卫士兵", description: "法力；来源：神山；效果：水属性伤害；隶属组合技：超级大水球" }
         ]
         // 更多技能...
     },
