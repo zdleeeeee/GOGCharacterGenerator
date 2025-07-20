@@ -1,5 +1,5 @@
 // import-export.js - 数据导入导出
-const { BorderStyle, Document, HeadingLevel, Paragraph, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
+const { AlignmentType, BorderStyle, Document, HeadingLevel, ImageRun, Paragraph, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
 const { saveAs } = window;
 class DataHandler {
   constructor(db) {
@@ -32,157 +32,265 @@ class DataHandler {
 
     try {
       // 1. 创建Word文档结构
+      const docChildren = [];
+
+      docChildren.push(
+        // 标题
+        new Paragraph({
+          heading: HeadingLevel.HEADING_1,
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: `GOG角色档案_${character.name}`,
+              bold: true,
+              size: 28,
+              color: "333333"
+            }),
+          ],
+        }),
+      );
+
+      if (character.portrait) {
+        try {
+          // 将Base64字符串转换为Uint8Array
+          const base64Data = character.portrait.split(';base64,').pop();
+          const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+          docChildren.push(
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new ImageRun({
+                  data: imageBuffer,
+                  transformation: {
+                    width: 200,  // 图片宽度
+                    height: 250, // 图片高度
+                  },
+                }),
+              ],
+            })
+          );
+        } catch (error) {
+          console.error("处理角色肖像失败:", error);
+          // 即使图像处理失败，也继续导出其他内容
+        }
+      }
+
+      docChildren.push(
+        // 基本信息
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "基本信息",
+              bold: true,
+              size: 26,
+              color: "333333"
+            }),
+          ],
+        }),
+        this.createPropertyParagraph("角色名", character.name),
+        this.createPropertyParagraph("玩家", character.playerName),
+        this.createPropertyParagraph("性别", character.gender),
+        this.createPropertyParagraph("年龄", character.age?.toString() || "未知"),
+        this.createPropertyParagraph("阵营", character.alignment),
+        this.createPropertyParagraph("国籍", character.nationality),
+        this.createPropertyParagraph("职业", character.class),
+        this.createPropertyParagraph("赐福", character.blessing),
+        this.createPropertyParagraph("描述", character.description),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 属性
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "属性系统",
+              bold: true,
+              size: 26,
+              color: "333333"
+            }),
+          ],
+        }),
+        this.createAttributeTable(character.attributes),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 状态
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "状态系统",
+              bold: true,
+              size: 26,
+              color: "333333"
+            }),
+          ],
+        }),
+        this.createStatusTable(character.status),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 赐福系统
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [new TextRun({
+            text: `赐福系统`,
+            bold: true,
+            size: 26,
+            color: "333333"
+          })]
+        }),
+
+        this.createPropertyParagraph("灵魂完整度", character.soul?.toString() || 0),
+        this.createPropertyParagraph("精神状态", this.getSoulStatus(character.soul)),
+        new Paragraph({
+          heading: HeadingLevel.HEADING_3,
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 200 },
+          children: [new TextRun({
+            text: `${character.blessing || '赐福'}系统 (等级 ${character.blessinglevel})`,
+            bold: true,
+            size: 22,
+            color: "666666"
+          })]
+        }),
+        this.createBlessingSystemTable(character.blessingSystem, character.blessingSkills),
+
+        // 权柄特技
+        new Paragraph({
+          heading: HeadingLevel.HEADING_3,
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 200 },
+          children: [new TextRun({
+            text: "权柄特技",
+            bold: true,
+            size: 22,
+            color: "666666",
+            alignment: AlignmentType.CENTER
+          })]
+        }),
+        this.createBlessingSkillsTable(character.blessingSkills),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 技能
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "技能系统",
+              bold: true,
+              size: 26,
+              color: "333333"
+            }),
+          ],
+        }),
+        ...this.createSkillsTable(character.skills),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 装备
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "装备系统",
+              bold: true,
+              size: 26,
+              color: "333333"
+            }),
+          ],
+        }),
+        this.createEquipsTable(character.equipment),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 物品
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "背包系统",
+              bold: true,
+              size: 26,
+              color: "333333"
+            }),
+          ],
+        }),
+        new Paragraph({
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: `总负重：`,
+              bold: true,
+              size: 20,
+              color: "666666"
+            }),
+            new TextRun({
+              text: `${document.getElementById('total-weight').textContent.toString()} kg`,
+              bold: true,
+              size: 20,
+              color: "28a745"
+            }),
+          ],
+        }),
+        this.createItemsTable(character.inventory),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
+        }),
+
+        // 日志
+        new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: "日志系统",
+              bold: true,
+              size: 24,
+              color: "333333"
+            }),
+          ],
+        }),
+        ...this.createLogsSection(character.logs),
+      );
       const doc = new Document({
         sections: [{
           properties: {},
-          children: [
-            // 标题
-            new Paragraph({
-              heading: HeadingLevel.HEADING_1,
-              children: [
-                new TextRun({
-                  text: `GOG角色档案_${character.name}`,
-                  bold: true,
-                  size: 28,
-                }),
-              ],
-            }),
-
-            // 基本信息
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [
-                new TextRun({
-                  text: "基本信息",
-                  bold: true,
-                  size: 24,
-                }),
-              ],
-            }),
-            this.createPropertyParagraph("角色名", character.name),
-            this.createPropertyParagraph("玩家", character.playerName),
-            this.createPropertyParagraph("性别", character.gender),
-            this.createPropertyParagraph("年龄", character.age?.toString() || "未知"),
-            this.createPropertyParagraph("阵营", character.alignment),
-            this.createPropertyParagraph("国籍", character.nationality),
-            this.createPropertyParagraph("职业", character.class),
-            this.createPropertyParagraph("赐福", character.blessing),
-
-            // 描述
-            new Paragraph({
-              heading: HeadingLevel.HEADING_3,
-              children: [
-                new TextRun({
-                  text: "角色描述",
-                  bold: true
-                }),
-              ],
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: character.description || "暂无描述",
-                }),
-              ],
-            }),
-
-            // 属性
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [
-                new TextRun({
-                  text: "属性值",
-                  bold: true
-                }),
-              ],
-            }),
-            this.createAttributeTable(character.attributes),
-
-            // 赐福系统
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [new TextRun({
-                text: `赐福系统`,
-                bold: true
-              })]
-            }),
-
-            this.createPropertyParagraph("灵魂完整度", character.soul?.toString() || 0),
-            this.createPropertyParagraph("精神状态", this.getSoulStatus(character.soul)),
-            new Paragraph({
-              heading: HeadingLevel.HEADING_3,
-              children: [new TextRun({
-                text: `${character.blessing || '赐福'}系统 (等级 ${character.blessinglevel})`,
-                bold: true
-              })]
-            }),
-            this.createBlessingSystemTable(character.blessingSystem, character.blessingSkills),
-
-            // 权柄特技
-            new Paragraph({
-              heading: HeadingLevel.HEADING_3,
-              children: [new TextRun({ text: "权柄特技", bold: true })]
-            }),
-            this.createBlessingSkillsTable(character.blessingSkills),
-
-            // 技能
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [
-                new TextRun({
-                  text: "技能列表",
-                  bold: true,
-                  size: 24,
-                }),
-              ],
-            }),
-            ...this.createSkillsTable(character.skills),
-
-            // 装备
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [
-                new TextRun({
-                  text: "装备列表",
-                  bold: true,
-                  size: 24,
-                }),
-              ],
-            }),
-            this.createEquipsTable(character.equipment),
-
-            // 物品
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [
-                new TextRun({
-                  text: "背包系统",
-                  bold: true,
-                  size: 24,
-                }),
-              ],
-            }),
-            this.createItemsTable(character.inventory),
-
-            // 日志
-            new Paragraph({
-              heading: HeadingLevel.HEADING_2,
-              children: [
-                new TextRun({
-                  text: "日志系统",
-                  bold: true,
-                  size: 24,
-                }),
-              ],
-            }),
-            ...this.createLogsSection(character.logs),
-          ],
+          children: docChildren, // 使用构建好的子元素数组
         }],
+        // 添加中文字体支持
+        styles: {
+          default: {
+            document: {
+              run: {
+                font: "Microsoft YaHei", // 微软雅黑
+              },
+            },
+          },
+        },
       });
 
       // 2. 生成Word文件
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${character.name}_角色档案.docx`);
+      saveAs(blob, `${character.name} _GOG角色档案.docx`);
 
     } catch (error) {
       console.error("导出Word失败:", error);
@@ -197,9 +305,11 @@ class DataHandler {
         new TextRun({
           text: `${label}: `,
           bold: true,
+          color: "666666"
         }),
         new TextRun({
           text: value || "无",
+          color: "333333"
         }),
       ],
       spacing: {
@@ -225,19 +335,19 @@ class DataHandler {
           }),
           new TableCell({
             children: [new Paragraph({ text: attr.base.toString() })],
-            width: { size: 15, type: WidthType.PERCENTAGE }
+            width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
             children: [new Paragraph({ text: attr.statusAdj.toString() })],
-            width: { size: 15, type: WidthType.PERCENTAGE }
+            width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
             children: [new Paragraph({ text: attr.blessingAdj.toString() })],
-            width: { size: 15, type: WidthType.PERCENTAGE }
+            width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
-            children: [new Paragraph({ text: total.toString(), bold: true })],
-            width: { size: 15, type: WidthType.PERCENTAGE }
+            children: [new Paragraph({ children: [new TextRun({ text: total.toString(), bold: true })] })],
+            width: { size: 20, type: WidthType.PERCENTAGE }
           }),
         ],
       });
@@ -248,36 +358,52 @@ class DataHandler {
       new TableRow({
         children: [
           new TableCell({
-            children: [new Paragraph({ text: '健康' })],
-            colSpan: 4
+            children: [new Paragraph({ text: '健康' })], width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
-            children: [new Paragraph({ text: `${attributes.HP.base}` })],
+            children: [new Paragraph({ text: `${attributes.HP.base} ` })],
             width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
+            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
+          }),
+          new TableCell({
             children: [new Paragraph({
-              text: `${attributes.HP.current}/${attributes.HP.base + Math.max(0, Math.min(20, attributes.STR.base + attributes.STR.statusAdj + attributes.STR.blessingAdj)) * 2}`,
-              bold: true
-            })]
+              children: [new TextRun({
+                text: `${attributes.HP.current}/${attributes.HP.base + Math.max(0, Math.min(20, attributes.STR.base + attributes.STR.statusAdj + attributes.STR.blessingAdj)) * 2}`,
+                bold: true
+              })]
+            })],
+            width: { size: 20, type: WidthType.PERCENTAGE }
           }),
         ],
       }),
       new TableRow({
         children: [
           new TableCell({
-            children: [new Paragraph({ text: '魔力' })],
-            colSpan: 4
+            children: [new Paragraph({ text: '魔力' })], width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
             children: [new Paragraph({ text: `${attributes.MP.base}` })],
             width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
+            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
+          }),
+          new TableCell({
             children: [new Paragraph({
-              text: `${attributes.MP.current}/${attributes.MP.base + attributes.MAG.base + attributes.MAG.statusAdj + attributes.MAG.blessingAdj}`,
-              bold: true
-            })]
+              children: [new TextRun({
+                text: `${attributes.MP.current}/${attributes.MP.base + attributes.MAG.base + attributes.MAG.statusAdj + attributes.MAG.blessingAdj}`,
+                bold: true
+              })]
+            })],
+            width: { size: 20, type: WidthType.PERCENTAGE }
           }),
         ],
       })
@@ -287,15 +413,23 @@ class DataHandler {
       rows: [
         new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: '属性', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '基础值', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '状态调整', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '赐福调整', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '总值', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '属性', bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '基础值', bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '状态调整', bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '赐福调整', bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '总值', bold: true })] })], shading: { fill: "f2f2f2" } }),
           ],
         }),
         ...rows,
       ],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+      },
       width: { size: 100, type: WidthType.PERCENTAGE },
       margins: { top: 100, bottom: 100, left: 100, right: 100 }
     });
@@ -314,6 +448,36 @@ class DataHandler {
     return names[key] || key;
   }
 
+  // 辅助方法：创建状态文本
+  createStatusTable(statusList) {
+    if (!statusList || statusList.length === 0) {
+      return new Paragraph({
+        text: "当前无任何状态效果",
+        italics: true
+      });
+    }
+
+    // 将状态列表转换为用【】包裹的文本
+    const statusText = statusList
+      .map(status => `【${status}】`)
+      .join('  '); // 用两个空格分隔状态
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: "当前状态: ",
+          bold: true,
+          color: "666666"
+        }),
+        new TextRun({
+          text: statusText,
+          bold: true,
+          color: "3498db"
+        })
+      ]
+    });
+  }
+
   // 创建赐福系统表格
   createBlessingSystemTable(blessingSystem, blessingSkills) {
     const rows = blessingSystem.map((level, index) => {
@@ -321,12 +485,12 @@ class DataHandler {
 
       return new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ text: level.level.toString() })] }),
-          new TableCell({ children: [new Paragraph({ text: level.attribute })] }),
-          new TableCell({ children: [new Paragraph({ text: level.bonus.toString() })] }),
-          new TableCell({ children: [new Paragraph({ text: skill.name || '' })] }),
-          new TableCell({ children: [new Paragraph({ text: level.soulWear.toString() })] }),
-          new TableCell({ children: [new Paragraph({ text: level.corruption })] }),
+          new TableCell({ children: [new Paragraph({ text: level.level.toString() })], width: { size: 8, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.attribute })], width: { size: 20, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.bonus.toString() })], width: { size: 8, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.skill || '' })], width: { size: 36, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.soulWear.toString() })], width: { size: 8, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.corruption })], width: { size: 20, type: WidthType.PERCENTAGE } }),
         ],
       });
     });
@@ -335,16 +499,24 @@ class DataHandler {
       rows: [
         new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: '赐福等级', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '关联属性', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '属性加点', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '权柄特技', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '灵魂磨损', bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: '异化程度', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '赐福等级', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '关联属性', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '属性加点', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '权柄特技', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '灵魂磨损', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '异化程度', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
           ],
         }),
         ...rows,
       ],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+      },
       width: { size: 100, type: WidthType.PERCENTAGE },
       margins: { top: 100, bottom: 100, left: 100, right: 100 }
     });
@@ -375,10 +547,10 @@ class DataHandler {
     const rows = blessingSkills.map((skill, index) => {
       return new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ text: skill.name || '' })] }),
+          new TableCell({ children: [new Paragraph({ text: skill.name || '' })], width: { size: 15, type: WidthType.PERCENTAGE } }),
           new TableCell({
             children: [new Paragraph({ text: skill.description || '' })],
-            colSpan: 2
+            width: { size: 85, type: WidthType.PERCENTAGE }
           }),
         ],
       });
@@ -388,15 +560,23 @@ class DataHandler {
       rows: [
         new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: '特技名称', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '特技名称', bold: true })] })], shading: { fill: "f2f2f2" } }),
             new TableCell({
-              children: [new Paragraph({ text: '特技描述', bold: true })],
+              children: [new Paragraph({ children: [new TextRun({ text: '特技描述', bold: true })] })],
               colSpan: 2, shading: { fill: "f2f2f2" }
             }),
           ],
         }),
         ...rows,
       ],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+      },
       width: { size: 100, type: WidthType.PERCENTAGE },
       margins: { top: 100, bottom: 100, left: 100, right: 100 }
     });
@@ -412,9 +592,12 @@ class DataHandler {
       // 添加属性分类标题
       tables.push(
         new Paragraph({
-          text: `${this.getAttributeName(attr)}类技能`,
           heading: HeadingLevel.HEADING_3,
-          bold: true,
+          alignment: AlignmentType.CENTER,
+          children: [new TextRun({
+            text: `${this.getAttributeName(attr)}类技能`,
+            color: "666666"
+          })]
         })
       );
 
@@ -422,10 +605,10 @@ class DataHandler {
       const rows = skillList.map(skill => {
         return new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: skill.name })] }),
-            new TableCell({ children: [new Paragraph({ text: skill.proficiency.toString() })] }),
-            new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })] }),
-            new TableCell({ children: [new Paragraph({ text: skill.description })] }),
+            new TableCell({ children: [new Paragraph({ text: skill.name })], width: { size: 25, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.proficiency.toString() })], width: { size: 10, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })], width: { size: 15, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 60, type: WidthType.PERCENTAGE } }),
           ],
         });
       });
@@ -435,14 +618,22 @@ class DataHandler {
           rows: [
             new TableRow({
               children: [
-                new TableCell({ children: [new Paragraph({ text: "技能名", bold: true })], shading: { fill: "f2f2f2" } }),
-                new TableCell({ children: [new Paragraph({ text: "熟练度", bold: true })], shading: { fill: "f2f2f2" } }),
-                new TableCell({ children: [new Paragraph({ text: "使用次数", bold: true })], shading: { fill: "f2f2f2" } }),
-                new TableCell({ children: [new Paragraph({ text: "描述", bold: true })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "技能名", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "熟练度", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "使用次数", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" } }),
               ],
             }),
             ...rows,
           ],
+          borders: {
+            top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+            insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+          },
           width: { size: 100, type: WidthType.PERCENTAGE },
           margins: { top: 100, bottom: 100, left: 100, right: 100 }
         })
@@ -475,14 +666,22 @@ class DataHandler {
       rows: [
         new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: "名称", bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: "类型", bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: "属性影响", bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: "描述", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "名称", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 20, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "类型", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 20, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "属性影响", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 25, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 35, type: WidthType.PERCENTAGE } }),
           ],
         }),
         ...rows,
       ],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+      },
       width: { size: 100, type: WidthType.PERCENTAGE },
       margins: { top: 100, bottom: 100, left: 100, right: 100 }
     });
@@ -499,10 +698,10 @@ class DataHandler {
     const rows = items.map(item => {
       return new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ text: item.name })] }),
-          new TableCell({ children: [new Paragraph({ text: item.weight })] }),
-          new TableCell({ children: [new Paragraph({ text: item.description })] }),
-          new TableCell({ children: [new Paragraph({ text: item.quantity?.toString() || "-" })] }),
+          new TableCell({ children: [new Paragraph({ text: item.name })], width: { size: 25, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: item.weight?.toString() || "0" })], width: { size: 15, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: item.description })], width: { size: 50, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: item.quantity?.toString() || "0" })], width: { size: 10, type: WidthType.PERCENTAGE } }),
         ],
       });
     });
@@ -511,19 +710,21 @@ class DataHandler {
       rows: [
         new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: "物品", bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: "重量", bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: "描述", bold: true })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ text: "数量", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "名称", bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "重量", bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "数量", bold: true })] })], shading: { fill: "f2f2f2" } }),
           ],
         }),
         ...rows,
       ],
       borders: {
-        top: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
-        bottom: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
-        left: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
-        right: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" }
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
       },
       width: { size: 100, type: WidthType.PERCENTAGE },
       margins: { top: 100, bottom: 100, left: 100, right: 100 }
@@ -545,16 +746,19 @@ class DataHandler {
     logs.forEach(log => {
       // 每个日志之间添加一些间距
       logElements.push(
+
         new Table({
           width: {
             size: 100,
             type: WidthType.PERCENTAGE
           },
           borders: {
-            top: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
-            bottom: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
-            left: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
-            right: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" }
+            top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+            insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
           },
           rows: [
             // 标题行（灰色背景）
@@ -574,7 +778,8 @@ class DataHandler {
                   ],
                   shading: {
                     fill: "f2f2f2" // 灰色背景
-                  }
+                  },
+                  margins: { top: 100, bottom: 100, left: 100, right: 100 }
                 })
               ]
             }),
@@ -585,23 +790,17 @@ class DataHandler {
                   children: [
                     new Paragraph({
                       text: log.content || "无内容",
-                      spacing: { before: 100, after: 100 }
+                      spacing: { after: 0 }
                     })
                   ],
-                  margins: {
-                    top: 100,
-                    bottom: 100,
-                    left: 100,
-                    right: 100
-                  }
+                  margins: { top: 100, bottom: 100, left: 100, right: 100 }
                 })
               ]
-            })
-          ],
-          margins: {
-            top: 200,  // 增加上边距，使日志之间有间隔
-            bottom: 200
-          }
+            }),
+          ]
+        }),
+        new Paragraph({
+          spacing: { after: 200 }  // 调整这个值控制间距大小
         })
       );
     });
