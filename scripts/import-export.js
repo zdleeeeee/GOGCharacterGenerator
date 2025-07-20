@@ -1,4 +1,6 @@
 // import-export.js - 数据导入导出
+const { BorderStyle, Document, HeadingLevel, Paragraph, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
+const { saveAs } = window;
 class DataHandler {
   constructor(db) {
     this.db = db;
@@ -22,125 +24,589 @@ class DataHandler {
     setTimeout(() => URL.revokeObjectURL(url), 100);
   }
 
-  // 导出为PDF
-  async exportToPDF(id) {
-    const element = document.getElementById('main-container');
-    const toast = document.getElementById('toast');
-
-    // 显示加载提示
-    toast.textContent = '正在生成PDF...';
-    toast.className = 'toast-visible';
-
-    // 临时隐藏不需要的元素
-    const elementsToHide = document.querySelectorAll('.bottom-nav, #toast, .roster-panel');
-    elementsToHide.forEach(el => el.style.visibility = 'hidden');
+  // 导出为Word
+  async exportToWord(id) {
+    const characters = await this.db.getAllCharacters();
+    const character = characters.find(c => c.id === id);
+    if (!character) throw new Error('角色不存在');
 
     try {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('p', 'mm', 'a4');
+      // 1. 创建Word文档结构
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            // 标题
+            new Paragraph({
+              heading: HeadingLevel.HEADING_1,
+              children: [
+                new TextRun({
+                  text: `GOG角色档案_${character.name}`,
+                  bold: true,
+                  size: 28,
+                }),
+              ],
+            }),
 
-      // 1. 定义要分段渲染的部分
-      const sections = element.querySelectorAll('.section'); // 获取所有区块
+            // 基本信息
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [
+                new TextRun({
+                  text: "基本信息",
+                  bold: true,
+                  size: 24,
+                }),
+              ],
+            }),
+            this.createPropertyParagraph("角色名", character.name),
+            this.createPropertyParagraph("玩家", character.playerName),
+            this.createPropertyParagraph("性别", character.gender),
+            this.createPropertyParagraph("年龄", character.age?.toString() || "未知"),
+            this.createPropertyParagraph("阵营", character.alignment),
+            this.createPropertyParagraph("国籍", character.nationality),
+            this.createPropertyParagraph("职业", character.class),
+            this.createPropertyParagraph("赐福", character.blessing),
 
-      // 2. 设置PDF样式和初始位置
-      let yPosition = 15; // 初始Y位置(mm)
-      const pageWidth = pdf.internal.pageSize.getWidth() - 20; // 页面宽度减去边距
-      const maxPageHeight = pdf.internal.pageSize.getHeight() - 20; // 最大页面高度
+            // 描述
+            new Paragraph({
+              heading: HeadingLevel.HEADING_3,
+              children: [
+                new TextRun({
+                  text: "角色描述",
+                  bold: true
+                }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: character.description || "暂无描述",
+                }),
+              ],
+            }),
 
-      // 4. 分段处理每个区块
-      for (let i = 0; i < sections.length; i++) {
-        let section = (i === 4) ? element.querySelector('.equipment-inventory-container') : sections[i];
+            // 属性
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [
+                new TextRun({
+                  text: "属性值",
+                  bold: true
+                }),
+              ],
+            }),
+            this.createAttributeTable(character.attributes),
 
-        // 临时显示当前区块(确保滚动到正确位置)
-        section.style.visibility = 'visible';
-        section.scrollIntoView({ behavior: 'instant', block: 'start' });
+            // 赐福系统
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [new TextRun({
+                text: `赐福系统`,
+                bold: true
+              })]
+            }),
 
-        // 等待浏览器重绘
-        await new Promise(resolve => setTimeout(resolve, 100));
+            this.createPropertyParagraph("灵魂完整度", character.soul?.toString() || 0),
+            this.createPropertyParagraph("精神状态", this.getSoulStatus(character.soul)),
+            new Paragraph({
+              heading: HeadingLevel.HEADING_3,
+              children: [new TextRun({
+                text: `${character.blessing || '赐福'}系统 (等级 ${character.blessinglevel})`,
+                bold: true
+              })]
+            }),
+            this.createBlessingSystemTable(character.blessingSystem, character.blessingSkills),
 
-        // 渲染当前区块为canvas
-        const canvas = await html2canvas(section, {
-          scale: 1,
-          logging: true,
-          useCORS: true,
-          backgroundColor: '#FFFFFF',
-          windowHeight: element.scrollHeight + 50, // 额外增加高度
-          ignoreElements: function (el) {
-            return false;
-          },
-          onclone: function (clonedDoc) {
-            // 克隆文档时调整输入框样式
-            clonedDoc.querySelectorAll('input, textarea').forEach(input => {
-              input.style.padding = '8px';
-              input.style.lineHeight = '1.5';
-              input.style.height = 'auto';
-              input.style.boxSizing = 'border-box';
-            });
+            // 权柄特技
+            new Paragraph({
+              heading: HeadingLevel.HEADING_3,
+              children: [new TextRun({ text: "权柄特技", bold: true })]
+            }),
+            this.createBlessingSkillsTable(character.blessingSkills),
 
-            clonedDoc.querySelectorAll('select').forEach(select => {
-              // 强制展开select样式
-              select.style.height = 'auto';
-              select.style.padding = '10px';
-              select.style.lineHeight = '1.5';
-              select.style.appearance = 'none';
-              select.style.WebkitAppearance = 'none';
-              select.style.MozAppearance = 'none';
-              select.style.borderRadius = '4px';
-              select.style.boxShadow = 'none';
+            // 技能
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [
+                new TextRun({
+                  text: "技能列表",
+                  bold: true,
+                  size: 24,
+                }),
+              ],
+            }),
+            ...this.createSkillsTable(character.skills),
 
-              // 为每个option添加样式
-              Array.from(select.options).forEach(option => {
-                option.style.padding = '8px';
-                option.style.backgroundColor = '#fff';
-              });
-            });
-          }
-        });
+            // 装备
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [
+                new TextRun({
+                  text: "装备列表",
+                  bold: true,
+                  size: 24,
+                }),
+              ],
+            }),
+            this.createEquipsTable(character.equipment),
 
-        // 计算图片尺寸(保持比例)
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgWidth = pageWidth;
-        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+            // 物品
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [
+                new TextRun({
+                  text: "背包系统",
+                  bold: true,
+                  size: 24,
+                }),
+              ],
+            }),
+            this.createItemsTable(character.inventory),
 
-        // 检查当前页剩余空间是否足够
-        if (yPosition + imgHeight > maxPageHeight) {
-          pdf.addPage(); // 添加新页
-          yPosition = 15; // 重置Y位置
-        }
+            // 日志
+            new Paragraph({
+              heading: HeadingLevel.HEADING_2,
+              children: [
+                new TextRun({
+                  text: "日志系统",
+                  bold: true,
+                  size: 24,
+                }),
+              ],
+            }),
+            ...this.createLogsSection(character.logs),
+          ],
+        }],
+      });
 
-        // 添加图片到PDF
-        pdf.addImage(
-          imgData,
-          'JPEG',
-          10, // x位置(左margin)
-          yPosition,
-          imgWidth,
-          imgHeight
-        );
+      // 2. 生成Word文件
+      const blob = await Packer.toBlob(doc);
+      saveAs(blob, `${character.name}_角色档案.docx`);
 
-        yPosition += imgHeight + 10; // 更新Y位置并添加间距
-
-        // 恢复区块样式
-        section.style.visibility = '';
-
-        if (i === 4) {
-          i++;
-        }
-      }
-
-      // 5. 保存PDF
-      const charName = document.getElementById('character-name').value || '未命名角色';
-      pdf.save(`GOG角色档案_${charName}.pdf`);
-
-    } catch (err) {
-      console.error('分段导出PDF失败:', err);
-      toast.textContent = 'PDF导出失败！';
-    } finally {
-      // 恢复隐藏的元素
-      elementsToHide.forEach(el => el.style.visibility = 'visible');
-      setTimeout(() => { toast.className = 'toast-hidden'; }, 2000);
+    } catch (error) {
+      console.error("导出Word失败:", error);
+      throw new Error("导出Word文件时出错");
     }
+  }
+
+  // 辅助方法：创建属性段落
+  createPropertyParagraph(label, value) {
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: `${label}: `,
+          bold: true,
+        }),
+        new TextRun({
+          text: value || "无",
+        }),
+      ],
+      spacing: {
+        after: 100,
+      },
+    });
+  }
+
+  // 辅助方法：创建属性表格
+  createAttributeTable(attributes) {
+    // 前六个主要属性
+    const mainAttributes = ['STR', 'DEX', 'INT', 'CHA', 'WIS', 'MAG'];
+
+    const rows = mainAttributes.map(key => {
+      const attr = attributes[key];
+      const total = Math.max(0, Math.min(20, attr.base + attr.statusAdj + attr.blessingAdj));
+
+      return new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph({ text: this.getAttributeName(key) })],
+            width: { size: 20, type: WidthType.PERCENTAGE }
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: attr.base.toString() })],
+            width: { size: 15, type: WidthType.PERCENTAGE }
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: attr.statusAdj.toString() })],
+            width: { size: 15, type: WidthType.PERCENTAGE }
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: attr.blessingAdj.toString() })],
+            width: { size: 15, type: WidthType.PERCENTAGE }
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: total.toString(), bold: true })],
+            width: { size: 15, type: WidthType.PERCENTAGE }
+          }),
+        ],
+      });
+    });
+
+    // 添加HP和MP
+    rows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph({ text: '健康' })],
+            colSpan: 4
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: `${attributes.HP.base}` })],
+            width: { size: 20, type: WidthType.PERCENTAGE }
+          }),
+          new TableCell({
+            children: [new Paragraph({
+              text: `${attributes.HP.current}/${attributes.HP.base + Math.max(0, Math.min(20, attributes.STR.base + attributes.STR.statusAdj + attributes.STR.blessingAdj)) * 2}`,
+              bold: true
+            })]
+          }),
+        ],
+      }),
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph({ text: '魔力' })],
+            colSpan: 4
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: `${attributes.MP.base}` })],
+            width: { size: 20, type: WidthType.PERCENTAGE }
+          }),
+          new TableCell({
+            children: [new Paragraph({
+              text: `${attributes.MP.current}/${attributes.MP.base + attributes.MAG.base + attributes.MAG.statusAdj + attributes.MAG.blessingAdj}`,
+              bold: true
+            })]
+          }),
+        ],
+      })
+    );
+
+    return new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ text: '属性', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '基础值', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '状态调整', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '赐福调整', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '总值', bold: true })], shading: { fill: "f2f2f2" } }),
+          ],
+        }),
+        ...rows,
+      ],
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+    });
+  }
+
+  // 辅助方法：获取属性中文名
+  getAttributeName(key) {
+    const names = {
+      STR: '力量',
+      DEX: '敏捷',
+      INT: '智慧',
+      CHA: '魅力',
+      WIS: '感知',
+      MAG: '法力'
+    };
+    return names[key] || key;
+  }
+
+  // 创建赐福系统表格
+  createBlessingSystemTable(blessingSystem, blessingSkills) {
+    const rows = blessingSystem.map((level, index) => {
+      const skill = blessingSkills[index] || {};
+
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph({ text: level.level.toString() })] }),
+          new TableCell({ children: [new Paragraph({ text: level.attribute })] }),
+          new TableCell({ children: [new Paragraph({ text: level.bonus.toString() })] }),
+          new TableCell({ children: [new Paragraph({ text: skill.name || '' })] }),
+          new TableCell({ children: [new Paragraph({ text: level.soulWear.toString() })] }),
+          new TableCell({ children: [new Paragraph({ text: level.corruption })] }),
+        ],
+      });
+    });
+
+    return new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ text: '赐福等级', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '关联属性', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '属性加点', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '权柄特技', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '灵魂磨损', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: '异化程度', bold: true })], shading: { fill: "f2f2f2" } }),
+          ],
+        }),
+        ...rows,
+      ],
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+    });
+  }
+
+  // 获取精神状态
+  getSoulStatus(soul) {
+    const soulValue = soul || 0;
+
+    // 根据灵魂完整度范围设置不同状态
+    if (soulValue >= 80) {
+      return "清醒";
+    } else if (soulValue >= 60) {
+      return "尚可";
+    } else if (soulValue >= 40) {
+      return "略显疯癫";
+    } else if (soulValue >= 20) {
+      return "疯子";
+    } else if (soulValue >= 1) {
+      return "理智的反义词";
+    } else if (soulValue === 0) {
+      return "永恒沉眠";
+    }
+  }
+
+  // 创建权柄特技表格
+  createBlessingSkillsTable(blessingSkills) {
+    const rows = blessingSkills.map((skill, index) => {
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph({ text: skill.name || '' })] }),
+          new TableCell({
+            children: [new Paragraph({ text: skill.description || '' })],
+            colSpan: 2
+          }),
+        ],
+      });
+    });
+
+    return new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ text: '特技名称', bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({
+              children: [new Paragraph({ text: '特技描述', bold: true })],
+              colSpan: 2, shading: { fill: "f2f2f2" }
+            }),
+          ],
+        }),
+        ...rows,
+      ],
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+    });
+  }
+
+  // 辅助方法：创建技能表格
+  createSkillsTable(skills) {
+    const tables = [];
+
+    for (const [attr, skillList] of Object.entries(skills)) {
+      if (skillList.length === 0) continue;
+
+      // 添加属性分类标题
+      tables.push(
+        new Paragraph({
+          text: `${this.getAttributeName(attr)}类技能`,
+          heading: HeadingLevel.HEADING_3,
+          bold: true,
+        })
+      );
+
+      // 创建当前属性的技能表格
+      const rows = skillList.map(skill => {
+        return new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ text: skill.name })] }),
+            new TableCell({ children: [new Paragraph({ text: skill.proficiency.toString() })] }),
+            new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })] }),
+            new TableCell({ children: [new Paragraph({ text: skill.description })] }),
+          ],
+        });
+      });
+
+      tables.push(
+        new Table({
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({ children: [new Paragraph({ text: "技能名", bold: true })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ text: "熟练度", bold: true })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ text: "使用次数", bold: true })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ text: "描述", bold: true })], shading: { fill: "f2f2f2" } }),
+              ],
+            }),
+            ...rows,
+          ],
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          margins: { top: 100, bottom: 100, left: 100, right: 100 }
+        })
+      );
+    }
+
+    return tables;
+  }
+
+  // 辅助方法：创建装备表格
+  createEquipsTable(items) {
+    if (!items || items.length === 0) {
+      return new Paragraph({
+        text: "无装备",
+        italics: true
+      });
+    }
+    const rows = items.map(item => {
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph({ text: item.name })] }),
+          new TableCell({ children: [new Paragraph({ text: item.type })] }),
+          new TableCell({ children: [new Paragraph({ text: item.modifier })] }),
+          new TableCell({ children: [new Paragraph({ text: item.description || "" })] }),
+        ],
+      });
+    });
+
+    return new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ text: "名称", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: "类型", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: "属性影响", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: "描述", bold: true })], shading: { fill: "f2f2f2" } }),
+          ],
+        }),
+        ...rows,
+      ],
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+    });
+  }
+
+  // 辅助方法：创建物品表格
+  createItemsTable(items) {
+    if (!items || items.length === 0) {
+      return new Paragraph({
+        text: "无物品",
+        italics: true
+      });
+    }
+    const rows = items.map(item => {
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph({ text: item.name })] }),
+          new TableCell({ children: [new Paragraph({ text: item.weight })] }),
+          new TableCell({ children: [new Paragraph({ text: item.description })] }),
+          new TableCell({ children: [new Paragraph({ text: item.quantity?.toString() || "-" })] }),
+        ],
+      });
+    });
+
+    return new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph({ text: "物品", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: "重量", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: "描述", bold: true })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: "数量", bold: true })], shading: { fill: "f2f2f2" } }),
+          ],
+        }),
+        ...rows,
+      ],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" }
+      },
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+    });
+  }
+
+  // 辅助方法：创建日志部分
+  createLogsSection(logs) {
+    if (!logs || logs.length === 0) {
+      return new Paragraph({
+        text: "无日志",
+        italics: true
+      });
+    }
+
+    // 创建一个包含所有日志表格的段落数组
+    const logElements = [];
+
+    logs.forEach(log => {
+      // 每个日志之间添加一些间距
+      logElements.push(
+        new Table({
+          width: {
+            size: 100,
+            type: WidthType.PERCENTAGE
+          },
+          borders: {
+            top: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
+            bottom: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
+            left: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" },
+            right: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA" }
+          },
+          rows: [
+            // 标题行（灰色背景）
+            new TableRow({
+              children: [
+                new TableCell({
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: log.title || "未命名日志",
+                          bold: true
+                        })
+                      ],
+                      spacing: { after: 0 }
+                    })
+                  ],
+                  shading: {
+                    fill: "f2f2f2" // 灰色背景
+                  }
+                })
+              ]
+            }),
+            // 内容行
+            new TableRow({
+              children: [
+                new TableCell({
+                  children: [
+                    new Paragraph({
+                      text: log.content || "无内容",
+                      spacing: { before: 100, after: 100 }
+                    })
+                  ],
+                  margins: {
+                    top: 100,
+                    bottom: 100,
+                    left: 100,
+                    right: 100
+                  }
+                })
+              ]
+            })
+          ],
+          margins: {
+            top: 200,  // 增加上边距，使日志之间有间隔
+            bottom: 200
+          }
+        })
+      );
+    });
+
+    return logElements;
   }
 
   // 批量导出所有角色
