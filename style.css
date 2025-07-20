@@ -632,7 +632,8 @@ textarea {
     transform: translateX(-50%);
     background: #ffffff;
     border-radius: 12px;
-    min-width: 180px;
+    width: 200px;
+    height: 400px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
     z-index: 1102;
     margin-bottom: 10px;
@@ -641,6 +642,22 @@ textarea {
 .data-button-container {
     padding: 20px;
     margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.data-button-container::-webkit-scrollbar {
+    background-color: transparent;
+    width: 8px;
+}
+
+.data-button-container::-webkit-scrollbar-thumb {
+    background-color: #999999;
+    border-radius: 4px;
+}
+
+.data-button-container::-webkit-scrollbar-button {
+    display: none;
 }
 
 .data-button-container small {
