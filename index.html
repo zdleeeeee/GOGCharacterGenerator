@@ -9,8 +9,8 @@
     <style>
         @import url(style.css);
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 
 <body>
@@ -117,7 +117,8 @@
                         <div class="character-portrait-container">
                             <!-- 肖像显示区域 -->
                             <div class="portrait-preview">
-                                <img id="character-portrait" src="" alt="角色肖像" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                <img id="character-portrait" src="" alt="角色肖像"
+                                    style="width: 100%; height: 100%; object-fit: cover; display: none;">
                                 <div id="portrait-placeholder">暂无肖像<br />(w:h=4:5)</div>
                             </div>
                             <!-- 上传控件 -->
