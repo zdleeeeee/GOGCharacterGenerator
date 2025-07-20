@@ -65,7 +65,7 @@ class GOGCharacterApp {
       <div class="roster-item" data-id="${char.id}">
         <div class="roster-avatar" style="background-image: url('${char.portrait || 'default-avatar.jpg'}')"></div>
         <div class="roster-info">
-          <h5>${char.name}<span style="font-size: 14px; color: #666666; font-weight: normal;">(pl. ${char.player})</span></h5>
+          <h5>${char.name}<span style="font-size: 12px; color: #666666; font-weight: normal;">(pl. ${char.player})</span></h5>
           <div style="display: grid;grid-template-columns: repeat(3,1fr); margin-top:10px;">
             <span>${char.class}</span>
             <span>${char.blessing}Lv.${char.blessinglevel}</span>
@@ -1597,9 +1597,9 @@ class GOGCharacterApp {
             }
         });
 
-        document.getElementById('export-pdf').addEventListener('click', async () => {
+        document.getElementById('export-word').addEventListener('click', async () => {
             if (this.currentCharacter) {
-                await this.dataHandler.exportToPDF(this.currentCharacter.id);
+                await this.dataHandler.exportToWord(this.currentCharacter.id);
             }
         });
 
