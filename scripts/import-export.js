@@ -1,5 +1,5 @@
 // import-export.js - 数据导入导出
-const { AlignmentType, BorderStyle, Document, HeadingLevel, ImageRun, Paragraph, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
+const { AlignmentType, BorderStyle, Document, HeadingLevel, ImageRun, Paragraph, ShadingType, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
 const { saveAs } = window;
 class DataHandler {
   constructor(db) {
@@ -152,8 +152,7 @@ class DataHandler {
           })]
         }),
 
-        this.createPropertyParagraph("灵魂完整度", character.soul?.toString() || 0),
-        this.createPropertyParagraph("精神状态", this.getSoulStatus(character.soul)),
+        this.createSoulParagraph(character.soul),
         new Paragraph({
           heading: HeadingLevel.HEADING_3,
           alignment: AlignmentType.CENTER,
@@ -195,6 +194,23 @@ class DataHandler {
               bold: true,
               size: 26,
               color: "333333"
+            }),
+          ],
+        }),
+        new Paragraph({
+          spacing: { after: 200 },
+          children: [
+            new TextRun({
+              text: `技能熟练度剩余：`,
+              bold: true,
+              size: 20,
+              color: "666666"
+            }),
+            new TextRun({
+              text: `${document.getElementById('skill-prof-left').textContent.toString()}`,
+              bold: true,
+              size: 20,
+              color: parseInt(document.getElementById('skill-prof-left').textContent) < 0 ? 'e74c3c': '28a745'
             }),
           ],
         }),
@@ -325,7 +341,7 @@ class DataHandler {
 
     const rows = mainAttributes.map(key => {
       const attr = attributes[key];
-      const total = Math.max(0, Math.min(20, attr.base + attr.statusAdj + attr.blessingAdj));
+      const total = document.getElementById(`attr-${key}-total`).textContent;
 
       return new TableRow({
         children: [
@@ -373,7 +389,7 @@ class DataHandler {
           new TableCell({
             children: [new Paragraph({
               children: [new TextRun({
-                text: `${attributes.HP.current}/${attributes.HP.base + Math.max(0, Math.min(20, attributes.STR.base + attributes.STR.statusAdj + attributes.STR.blessingAdj)) * 2}`,
+                text: `${attributes.HP.current}/${document.getElementById('attr-HP-max').textContent.toString()}`,
                 bold: true
               })]
             })],
@@ -399,7 +415,7 @@ class DataHandler {
           new TableCell({
             children: [new Paragraph({
               children: [new TextRun({
-                text: `${attributes.MP.current}/${attributes.MP.base + attributes.MAG.base + attributes.MAG.statusAdj + attributes.MAG.blessingAdj}`,
+                text: `${attributes.MP.current}/${document.getElementById('attr-MP-max').textContent.toString()}`,
                 bold: true
               })]
             })],
@@ -460,22 +476,51 @@ class DataHandler {
     // 将状态列表转换为用【】包裹的文本
     const statusText = statusList
       .map(status => `【${status}】`)
-      .join('  '); // 用两个空格分隔状态
+      .join('  \t'); // 分隔状态
 
-    return new Paragraph({
-      children: [
-        new TextRun({
-          text: "当前状态: ",
-          bold: true,
-          color: "666666"
+    return new Table({
+      width: {
+        size: 100,
+        type: WidthType.PERCENTAGE
+      },
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+      },
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: "当前状态: ",
+                      bold: true,
+                      color: "666666"
+                    }),
+                    new TextRun({
+                      text: statusText,
+                      bold: true,
+                      color: "3498db"
+                    })
+                  ],
+                  spacing: { after: 0 }
+                })
+              ],
+              shading: {
+                fill: "f2f2f2" // 灰色背景
+              },
+              margins: { top: 100, bottom: 100, left: 100, right: 100 }
+            })
+          ]
         }),
-        new TextRun({
-          text: statusText,
-          bold: true,
-          color: "3498db"
-        })
       ]
-    });
+    })
   }
 
   // 创建赐福系统表格
@@ -523,23 +568,44 @@ class DataHandler {
   }
 
   // 获取精神状态
-  getSoulStatus(soul) {
-    const soulValue = soul || 0;
-
-    // 根据灵魂完整度范围设置不同状态
-    if (soulValue >= 80) {
-      return "清醒";
-    } else if (soulValue >= 60) {
-      return "尚可";
-    } else if (soulValue >= 40) {
-      return "略显疯癫";
-    } else if (soulValue >= 20) {
-      return "疯子";
-    } else if (soulValue >= 1) {
-      return "理智的反义词";
-    } else if (soulValue === 0) {
-      return "永恒沉眠";
+  createSoulParagraph(soul) {
+    let tcolor = '666666';
+    if (soul >= 80) {
+      tcolor = '4ba361'; // 绿色
+    } else if (soul >= 60) {
+      tcolor = 'a3c14b'; // 黄绿色
+    } else if (soul >= 40) {
+      tcolor = 'c1a34b'; // 黄色
+    } else if (soul >= 20) {
+      tcolor = 'c18d4b'; // 橙色
+    } else if (soul >= 1) {
+      tcolor = 'c14b4b'; // 红色
+    } else if (soul === 0) {
+      tcolor = '666666'; // 灰色
     }
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: "灵魂完整度：",
+          bold: true,
+          color: "666666"
+        }),
+        new TextRun({
+          text: `${soul?.toString() || 0}\t`,
+          bold: true,
+          color: "333333"
+        }),
+        new TextRun({
+          text: `  【${document.getElementById('soul-status').textContent}】` || "  【永恒沉眠】",
+          bold: true,
+          color: tcolor,
+        }),
+      ],
+      spacing: {
+        after: 100,
+      },
+    });
   }
 
   // 创建权柄特技表格
@@ -770,9 +836,10 @@ class DataHandler {
                       children: [
                         new TextRun({
                           text: log.title || "未命名日志",
-                          bold: true
+                          bold: true,
                         })
                       ],
+                      alignment: AlignmentType.CENTER,
                       spacing: { after: 0 }
                     })
                   ],
@@ -800,7 +867,7 @@ class DataHandler {
           ]
         }),
         new Paragraph({
-          spacing: { after: 200 }  // 调整这个值控制间距大小
+          spacing: { after: 100 }  // 调整这个值控制间距大小
         })
       );
     });
