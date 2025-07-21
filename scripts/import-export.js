@@ -210,7 +210,7 @@ class DataHandler {
               text: `${document.getElementById('skill-prof-left').textContent.toString()}`,
               bold: true,
               size: 20,
-              color: parseInt(document.getElementById('skill-prof-left').textContent) < 0 ? 'e74c3c': '28a745'
+              color: parseInt(document.getElementById('skill-prof-left').textContent) < 0 ? 'e74c3c' : '28a745'
             }),
           ],
         }),
@@ -469,7 +469,8 @@ class DataHandler {
     if (!statusList || statusList.length === 0) {
       return new Paragraph({
         text: "当前无任何状态效果",
-        italics: true
+        italics: true,
+        color: '666666'
       });
     }
 
@@ -651,6 +652,15 @@ class DataHandler {
   // 辅助方法：创建技能表格
   createSkillsTable(skills) {
     const tables = [];
+    if (!skills || skills.length === 0) {
+      tables.push(new Paragraph({
+        text: "无技能",
+        italics: true,
+        color: '666666'
+      })
+      );
+      return tables;
+    }
 
     for (const [attr, skillList] of Object.entries(skills)) {
       if (skillList.length === 0) continue;
@@ -714,7 +724,8 @@ class DataHandler {
     if (!items || items.length === 0) {
       return new Paragraph({
         text: "无装备",
-        italics: true
+        italics: true,
+        color: '666666'
       });
     }
     const rows = items.map(item => {
@@ -758,7 +769,8 @@ class DataHandler {
     if (!items || items.length === 0) {
       return new Paragraph({
         text: "无物品",
-        italics: true
+        italics: true,
+        color: '666666'
       });
     }
     const rows = items.map(item => {
@@ -799,15 +811,18 @@ class DataHandler {
 
   // 辅助方法：创建日志部分
   createLogsSection(logs) {
-    if (!logs || logs.length === 0) {
-      return new Paragraph({
-        text: "无日志",
-        italics: true
-      });
-    }
-
     // 创建一个包含所有日志表格的段落数组
     const logElements = [];
+
+    if (!logs || logs.length === 0) {
+      logElements.push(new Paragraph({
+        text: "无日志",
+        italics: true,
+        color: '666666'
+      })
+      );
+      return logElements;
+    }
 
     logs.forEach(log => {
       // 每个日志之间添加一些间距
