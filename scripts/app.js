@@ -950,7 +950,7 @@ class GOGCharacterApp {
 
     // 绑定日志事件方法
     bindLogEvents() {
-        if (! this.currentCharacter.logs) {
+        if (!this.currentCharacter.logs) {
             this.currentCharacter.logs = [];
         }
         document.getElementById('log-sections').addEventListener('input', (e) => {
@@ -1002,34 +1002,56 @@ class GOGCharacterApp {
         }
     }
 
-    // 图片压缩方法
-    compressImage(file, maxWidth = 800, quality = 0.7) {
+    // 图片裁剪及压缩方法
+    async cropImageToRatio(file, targetRatio) {
         return new Promise((resolve, reject) => {
+            const img = new Image();
             const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
+
+            reader.onload = (e) => {
+                img.src = e.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
+                    const ctx = canvas.getContext('2d');
 
-                    if (width > maxWidth) {
-                        height = (maxWidth / width) * height;
-                        width = maxWidth;
+                    // 计算裁剪区域
+                    const sourceRatio = img.width / img.height;
+
+                    let sourceWidth, sourceHeight, sourceX = 0, sourceY = 0;
+
+                    if (sourceRatio > targetRatio) {
+                        // 原图更宽，裁剪左右
+                        sourceHeight = img.height;
+                        sourceWidth = sourceHeight * targetRatio;
+                        sourceX = (img.width - sourceWidth) / 2;
+                    } else {
+                        // 原图更高，裁剪上下
+                        sourceWidth = img.width;
+                        sourceHeight = sourceWidth / targetRatio;
+                        sourceY = (img.height - sourceHeight) / 2;
                     }
 
-                    canvas.width = width;
-                    canvas.height = height;
+                    // 设置画布大小为200:250比例
+                    canvas.width = 400;  // 或您需要的具体像素值
+                    canvas.height = 500;
 
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
+                    // 绘制裁剪后的图像
+                    ctx.drawImage(
+                        img,
+                        sourceX, sourceY,       // 源图像裁剪起点
+                        sourceWidth, sourceHeight, // 源图像裁剪尺寸
+                        0, 0,                  // 画布起点
+                        canvas.width, canvas.height // 画布尺寸
+                    );
 
-                    resolve(canvas.toDataURL('image/jpeg', quality));
+                    // 转换为Base64
+                    resolve(canvas.toDataURL('image/jpeg', 0.9));
                 };
-                img.onerror = reject;
-                img.src = event.target.result;
+
+                img.onerror = () => reject(new Error('图片加载失败'));
             };
-            reader.onerror = reject;
+
+            reader.onerror = () => reject(new Error('文件读取失败'));
             reader.readAsDataURL(file);
         });
     }
@@ -1669,8 +1691,8 @@ class GOGCharacterApp {
 
             try {
                 // 压缩图片
-                const compressedImage = await this.compressImage(file);
-                this.currentCharacter.portrait = compressedImage;
+                const croppedImage = await this.cropImageToRatio(file, 200 / 250);
+                this.currentCharacter.portrait = croppedImage;
                 this.renderPortrait();
             } catch (error) {
                 console.error('图片处理失败:', error);
