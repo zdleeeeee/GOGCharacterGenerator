@@ -926,8 +926,8 @@ class GOGCharacterApp {
                 });
 
                 // 安全更新数据
-                if (!this.currentCharacter.skills[categoryKey]) {
-                    this.currentCharacter.skills[categoryKey] = [];
+                if (!this.currentCharacter.skills[category]) {
+                    this.currentCharacter.skills[category] = [];
                 }
             }
             else {
@@ -950,6 +950,9 @@ class GOGCharacterApp {
 
     // 绑定日志事件方法
     bindLogEvents() {
+        if (! this.currentCharacter.logs) {
+            this.currentCharacter.logs = [];
+        }
         document.getElementById('log-sections').addEventListener('input', (e) => {
             if (e.target.classList.contains('log-title')) {
                 const logSection = e.target.closest('.log-section');
