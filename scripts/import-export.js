@@ -882,7 +882,7 @@ class DataHandler {
           ]
         }),
         new Paragraph({
-          spacing: { after: 100 }  // 调整这个值控制间距大小
+          spacing: { after: 0 }  // 调整这个值控制间距大小
         })
       );
     });
