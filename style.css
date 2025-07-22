@@ -265,7 +265,6 @@ textarea {
     background-color: #66666630;
 }
 
-.equipment-inventory-container,
 .basic-attribution-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -274,7 +273,6 @@ textarea {
     /* 确保这个容器也跨两列 */
 }
 
-.equipment-inventory-container>.section,
 .blessing-grid>.form-group {
     min-width: 0;
     /* 关键修复：覆盖默认的 min-width: auto */
@@ -385,9 +383,6 @@ textarea {
         grid-template-columns: 1fr;
     }
 
-    .equipment-inventory-container {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 1100px) {
