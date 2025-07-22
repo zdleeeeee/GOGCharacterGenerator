@@ -66,7 +66,7 @@ class GOGCharacterApp {
         <div class="roster-avatar" style="background-image: url('${char.portrait || 'default-avatar.jpg'}')"></div>
         <div class="roster-info">
           <h5>${char.name}<span style="font-size: 12px; color: #666666; font-weight: normal;">(pl. ${char.player})</span></h5>
-          <div style="display: grid;grid-template-columns: repeat(3,1fr); margin-top:10px;">
+          <div style="display: grid;grid-template-columns: 1fr 1fr 1fr; margin-top:10px;">
             <span>${char.class}</span>
             <span>${char.blessing}Lv.${char.blessinglevel}</span>
             <span>soul: ${char.soul}%</span>
@@ -687,8 +687,20 @@ class GOGCharacterApp {
 
         this.currentCharacter = character;
 
-        this.bindInputToCharacter('character-name', 'name');
-        this.bindInputToCharacter('player-name', 'player');
+        const nameElement = document.getElementById('character-name');
+        if (nameElement) {
+            nameElement.innerText = this.currentCharacter.name || '';
+            nameElement.addEventListener('input', () => {
+                this.currentCharacter.name = nameElement.innerText;
+            });
+        }
+        const plElement = document.getElementById('player-name');
+        if (plElement) {
+            plElement.innerText = this.currentCharacter.player || '';
+            plElement.addEventListener('input', () => {
+                this.currentCharacter.player = plElement.innerText;
+            });
+        }
         this.bindInputToCharacter('character-gender', 'gender');
         this.bindInputToCharacter('character-age', 'age');
         this.bindInputToCharacter('character-alignment', 'alignment');
@@ -1563,8 +1575,8 @@ class GOGCharacterApp {
                 // 收集基本信息
                 const characterData = {
                     ...this.currentCharacter,
-                    name: document.getElementById('character-name').value,
-                    player: document.getElementById('player-name').value,
+                    name: document.getElementById('character-name').innerText.trim(),
+                    player: document.getElementById('player-name').innerText.trim(),
                     gender: document.getElementById('character-gender').value,
                     age: parseInt(document.getElementById('character-age').value),
                     alignment: document.getElementById('character-alignment').value,
