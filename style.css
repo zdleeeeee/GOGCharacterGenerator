@@ -97,14 +97,21 @@ select,
 textarea {
     width: 100%;
     background: transparent;
-    padding: 8px;
+    padding: 8px 0px 8px 8px;
     border: 1px solid transparent;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 input[type="text"]:focus {
-    border: 1px solid transparent;
+    outline: none;
+}
+
+input::placeholder {
+    color: #dddddd;  /* 设置你需要的颜色，例如浅灰色 */
+    opacity: 1;   /* 确保颜色不透明（某些浏览器默认有透明度） */
 }
 
 textarea {
@@ -180,7 +187,7 @@ textarea {
     background-color: white;
     color: #dddddd;
     border: 1px solid #eeeeee;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     text-align: center;
@@ -237,7 +244,6 @@ textarea {
 
 .tag-input input {
     flex-grow: 1;
-    margin-right: 10px;
 }
 
 .tag-delete {
