@@ -66,10 +66,14 @@ class GOGCharacterApp {
         <div class="roster-avatar" style="background-image: url('${char.portrait || 'default-avatar.jpg'}')"></div>
         <div class="roster-info">
           <h5>${char.name}<span style="font-size: 12px; color: #666666; font-weight: normal;">(pl. ${char.player})</span></h5>
-          <div style="display: grid;grid-template-columns: 1fr 1fr 1fr; margin-top:10px;">
+          <div style="display: grid;grid-template-columns: 1fr 1fr; margin-top:5px;">
             <span>${char.class}</span>
             <span>${char.blessing}Lv.${char.blessinglevel}</span>
-            <span>soul: ${char.soul}%</span>
+          </div>
+          <div style="display: grid;grid-template-columns: 1fr 1fr 1fr; margin-top:0px;">
+            <span>HP: <strong>${char.attributes.HP.current}</strong> /${char.attributes.HP.base + 2 * Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.STR.base + char.attributes.STR.statusAdj + char.attributes.STR.blessingAdj))}</span>
+            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base + Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.MAG.base + char.attributes.MAG.statusAdj + char.attributes.MAG.blessingAdj))}</span>
+            <span>soul: <strong>${char.soul}</strong>%</span>
           </div>
         </div>
         <div class="character-actions">
