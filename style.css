@@ -487,15 +487,15 @@ textarea {
     text-align: center;
 }
 
-.base-value {
+input.base-value {
     color: #666666;
 }
 
-.status-adj {
+input.status-adj {
     color: #d35400;
 }
 
-.blessing-adj {
+input.blessing-adj {
     color: #3498db;
 }
 
