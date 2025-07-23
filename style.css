@@ -507,7 +507,7 @@ input.blessing-adj {
     font-size: 16px;
 }
 
-.current-value {
+input.current-value {
     text-align: center;
     font-weight: bold;
     font-size: 16px;
