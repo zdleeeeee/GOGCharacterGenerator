@@ -633,6 +633,7 @@ class GOGCharacterApp {
             name: inventory.name,
             weight: inventory.weight,
             description: inventory.description,
+            quantity: 1,
         });
 
         this.renderInventory(this.currentCharacter.inventory);
