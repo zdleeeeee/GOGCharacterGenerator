@@ -23,27 +23,27 @@ window.staticData = {
 
     skills: {
         "力量": [
-            { name: "攀爬精通", class: "通用", description: "敏捷/力量" },
-            { name: "拳击精通", class: "武者类通用", description: "力量" },
+            { name: "攀爬精通", class: "通用", description: "敏捷/力量；" },
+            { name: "拳击精通", class: "武者类通用", description: "力量；" },
         ],
         "敏捷": [
-            { name: "攀爬精通", class: "通用", description: "敏捷/力量" }
+            { name: "攀爬精通", class: "通用", description: "敏捷/力量；" }
         ],
         "智慧": [
-            { name: "魅惑", class: "通用", description: "魅力/智慧" },
-            { name: "气象学精通", class: "通用", description: "智慧" }
+            { name: "魅惑", class: "通用", description: "魅力/智慧；" },
+            { name: "气象学精通", class: "通用", description: "智慧；" }
         ],
         "魅力": [
-            { name: "魅惑", class: "通用", description: "魅力/智慧" },
-            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力" }
+            { name: "魅惑", class: "通用", description: "魅力/智慧；" },
+            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力；" }
         ],
         "感知": [
-            { name: "透视术", class: "法师类通用", description: "感知/法力" }
+            { name: "透视术", class: "法师类通用", description: "感知/法力；" }
         ],
         "法力": [
-            { name: "火球术", class: "法师类通用", description: "法力；效果：火属性伤害" },
-            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力" },
-            { name: "水球弹", class: "玉鳞卫士兵", description: "法力；来源：神山；效果：水属性伤害；隶属组合技：超级大水球" }
+            { name: "火球术", class: "法师类通用", description: "法力；效果：火属性伤害；" },
+            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力；" },
+            { name: "水球弹", class: "玉鳞卫士兵", description: "法力；来源：神山；效果：水属性伤害；隶属组合技：超级大水球；" }
         ]
         // 更多技能...
     },

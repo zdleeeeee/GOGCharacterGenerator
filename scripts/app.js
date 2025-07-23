@@ -557,12 +557,24 @@ class GOGCharacterApp {
         const categories = [];
         const catemess = [];
 
-        Object.entries(window.staticData.skills).forEach(([cat, skills]) => {
-            if (skills.some(s => (s.name === skillData.name && s.class === skillData.class))) {
-                categories.push(this.mapCategoryNameToKey(cat));
-                catemess.push(`${cat}`);
-            }
-        });
+        // 从description中解析属性
+        const desc = skillData.description;
+        // 查找属性部分（从开头到第一个";"之前）
+        const attrEndIndex = desc.indexOf('；');
+        if (attrEndIndex !== -1) {
+            const attrPart = desc.substring(0, attrEndIndex);
+            // 分割属性（由/隔开）
+            const attributes = attrPart.split('/');
+
+            attributes.forEach(attr => {
+                const trimmedAttr = attr.trim();
+                if (trimmedAttr) {
+                    const category = this.mapCategoryNameToKey(trimmedAttr);
+                    categories.push(category);
+                    catemess.push(trimmedAttr);
+                }
+            });
+        }
 
         if (categories.length === 0) {
             categories.push('INT');
@@ -1537,7 +1549,7 @@ class GOGCharacterApp {
                 const skillData = {
                     name: e.target.dataset.name,
                     class: e.target.dataset.class,
-                    description: e.target.dataset.description + "；职业：" + e.target.dataset.class,
+                    description: e.target.dataset.description + "职业：" + e.target.dataset.class,
                 };
                 this.addSkillToCharacter(skillData);
             }
