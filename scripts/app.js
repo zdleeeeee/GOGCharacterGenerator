@@ -1394,7 +1394,7 @@ class GOGCharacterApp {
       <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
       <td><input type="number" min="0" step="0.5" value="${item.weight || 0}"></td>
       <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
-      <td><input type="number" min="1" value="${item.quantity || 1}"></td>
+      <td><input type="number" min="0" value="${item.quantity || 0}"></td>
       <td><button class="btn btn-danger" data-index="${index}">删除</button></td>
     `;
             inventoryContainer.appendChild(row);
