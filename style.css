@@ -103,6 +103,7 @@ textarea {
     box-sizing: border-box;
     font-size: 14px;
     line-height: 1.4;
+    color: #333333;
 }
 
 input[type="text"]:focus {
