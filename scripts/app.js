@@ -1316,7 +1316,7 @@ class GOGCharacterApp {
             const categoryRow = document.createElement('tr');
             categoryRow.className = 'skill-category-row';
             categoryRow.innerHTML = `
-            <td colspan="5" class="skill-category-header" style="margin:0 auto;text-align: center;background: #f2f2f2">
+            <td colspan="5" class="skill-category-header" style="margin:6px auto;text-align: center;background: #f2f2f2">
                 <strong>${this.getCategoryName(category)}类技能</strong>
             </td>
         `;
@@ -1333,7 +1333,7 @@ class GOGCharacterApp {
                 <td><input type="number" min="0" max="5" value="${skill.proficiency || 0}"></td>
                 <td><input type="number" min="0" value="${skill.uses || 0}"></td>
                 <td><div class="auto-height-content" contenteditable="true">${skill.description || ''}</div></td>
-                <td><button class="btn btn-danger" data-category="${category}" data-index="${index}">删除</button></td>
+                <td><button class="btn-danger" data-category="${category}" data-index="${index}">删除</button></td>
             `;
                 skillsContainer.appendChild(row);
             });
@@ -1390,7 +1390,7 @@ class GOGCharacterApp {
       <td><div class="auto-height-content" contenteditable="true">${item.type || ''}</div></td>
       <td><div class="auto-height-content" contenteditable="true">${item.modifier || ''}</div></td>
       <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
-      <td><button class="btn btn-danger" data-index="${index}">删除</button></td>
+      <td><button class="btn-danger" data-index="${index}">删除</button></td>
     `;
             equipmentContainer.appendChild(row);
         });
@@ -1408,7 +1408,7 @@ class GOGCharacterApp {
       <td><input type="number" min="0" step="0.5" value="${item.weight || 0}"></td>
       <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
       <td><input type="number" min="0" value="${item.quantity || 0}"></td>
-      <td><button class="btn btn-danger" data-index="${index}">删除</button></td>
+      <td><button class="btn-danger" data-index="${index}">删除</button></td>
     `;
             inventoryContainer.appendChild(row);
         });
