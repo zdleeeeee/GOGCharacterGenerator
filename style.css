@@ -111,8 +111,10 @@ input[type="text"]:focus {
 }
 
 input::placeholder {
-    color: #dddddd;  /* 设置你需要的颜色，例如浅灰色 */
-    opacity: 1;   /* 确保颜色不透明（某些浏览器默认有透明度） */
+    color: #dddddd;
+    /* 设置你需要的颜色，例如浅灰色 */
+    opacity: 1;
+    /* 确保颜色不透明（某些浏览器默认有透明度） */
 }
 
 textarea {
@@ -722,7 +724,6 @@ input.current-value {
     text-align: center;
     padding: 12px 15px;
     border-bottom: 1px solid #eee;
-    height: min-content;
 }
 
 .panel-header h4,
@@ -823,15 +824,6 @@ input.current-value {
     gap: 1px;
 }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .data-panel {
-        left: auto;
-        right: 0;
-        transform: none;
-    }
-}
-
 /* roster-tabs */
 .roster-tabs {
     display: flex;
@@ -841,14 +833,35 @@ input.current-value {
 }
 
 .tab-btn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     background: none;
     border: none;
     cursor: pointer;
+    text-align: center;
 }
 
 .tab-btn.active {
     border-bottom: 2px solid #3498db;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .data-panel {
+        left: auto;
+        right: 0;
+        transform: none;
+    }
+
+    .tab-btn {
+        padding: 8px 10px 8px 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        letter-spacing: 8px;
+        text-align:center;
+    }
 }
 
 .tab-content {
