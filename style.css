@@ -845,7 +845,7 @@ input.current-value {
 }
 
 /* 响应式调整 */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .data-panel {
         left: auto;
         right: 0;
