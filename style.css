@@ -366,11 +366,6 @@ td input[type="number"] {
 
 @media (max-width: 768px) {
 
-    .table-auto th,
-    .table-auto td {
-        padding: 6px;
-    }
-
     .character-info-grid {
         grid-template-columns: 1fr;
     }
@@ -474,6 +469,10 @@ td input[type="number"] {
     word-break: break-word;
     line-height: 1.1;
     outline: none;
+}
+
+.log-header .auto-height-content {
+    line-height: 1.4;
 }
 
 .blessing-skills-table {
