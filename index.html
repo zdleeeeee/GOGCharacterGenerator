@@ -451,7 +451,7 @@
                     </table>
                 </div>
                 <div class="form-group" style="margin-top: 15px;">
-                    <button id="add-equipment" class="btn">添加装备</button>
+                    <button id="add-equipment" class="btn" title="支持自创装备喵~">添加装备</button>
                 </div>
             </div>
 
@@ -475,8 +475,19 @@
                     </table>
                 </div>
 
-                <div class="form-group" style="margin-top: 15px;">
-                    <button id="add-item" class="btn">添加物品</button>
+                <div class="form-group"
+                    style="margin-top: 15px;max-width: 250px;display: grid;grid-template-columns: 2fr 1fr;">
+                    <select id="item-category-select"
+                        style="color: #666666;border-left: 1px solid #eeeeee;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;border-radius: 8px 0px 0px 8px;">
+                        <option value="equipment">装备</option>
+                        <option value="food">食物</option>
+                        <option value="currency">钱币</option>
+                        <option value="medical">医疗物品</option>
+                        <option value="potions">药剂</option>
+                        <option value="supplies">储备/其他物品</option>
+                    </select>
+                    <button id="add-item" class="btn" style="border-radius: 0px 8px 8px 0px;"
+                        title="支持自创物品喵~">添加物品</button>
                 </div>
             </div>
             <div class="section" style="grid-column: span 2;">

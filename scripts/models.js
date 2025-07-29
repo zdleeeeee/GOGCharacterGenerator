@@ -1,5 +1,34 @@
 // models.js - 角色数据结构
 class Character {
+  static categoryMappings = {
+    // 属性映射
+    '力量': 'STR',
+    '敏捷': 'DEX',
+    '智慧': 'INT',
+    '魅力': 'CHA',
+    '感知': 'WIS',
+    '法力': 'MAG',
+    // 物品类别映射
+    '装备': 'equipment',
+    '食物': 'food',
+    '钱币': 'currency',
+    '医疗物品': 'medical',
+    '药剂': 'potions',
+    '储备/其他物品': 'supplies',
+    // 反向映射
+    'STR': '力量',
+    'DEX': '敏捷',
+    'INT': '智慧',
+    'CHA': '魅力',
+    'WIS': '感知',
+    'MAG': '法力',
+    'equipment': '装备',
+    'food': '食物',
+    'currency': '钱币',
+    'medical': '医疗物品',
+    'potions': '药剂',
+    'supplies': '储备/其他物品'
+  };
   constructor(data = {}) {
     if (data.id !== undefined && data.id !== null) {
       this.id = data.id;
@@ -51,7 +80,14 @@ class Character {
       MAG: []  // 法力类技能
     };
     this.equipment = data.equipment || [];
-    this.inventory = data.inventory || [];
+    this.inventory = data.inventory || {
+      equipment: [],    // 装备
+      food: [],         // 食物
+      currency: [],     // 钱币
+      medical: [],      // 医疗物品
+      potions: [],      // 药剂
+      supplies: []      // 储备/其他物品
+    };
     this.logs = data.logs || [];
     this.createdAt = data.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();

@@ -63,8 +63,27 @@ window.staticData = {
     },
 
     inventory: {
+        "装备": [
+            { name: "普通大剑", weight: 20, description: "eee" }
+        ],
         "食物": [
             { name: "米饭", weight: 0.5, description: "可以消除一点饥饿值" }
-        ]
+        ],
+        "钱币": [
+            { name: "汇率", weight: 0, description: "优玛币：0；怀武币：0；赫尔韦林币：0；博拉迪亚币：0；漠益币：0；巴兰门币：0；德买西亚币：0；汗国币：0；魏国币；天之原地之国币：0；"}
+        ],
+        "医疗物品": [
+            { name: "止血绷带", weight: 0, description: ""},
+        ],
+        "药剂": [
+            { name: "魔力回复剂", weight: 0.5, description: ""},
+        ],
+        "储备/其他物品": [
+            { name: "墨水", weight: 0.5, description: ""},
+            { name: "蜡烛", weight: 0, description: ""},
+            { name: "柴火", weight: 0.5, description: ""},
+            { name: "羽毛", weight: 0, description: ""},
+            { name: "普通子弹", weight: 0, description: ""},
+        ],
     }
 };

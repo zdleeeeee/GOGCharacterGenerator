@@ -504,7 +504,7 @@ class GOGCharacterApp {
             const listContainer = document.createElement('div');
             listContainer.className = 'inventory-items-container';
             listContainer.style.display = 'block';
-
+            category = this.mapItemCategoryNameToKey(category);
             listContainer.innerHTML = inventory.map(Inventory => `
         <div class="inventory-item">
         <div class="item-header">
@@ -515,7 +515,8 @@ class GOGCharacterApp {
           <button class="btn-add-inventory" 
                   data-name="${Inventory.name}"
                   data-weight="${Inventory.weight}"
-                  data-description="${Inventory.description}">
+                  data-description="${Inventory.description}"
+                  data-category="${category}">
             添加
           </button>
         </div>
@@ -601,56 +602,44 @@ class GOGCharacterApp {
         // this.updateSkillProficiencyLeft();
         this.showToast(toastmessage);
     }
+
     // 辅助方法：将中文类别名映射为属性键名
     mapCategoryNameToKey(categoryName) {
-        const map = {
-            '力量': 'STR',
-            '敏捷': 'DEX',
-            '智慧': 'INT',
-            '魅力': 'CHA',
-            '感知': 'WIS',
-            '法力': 'MAG'
-        };
-        return map[categoryName] || 'INT';
+        return Character.categoryMappings[categoryName] || 'INT'; // 默认返回'智慧'
     }
-
+    mapItemCategoryNameToKey(categoryName) {
+        return Character.categoryMappings[categoryName] || 'supplies'; // 默认返回'储备/其他物品'
+    }
     // 辅助方法：将属性键名转换为中文类别名
     getCategoryName(categoryKey) {
-        const map = {
-            STR: '力量',
-            DEX: '敏捷',
-            INT: '智慧',
-            CHA: '魅力',
-            WIS: '感知',
-            MAG: '法力'
-        };
-        return map[categoryKey] || categoryKey;
+        return Character.categoryMappings[categoryKey] || categoryKey; // 默认返回原key
     }
 
     addEquipmentToCharacter(equipment) {
-        this.currentCharacter.equipments = this.currentCharacter.equipments || [];
-        this.currentCharacter.equipments.push({
+        this.currentCharacter.equipment = this.currentCharacter.equipment || [];
+        this.currentCharacter.equipment.push({
             name: equipment.name,
             type: equipment.type,
             modifier: equipment.modifier,
             description: equipment.description,
         });
 
-        this.renderEquipment(this.currentCharacter.equipments);
+        this.renderEquipment(this.currentCharacter.equipment);
         this.showToast(`装备${equipment.name}已添加`);
     }
-    addInventoryToCharacter(inventory) {
-        this.currentCharacter.inventory = this.currentCharacter.inventory || [];
-        this.currentCharacter.inventory.push({
-            name: inventory.name,
-            weight: inventory.weight,
-            description: inventory.description,
+    addInventoryToCharacter(item) {
+        this.currentCharacter.inventory[item.category] = this.currentCharacter.inventory[item.category] || [];
+        this.currentCharacter.inventory[item.category].push({
+            name: item.name,
+            weight: item.weight,
+            description: item.description,
             quantity: 1,
         });
 
         this.renderInventory(this.currentCharacter.inventory);
         this.updateTotalWeight();
-        this.showToast(`物品${inventory.name}已添加`);
+        const category = this.mapItemCategoryNameToKey(item.category);
+        this.showToast(`物品${item.name}(${category})已放入背包`);
     }
 
     // 通用输入绑定方法
@@ -937,7 +926,7 @@ class GOGCharacterApp {
         container.addEventListener('input', (e) => {
             const row = e.target.closest('tr');
             if (!row) return;
-            // 对于技能，需要特殊处理类别
+            // 对于技能和装备，需要特殊处理类别
             if (property === 'skills') {
                 // 确保有有效的类别
                 const category = row.dataset.category;
@@ -957,6 +946,25 @@ class GOGCharacterApp {
                 // 安全更新数据
                 if (!this.currentCharacter.skills[category]) {
                     this.currentCharacter.skills[category] = [];
+                }
+            } else if (property === 'inventory') {
+                const category = row.dataset.category;
+                const index = parseInt(row.dataset.index);
+
+                if (!category || isNaN(index)) return;
+
+                const inputs = row.querySelectorAll('input, .auto-height-content');
+                fields.forEach((field, i) => {
+                    let value = inputs[i].value;
+                    if (inputs[i].classList.contains('auto-height-content')) {
+                        value = inputs[i].innerText;
+                    }
+                    this.currentCharacter.inventory[category][index][field] = this.convertFieldValue(field, value);
+                });
+
+                // 安全更新数据
+                if (!this.currentCharacter.inventory[category]) {
+                    this.currentCharacter.inventory[category] = [];
                 }
             }
             else {
@@ -1201,6 +1209,8 @@ class GOGCharacterApp {
         // 特殊处理技能表格
         if (containerId === 'skills-container') {
             return this.collectSkillsData();
+        } else if (containerId === 'inventory-container') {
+            return this.collectInventoryData();
         }
 
         const rows = container.querySelectorAll('tbody > tr');
@@ -1264,6 +1274,40 @@ class GOGCharacterApp {
         });
 
         return skillsData;
+    }
+    collectInventoryData() {
+        const inventoryData = {
+            equipment: [],    // 装备
+            food: [],         // 食物
+            currency: [],     // 钱币
+            medical: [],      // 医疗物品
+            potions: [],      // 药剂
+            supplies: []      // 储备/其他物品
+        };
+
+        // 获取所有技能行（跳过类别标题行）
+        const container = document.getElementById('inventory-container');
+        const itemRows = container.querySelectorAll('tr.item-row');
+
+        itemRows.forEach(row => {
+            const category = row.dataset.category;
+            const inputs = row.querySelectorAll('input, .auto-height-content');
+
+            if (inputs.length >= 4) { // name, weight, description, quantity
+                const item = {
+                    name: inputs[0].innerText.trim(),
+                    weight: parseFloat(inputs[1].value) || 0,
+                    description: inputs[2].innerText.trim(),
+                    quantity: parseFloat(inputs[3].value) || 0,
+                };
+
+                if (inventoryData[category]) {
+                    inventoryData[category].push(item);
+                }
+            }
+        });
+
+        return inventoryData;
     }
 
     convertFieldValue(field, value) {
@@ -1338,7 +1382,6 @@ class GOGCharacterApp {
                 skillsContainer.appendChild(row);
             });
         });
-
     }
 
     // 计算剩余熟练点数
@@ -1401,24 +1444,48 @@ class GOGCharacterApp {
         const inventoryContainer = document.getElementById('inventory-container');
         inventoryContainer.innerHTML = '';
 
-        inventoryArray.forEach((item, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-      <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
-      <td><input type="number" min="0" step="0.5" value="${item.weight || 0}"></td>
-      <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
-      <td><input type="number" min="0" value="${item.quantity || 0}"></td>
-      <td><button class="btn-danger" data-index="${index}">删除</button></td>
-    `;
-            inventoryContainer.appendChild(row);
+        Object.entries(inventoryArray).forEach(([category, items]) => {
+            if (items.length === 0) return;
+
+            // 添加类别标题行
+            const categoryRow = document.createElement('tr');
+            categoryRow.className = 'item-category-row';
+            categoryRow.innerHTML = `
+            <td colspan="5" class="item-category-header" style="margin:6px auto;text-align: center;background: #f2f2f2">
+                <strong>${this.getCategoryName(category)}</strong>
+            </td>
+        `;
+            inventoryContainer.appendChild(categoryRow);
+
+            // 添加该类别下的技能
+            items.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = 'item-row';
+                row.dataset.category = category;
+                row.dataset.index = index;
+                row.innerHTML = `
+                <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
+                <td><input type="number" min="0" step="0.5" value="${item.weight || 0}"></td>
+                <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
+                <td><input type="number" min="0" value="${item.quantity || 0}"></td>
+                <td><button class="btn-danger" data-category="${category}" data-index="${index}">删除</button></td>
+            `;
+                inventoryContainer.appendChild(row);
+            });
         });
     }
 
     // 计算总负重
     updateTotalWeight() {
-        const inventory = this.collectTableData('inventory-container', ['name', 'weight', 'description', 'quantity']);
-        const totalWeight = inventory.reduce((sum, item) => sum + (parseFloat(item.weight) || 0) * (parseFloat(item.quantity) || 0), 0.0);
-
+        let totalWeight = 0.0;
+        const inventoryData = this.collectInventoryData();
+        if (inventoryData) {
+            Object.values(inventoryData).forEach(categoryItems => {
+                categoryItems.forEach(item => {
+                    totalWeight += (parseFloat(item.weight) || 0.0) * (parseFloat(item.quantity) || 0.0);
+                });
+            });
+        }
         const displayElement = document.getElementById('total-weight');
         displayElement.textContent = totalWeight;
     }
@@ -1574,7 +1641,8 @@ class GOGCharacterApp {
                 const inventoryData = {
                     name: e.target.dataset.name,
                     weight: e.target.dataset.weight,
-                    description: e.target.dataset.description
+                    description: e.target.dataset.description,
+                    category: e.target.dataset.category
                 };
                 this.addInventoryToCharacter(inventoryData);
             }
@@ -1620,7 +1688,7 @@ class GOGCharacterApp {
                 // 收集动态数据（技能、装备、物品）
                 character.skills = this.collectSkillsData();
                 character.equipment = this.collectTableData('equipment-container', ['name', 'type', 'modifier', 'description']);
-                character.inventory = this.collectTableData('inventory-container', ['name', 'weight', 'description', 'quantity']);
+                character.inventory = this.collectInventoryData();
 
                 // 保存到数据库
                 const savedCharacter = await this.db.saveCharacter(character);
@@ -1779,7 +1847,8 @@ class GOGCharacterApp {
 
         // 添加物品
         document.getElementById('add-item').addEventListener('click', () => {
-            this.currentCharacter.inventory.push({
+            const category = document.getElementById('item-category-select').value;
+            this.currentCharacter.inventory[category].push({
                 name: '',
                 weight: 0,
                 description: '',
@@ -1799,16 +1868,21 @@ class GOGCharacterApp {
         });
 
         // 删除技能/装备/物品的处理
-        ['equipment-container', 'inventory-container'].forEach(containerId => {
-            document.getElementById(containerId).addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn-danger')) {
-                    const index = parseInt(e.target.dataset.index);
-                    const property = containerId.split('-')[0]; //'equipment' 或 'inventory'
-
-                    this.currentCharacter[property].splice(index, 1);
-                    this[`render${property.charAt(0).toUpperCase() + property.slice(1)}`](this.currentCharacter[property]);
-                }
-            });
+        document.getElementById('equipment-container').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-danger')) {
+                const index = parseInt(e.target.dataset.index);
+                this.currentCharacter.equipment.splice(index, 1);
+                this.renderEquipment()(this.currentCharacter.equipment);
+            }
+        });
+        document.getElementById('inventory-container').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-danger')) {
+                const category = e.target.dataset.category;
+                const index = parseInt(e.target.dataset.index);
+                this.currentCharacter.inventory[category].splice(index, 1);
+                this.renderInventory(this.currentCharacter.inventory);
+                this.updateTotalWeight();
+            }
         });
         document.getElementById('skills-container').addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-danger')) {
