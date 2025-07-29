@@ -267,7 +267,7 @@ class DataHandler {
             }),
           ],
         }),
-        this.createItemsTable(character.inventory),
+        ...this.createItemsTable(character.inventory),
         new Paragraph({
           spacing: { after: 200 }  // 调整这个值控制间距大小
         }),
@@ -462,6 +462,9 @@ class DataHandler {
       MAG: '法力'
     };
     return names[key] || key;
+  }
+  getCategoryName(categoryKey) {
+    return Character.categoryMappings[categoryKey] || categoryKey; // 默认返回原key
   }
 
   // 辅助方法：创建状态文本
@@ -766,47 +769,70 @@ class DataHandler {
 
   // 辅助方法：创建物品表格
   createItemsTable(items) {
+    const tables = [];
     if (!items || items.length === 0) {
-      return new Paragraph({
+      tables.push(new Paragraph({
         text: "无物品",
         italics: true,
         color: '666666'
-      });
+      })
+      );
+      return tables;
     }
-    const rows = items.map(item => {
-      return new TableRow({
-        children: [
-          new TableCell({ children: [new Paragraph({ text: item.name })], width: { size: 25, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: item.weight?.toString() || "0" })], width: { size: 15, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: item.description })], width: { size: 50, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: item.quantity?.toString() || "0" })], width: { size: 10, type: WidthType.PERCENTAGE } }),
-        ],
-      });
-    });
 
-    return new Table({
-      rows: [
-        new TableRow({
+    for (const [category, itemList] of Object.entries(items)) {
+      if (itemList.length === 0) continue;
+
+      tables.push(
+        new Paragraph({
+          heading: HeadingLevel.HEADING_3,
+          alignment: AlignmentType.CENTER,
+          children: [new TextRun({
+            text: `${this.getCategoryName(category)}`,
+            color: "666666"
+          })]
+        })
+      );
+
+      const rows = itemList.map(item => {
+        return new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "名称", bold: true })] })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "重量", bold: true })] })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "数量", bold: true })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ text: item.name || "" })], width: { size: 25, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: item.weight?.toString() || "0" })], width: { size: 15, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: item.description || "" })], width: { size: 50, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: item.quantity?.toString() || "0" })], width: { size: 10, type: WidthType.PERCENTAGE } }),
           ],
-        }),
-        ...rows,
-      ],
-      borders: {
-        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
-        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
-        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
-        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
-        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
-        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
-      },
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      margins: { top: 100, bottom: 100, left: 100, right: 100 }
-    });
+        });
+      });
+
+      tables.push(
+        new Table({
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "名称", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "重量", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "数量", bold: true })] })], shading: { fill: "f2f2f2" } }),
+              ],
+            }),
+            ...rows,
+          ],
+          borders: {
+            top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+            insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+            insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+          },
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          margins: { top: 100, bottom: 100, left: 100, right: 100 }
+        })
+      );
+    }
+
+    return tables;
   }
 
   // 辅助方法：创建日志部分
