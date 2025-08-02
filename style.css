@@ -381,10 +381,6 @@ td input[type="number"] {
         margin: 0 auto;
     }
 
-    .character-form-fields {
-        grid-template-columns: 1fr;
-    }
-
     .blessing-grid {
         grid-template-columns: 1fr;
     }
@@ -871,6 +867,14 @@ input.current-value {
     }
 
     .attributes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .roster-list {
+        height: 365px;
+    }
+
+    .character-form-fields {
         grid-template-columns: 1fr;
     }
 }
