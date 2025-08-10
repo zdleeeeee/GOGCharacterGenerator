@@ -1,6 +1,7 @@
 // app.js - 主应用逻辑
 class GOGCharacterApp {
     static MAX_ATTRIBUTE_BASE = 10;
+    static MAX_HP_MP_BASE = 20;
     static MAX_ATTRIBUTE_VALUE = 20;
 
     constructor() {
@@ -900,7 +901,7 @@ class GOGCharacterApp {
                         this.currentCharacter.attributes[type] = {};
                     }
                     if (subType === 'base') {
-                        input.value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, input.value);
+                        input.value = Math.min(GOGCharacterApp.MAX_HP_MP_BASE, input.value);
                     }
 
                     this.currentCharacter.attributes[type][subType] = parseInt(input.value) || 0;
