@@ -2085,7 +2085,7 @@ class GOGCharacterApp {
             if (e.target.classList.contains('btn-danger')) {
                 const index = parseInt(e.target.dataset.index);
                 this.currentCharacter.equipment.splice(index, 1);
-                this.renderEquipment()(this.currentCharacter.equipment);
+                this.renderEquipment(this.currentCharacter.equipment);
             }
         });
         document.getElementById('inventory-container').addEventListener('click', (e) => {
