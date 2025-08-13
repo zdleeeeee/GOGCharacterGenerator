@@ -479,14 +479,17 @@ input.blessingFullName {
     border-collapse: collapse;
 }
 
-.blessing-skills-table th,
 .blessing-skills-table td {
     border: 1px solid #ddd;
     padding: 6px;
+    text-align: left;
 }
 
 .blessing-skills-table th {
+    border: 1px solid #ddd;
+    padding: 6px;
     background-color: #f2f2f2;
+    text-align: center;
 }
 
 /* 属性系统 */
