@@ -899,10 +899,10 @@ input.current-value {
         grid-template-columns: 1fr;
     }
 
-    .blessingFullName {
+    input.blessingFullName {
         font-size: 12px;
     }
-    
+
     .attributes-grid {
         grid-template-columns: 1fr;
     }
