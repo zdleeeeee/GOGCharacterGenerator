@@ -200,14 +200,20 @@
                 </div>
 
                 <div class="section">
-                    <h2>先天属性</h2>
-                    <p style="font-size: 14px; color: #dddddd">（基础值范围：0~10；总值范围0~20）</p>
-
+                    <h2>属性系统</h2>
+                    <div style="display: grid;grid-template-columns: 25% 75%;">
+                    <div class="form-group" style="display:flex;margin-bottom: 10px;margin-top: 0px;">
+                        <label for="isGod" style="min-width: max-content;padding-top: 9px;">身份：</label>
+                        <button id="isGod" class="btn-isGod"></button> <!--内容动态生成-->
+                    </div>
+                    <div style="font-size: 12px; color: #dddddd; margin-bottom: 10px;">
+                        （人类六大属性基础值范围：0~10，总值范围0~20；神明不设上限）<br>（人类健康/魔力属性基础值范围：0~20；神明不设上限）</div>
+                    </div>
                     <div class="attributes-grid">
                         <div class="attribute-item">
                             <label for="attr-STR-base">力量：</label>
                             <div class="attribute-controls">
-                                <input type="number" id="attr-STR-base" min="0" max="10" value="5" title="基础值"
+                                <input type="number" id="attr-STR-base" min="0" value="5" title="基础值"
                                     class="base-value">
                                 <span>+</span>
                                 <input type="number" id="attr-STR-status" step="1" value="0" title="状态调整"
@@ -223,7 +229,7 @@
                         <div class="attribute-item">
                             <label for="attr-DEX-base">敏捷：</label>
                             <div class="attribute-controls">
-                                <input type="number" id="attr-DEX-base" min="0" max="10" value="5" title="基础值"
+                                <input type="number" id="attr-DEX-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
                                 <input type="number" id="attr-DEX-status" step="1" value="0" title="状态调整"
                                     class="status-adj"><span>+</span>
@@ -236,7 +242,7 @@
                         <div class="attribute-item">
                             <label for="attr-INT-base">智慧：</label>
                             <div class="attribute-controls">
-                                <input type="number" id="attr-INT-base" min="0" max="10" value="5" title="基础值"
+                                <input type="number" id="attr-INT-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
                                 <input type="number" id="attr-INT-status" step="1" value="0" title="状态调整"
                                     class="status-adj"><span>+</span>
@@ -249,7 +255,7 @@
                         <div class="attribute-item">
                             <label for="attr-CHA-base">魅力：</label>
                             <div class="attribute-controls">
-                                <input type="number" id="attr-CHA-base" min="0" max="10" value="5" title="基础值"
+                                <input type="number" id="attr-CHA-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
                                 <input type="number" id="attr-CHA-status" step="1" value="0" title="状态调整"
                                     class="status-adj"><span>+</span>
@@ -262,7 +268,7 @@
                         <div class="attribute-item">
                             <label for="attr-WIS-base">感知：</label>
                             <div class="attribute-controls">
-                                <input type="number" id="attr-WIS-base" min="0" max="10" value="5" title="基础值"
+                                <input type="number" id="attr-WIS-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
                                 <input type="number" id="attr-WIS-status" step="1" value="0" title="状态调整"
                                     class="status-adj"><span>+</span>
@@ -275,7 +281,7 @@
                         <div class="attribute-item">
                             <label for="attr-MAG-base">法力：</label>
                             <div class="attribute-controls">
-                                <input type="number" id="attr-MAG-base" min="0" max="10" value="5" title="基础值"
+                                <input type="number" id="attr-MAG-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
                                 <input type="number" id="attr-MAG-status" step="1" value="0" title="状态调整"
                                     class="status-adj"><span>+</span>
@@ -288,10 +294,8 @@
                         <div class="attribute-item">
                             <label for="attr-HP-current">健康：</label>
                             <div class="attribute-controls" style="gap: 0px;">
-                                <input type="number" id="attr-HP-base" min="0" max="20" value="5" title="基础值"
-                                    class="base-value">
-                                <input type="number" id="attr-HP-current" value="5" title="当前值"
-                                    class="current-value">
+                                <input type="number" id="attr-HP-base" min="0" value="5" title="基础值" class="base-value">
+                                <input type="number" id="attr-HP-current" value="5" title="当前值" class="current-value">
                                 <div class="health-bar-container">
                                     <div class="health-bar" id="hp-bar"></div>
                                     <div class="health-base-bar" id="hpb-bar"></div>
@@ -303,10 +307,8 @@
                         <div class="attribute-item">
                             <label for="attr-MP-current">魔力：</label>
                             <div class="attribute-controls" style="gap: 0px;">
-                                <input type="number" id="attr-MP-base" min="0" max="20" value="5" title="基础值"
-                                    class="base-value">
-                                <input type="number" id="attr-MP-current" value="5" title="当前值"
-                                    class="current-value">
+                                <input type="number" id="attr-MP-base" min="0" value="5" title="基础值" class="base-value">
+                                <input type="number" id="attr-MP-current" value="5" title="当前值" class="current-value">
                                 <div class="mana-bar-container">
                                     <div class="mana-bar" id="mp-bar"></div>
                                     <div class="mana-base-bar" id="mpb-bar"></div>
@@ -329,68 +331,79 @@
             </div>
 
             <div class="section" style="grid-column: span 2;">
-                <h2>赐福系统</h2>
-
-
-                <div class="character-form-fields">
-                    <div class="form-group">
-                        <label for="blessing-soul">灵魂完整度：</label>
-                        <div style="display: flex;padding-right: 10px;">
-                            <input type="number" id="blessing-soul" min="0" max="100" value="100" style="flex-grow: 1;">
-                            <span id="soul-status"
-                                style="border-radius: 4px;background: #4ba361; color: #ffffffe0;min-width: max-content; height: min-content; margin-right: 0px;text-align: center;padding: 4px 7px;font-size: 14px;">清醒</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="blessing-level">赐福等级：</label>
-                        <select id="blessing-level">
-                            <option value="1">1级</option>
-                            <option value="2">2级</option>
-                            <option value="3">3级</option>
-                            <option value="4">4级</option>
-                            <option value="5">5级</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="blessing-grid">
-                    <div class="form-group">
-                        <label id="blessing-system-label"
-                            style="text-align: center;margin: 1.33em 0;font-size: 16px;">赐福系统</label>
+                    <div class="form-group" style="margin-top: 0;">
+                        <h2>赐福系统</h2>
+                        <input class="blessingFullName" type="text" id="blessingFullName"
+                            placeholder="权柄编号-神明职能-神明称号-神明真名">
+                        <div id="soul-status" style="color: #ffffffe0;min-width: max-content;text-align: center; ">世俗之人
+                        </div>
+                        <div class="character-form-fields">
+                            <div class="form-group" style="display:flex;">
+                                <label for="blessing-soul"
+                                    style="min-width: max-content;padding-top: 6px;">赐福经验值：</label> <!--原先为“灵魂完整度”-->
+                                <div style="display: flex;padding-right: 10px;">
+                                    <input type="number" id="blessing-soul" min="0" max="100" value="100">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="display:flex;">
+                                <label for="blessing-level"
+                                    style="min-width: max-content;padding-top: 6px;">赐福等级：</label>
+                                <select id="blessing-level">
+                                    <option value="0">0级</option>
+                                    <option value="1">1级</option>
+                                    <option value="2">2级</option>
+                                    <option value="3">3级</option>
+                                    <option value="4">4级</option>
+                                    <option value="5">5级</option>
+                                    <option value="6">6级</option>
+                                    <option value="7">7级</option>
+                                    <option value="8">8级</option>
+                                    <option value="9">9级</option>
+                                    <option value="10">10级</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="table-auto">
                             <table class="blessing-table">
                                 <thead>
                                     <tr>
                                         <th style="width: 10%;">赐福等级</th>
                                         <th style="width: 20%;">关联属性</th>
-                                        <th style="width: 10%;">属性加点</th>
                                         <th style="width: 30%;">权柄特技</th>
-                                        <th style="width: 10%;">灵魂磨损</th>
-                                        <th style="width: 20%;">异化程度</th>
+                                        <th style="width: 30%;">异化程度</th>
+                                        <th style="width: 10%;">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody id="blessing-container">
-                                    <!-- 动态生成5行数据 -->
+                                    <!-- 动态生成数据 -->
                                 </tbody>
                             </table>
                         </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <button id="add-blessingSystem" class="btn">添加</button>
+                        </div>
                     </div>
 
-
-                    <div class="form-group">
-                        <h4 style="text-align: center;color:#666666;font-size: 16px;">权柄特技</h4>
+                    <div class="form-group" style="margin-top: 0;">
+                        <h4 style="text-align: center;color:#666666;font-size: 16px; margin-bottom: 15px;">赐福特技</h4>
                         <div class="table-auto">
                             <table class="blessing-skills-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 15%;">名称</th>
-                                        <th style="width: 85%;">描述</th>
+                                        <th style="width: 10%;">名称</th>
+                                        <th style="width: 80%;">描述</th>
+                                        <th style="width: 10%;">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody id="blessing-skills-container">
-                                    <!-- 动态生成5行数据 -->
+                                    <!-- 动态生成数据 -->
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <button id="add-blessingSkills" class="btn">添加</button>
                         </div>
                     </div>
                 </div>
@@ -398,7 +411,7 @@
 
             <div class="section" style="grid-column: span 2;">
                 <h2>技能系统</h2>
-                <label title="=智慧的平方-总熟练度">技能熟练度剩余: <span id="skill-prof-left">0</span></label>
+                <label title="=智慧的平方-总熟练度">技能熟练度总点数: <span id="skill-prof-left" style="color: #28a745;">0</span></label>
                 <div class="table-auto">
                     <table class="skills-list">
                         <thead>

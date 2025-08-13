@@ -3,19 +3,20 @@ window.staticData = {
     blessings: [
         {
             name: "延续",
+            fullName: "G001-延续-绵延之蛇-洼西吕福",
             system: [
-                { level: 1, attribute: "力量/法力", bonus: 2, skill: "源流之水", soulWear: 1, corruption: '具鳞之子' },
-                { level: 2, attribute: "力量/法力/敏捷", bonus: 4, skill: "源流之水/白蛇之子", soulWear: 2, corruption: '具鳞之子' },
-                { level: 3, attribute: "力量/法力/敏捷", bonus: 6, skill: "源流之水/白蛇之子/水即吾身", soulWear: 4, corruption: '续尾之子' },
-                { level: 4, attribute: "力量/法力/敏捷/健康", bonus: 8, skill: "源流之水/白蛇之子/水即吾身/归还源流", soulWear: 8, corruption: '续尾之子' },
-                { level: 5, attribute: "力量/法力/敏捷/健康", bonus: 10, skill: "源流之水/白蛇之子/水即吾身/归还源流/吾将“延续”", soulWear: 16, corruption: '源化蛇嗣' }
+                { level: '1~3', attribute: "力/法", skill: "概念亲和、红外视觉 ", corruption: '具鳞之子：皮肤浮现蛇鳞' },
+                { level: '4~6', attribute: "力/法/敏", skill: "水即吾身、蜕皮新生", corruption: '续尾之子：下肢蛇尾化，双性征' },
+                { level: '7~10', attribute: "力/法/敏/健", skill: "塑容、归还源流、延续链", corruption: '源化蛇嗣：头部蛇首化，可自由还原人形' },
             ],
             skills: [
-                { name: "源流之水", description: "该特技持续期间，角色所施展的水系魔法/治愈类法术效果+2X。" },
-                { name: "白蛇之子", description: "该特技持续期间，角色的力量/敏捷属性额外+X（不计上限）；健康上限同步+2X（特技结束后恢复原先健康值）。" },
-                { name: "水即吾身", description: "通过接触场景中可取得的清洁水源（包括角色用水魔法凝聚的大气水分），为自身恢复至多5X点健康。" },
-                { name: "归还源流", description: "该特技持续期间，角色身躯完全液化（视作清水，可与外界的水流融为一体而移动），免疫外界伤害，自然恢复2X点健康（视作瞬间发生），同时法力属性额外+X（不计上限）。" },
-                { name: "吾将“延续”", description: "作为其他角色所认可的“上级”（如队长）时，可将自身任意X项属性的基础属性值（含健康）“延续”给至多X名角色；使其在特技生效期间，能以等同于赐福者的能力（无论高低）进行相关属性的鉴定。特技结束后，被延续者的各项属性自然还原（若为濒死者，健康值恢复至1）。" }
+                { name: "概念亲和", description: "（被动技能）延续的蒙福者对治愈、水相关的概念亲和，擅长相关知识点和能力。" },
+                { name: "红外视觉", description: "获得蛇类的颊窝，拥有感知热量形成周围环境热成像的能力。" },
+                { name: "水即吾身", description: "通过接触场景中可取得的清洁水源，为自身恢复健康。" },
+                { name: "蜕皮新生", description: "主动脱落外皮，清楚所有负面状态，一天限使用两次。" },
+                { name: "塑容", description: "当环境存在清洁水源，可以利用水源改变自身的容貌，差异越大难度越高，水源越充足难度越低。" },
+                { name: "归还源流", description: "当环境温度适宜，角色身躯完全液化为清水，可与外界的水流融为一体而快速移动，也可以用于潜行与窥探，免疫外界物理伤害，但也会造成交互受限，液化与复原均需进行成功判定。" },
+                { name: "延续链", description: "当自己与他人之间存在上下级的关系时，可以向下级“延续”自己的身体特征（比如属性值/技能/状态/记忆/……），或者“延续“上级的身体特征。除此以外，可以进行其他与延续相关的行为，能否发动，视情况而定。" }
             ]
         },
         // 更多权柄...
@@ -23,22 +24,41 @@ window.staticData = {
 
     skills: {
         "力量": [
-            { name: "攀爬精通", class: "通用", description: "敏捷/力量；" },
-            { name: "拳击精通", class: "武者类通用", description: "力量；" },
+            { name: "攀爬", class: "基础", description: "力量；" },
+            { name: "游泳", class: "基础", description: "力量；" },
+            { name: "角斗", class: "基础", description: "力量；挣脱、抢夺、近身格斗等能力；" },
+            { name: "破坏", class: "基础", description: "力量；" },
+            { name: "投掷", class: "基础", description: "力量；" },
+            { name: "强韧", class: "基础", description: "力量；抵抗中毒、疲惫、物理伤害的能力；" },
+            { name: "械斗（）", class: "基础", description: "力量；选择某种武器；" },
         ],
         "敏捷": [
-            { name: "攀爬精通", class: "通用", description: "敏捷/力量；" }
+            { name: "闪避", class: "基础", description: "敏捷；快速移动的能力；" },
+            { name: "体操", class: "基础", description: "敏捷；精密的全身运动，包括潜行；" },
+            { name: "瞄准", class: "基础", description: "敏捷；" },
+            { name: "巧手", class: "基础", description: "敏捷；精密的手部操作；" },
+            { name: "驾驶", class: "基础", description: "敏捷；" },
+            { name: "表演（）", class: "基础", description: "敏捷；选择某项表演能力，如演奏乐器、歌唱、舞蹈、戏剧等；" },
         ],
         "智慧": [
-            { name: "魅惑", class: "通用", description: "魅力/智慧；" },
-            { name: "气象学精通", class: "通用", description: "智慧；" }
+            { name: "知识（）", class: "基础", description: "智慧；选择某个学科；" },
+            { name: "解构", class: "基础", description: "智慧；破解机关、谜题，理解文字内容；" },
+            { name: "信息搜集", class: "基础", description: "智慧；翻阅图书、提取要点、快速记忆；" },
+            { name: "外语（）", class: "基础", description: "智慧；选择某种语言；" },
         ],
         "魅力": [
-            { name: "魅惑", class: "通用", description: "魅力/智慧；" },
-            { name: "精神控制", class: "人鱼歌者", description: "法力/魅力；" }
+            { name: "说服", class: "基础", description: "魅力；" },
+            { name: "威慑", class: "基础", description: "魅力；" },
+            { name: "魅惑", class: "基础", description: "魅力；" },
+            { name: "欺瞒", class: "基础", description: "魅力；" },
+            { name: "驯兽", class: "基础", description: "魅力；" },
+            { name: "精神抗性", class: "基础", description: "魅力；" },
         ],
         "感知": [
-            { name: "透视术", class: "法师类通用", description: "感知/法力；" }
+            { name: "侦察", class: "基础", description: "感知；察觉环境变化；" },
+            { name: "洞悉", class: "基础", description: "感知；解读他人想法；" },
+            { name: "医药", class: "基础", description: "感知；诊断疾病、稳定濒死队友、基础医疗知识；" },
+            { name: "灵感", class: "基础", description: "感知；" },
         ],
         "法力": [
             { name: "火球术", class: "法师类通用", description: "法力；效果：火属性伤害；" },

@@ -364,6 +364,14 @@ td input[type="number"] {
     align-content: start;
 }
 
+input.blessingFullName {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #666666;
+    margin-bottom: 20px;
+}
+
 @media (max-width: 768px) {
 
     .character-info-grid {
@@ -399,7 +407,7 @@ td input[type="number"] {
 .blessing-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 25px;
 }
 
 .blessing-table td {
@@ -469,7 +477,6 @@ td input[type="number"] {
 .blessing-skills-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 
 .blessing-skills-table th,
@@ -480,6 +487,23 @@ td input[type="number"] {
 
 .blessing-skills-table th {
     background-color: #f2f2f2;
+}
+
+/* 属性系统 */
+.btn-isGod {
+    margin-left: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    min-height: min-content;
+    min-width: max-content;
+    transition: background-color 0.3s;
+}
+
+.btn-isGod:hover {
+    background: none;
 }
 
 .attribute-controls {

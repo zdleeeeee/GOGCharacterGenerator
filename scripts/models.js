@@ -39,13 +39,12 @@ class Character {
     this.gender = data.gender || '未知';
 
     this.blessing = data.blessing || '';
-    this.blessinglevel = data.blessinglevel || 1;
+    this.blessingFullName = data.blessingFullName || '';
+    this.blessinglevel = data.blessinglevel || 0;
     this.blessingSystem = data.blessingSystem || [
-      { level: 1, attribute: '', bonus: 0, skill: '', soulWear: 0, corruption: '' },
-      { level: 2, attribute: '', bonus: 0, skill: '', soulWear: 0, corruption: '' },
-      { level: 3, attribute: '', bonus: 0, skill: '', soulWear: 0, corruption: '' },
-      { level: 4, attribute: '', bonus: 0, skill: '', soulWear: 0, corruption: '' },
-      { level: 5, attribute: '', bonus: 0, skill: '', soulWear: 0, corruption: '' }
+      { level: '', attribute: '', skill: '', corruption: ''},
+      { level: '', attribute: '', skill: '', corruption: ''},
+      { level: '', attribute: '', skill: '', corruption: ''}
     ];  // 赐福系统数据结构
     this.blessingSkills = data.blessingSkills || Array(5).fill().map(() => ({
       name: '',
@@ -58,6 +57,7 @@ class Character {
     this.nationality = data.nationality || '';
     this.class = data.class || '';  // 职业
     this.description = data.description || '';
+    this.isGod = data.isGod || '';  // 身份
     this.attributes = data.attributes || {
       STR: { base: 5, statusAdj: 0, blessingAdj: 0 },
       DEX: { base: 5, statusAdj: 0, blessingAdj: 0 },
@@ -66,8 +66,8 @@ class Character {
       WIS: { base: 5, statusAdj: 0, blessingAdj: 0 },
       MAG: { base: 5, statusAdj: 0, blessingAdj: 0 },
 
-      HP: { base: 5, current: 5 },
-      MP: { base: 5, current: 5 }
+      HP: { base: 10, current: 10 },
+      MP: { base: 10, current: 10 }
     };
 
     this.status = data.status || [];

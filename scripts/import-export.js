@@ -117,6 +117,7 @@ class DataHandler {
             }),
           ],
         }),
+        this.createPropertyParagraph("身份", character.isGod),
         this.createAttributeTable(character.attributes),
         new Paragraph({
           spacing: { after: 200 }  // 调整这个值控制间距大小
@@ -158,21 +159,21 @@ class DataHandler {
           alignment: AlignmentType.CENTER,
           spacing: { after: 200 },
           children: [new TextRun({
-            text: `${character.blessing || '赐福'}系统 (等级 ${character.blessinglevel})`,
+            text: `${character.blessingFullName || '赐福系统'} (等级 ${character.blessinglevel})`,
             bold: true,
             size: 22,
             color: "666666"
           })]
         }),
-        this.createBlessingSystemTable(character.blessingSystem, character.blessingSkills),
+        this.createBlessingSystemTable(character.blessingSystem),
 
         // 权柄特技
         new Paragraph({
           heading: HeadingLevel.HEADING_3,
           alignment: AlignmentType.CENTER,
-          spacing: { before: 200 },
+          spacing: { before: 200, after: 200 },
           children: [new TextRun({
-            text: "权柄特技",
+            text: "赐福特技",
             bold: true,
             size: 22,
             color: "666666",
@@ -201,7 +202,7 @@ class DataHandler {
           spacing: { after: 200 },
           children: [
             new TextRun({
-              text: `技能熟练度剩余：`,
+              text: `技能熟练度总点数：`,
               bold: true,
               size: 20,
               color: "666666"
@@ -210,7 +211,7 @@ class DataHandler {
               text: `${document.getElementById('skill-prof-left').textContent.toString()}`,
               bold: true,
               size: 20,
-              color: parseInt(document.getElementById('skill-prof-left').textContent) < 0 ? 'e74c3c' : '28a745'
+              color: '28a745'
             }),
           ],
         }),
@@ -528,18 +529,14 @@ class DataHandler {
   }
 
   // 创建赐福系统表格
-  createBlessingSystemTable(blessingSystem, blessingSkills) {
+  createBlessingSystemTable(blessingSystem) {
     const rows = blessingSystem.map((level, index) => {
-      const skill = blessingSkills[index] || {};
-
       return new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ text: level.level.toString() })], width: { size: 8, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.level })], width: { size: 10, type: WidthType.PERCENTAGE } }),
           new TableCell({ children: [new Paragraph({ text: level.attribute })], width: { size: 20, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: level.bonus.toString() })], width: { size: 8, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: level.skill || '' })], width: { size: 36, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: level.soulWear.toString() })], width: { size: 8, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: level.corruption })], width: { size: 20, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.skill })], width: { size: 30, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.corruption })], width: { size: 40, type: WidthType.PERCENTAGE } }),
         ],
       });
     });
@@ -550,9 +547,7 @@ class DataHandler {
           children: [
             new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '赐福等级', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
             new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '关联属性', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '属性加点', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '权柄特技', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '灵魂磨损', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '赐福特技', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
             new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '异化程度', bold: true, color: "333333" })] })], shading: { fill: "f2f2f2" } }),
           ],
         }),
@@ -574,34 +569,36 @@ class DataHandler {
   // 获取精神状态
   createSoulParagraph(soul) {
     let tcolor = '666666';
-    if (soul >= 80) {
-      tcolor = '4ba361'; // 绿色
+    if (soul >= 90) {
+      tcolor = '6d35dd'
+    } else if (soul >= 80) {
+      tcolor = 'ca2cab';
     } else if (soul >= 60) {
-      tcolor = 'a3c14b'; // 黄绿色
+      tcolor = '4169e1';
     } else if (soul >= 40) {
-      tcolor = 'c1a34b'; // 黄色
+      tcolor = '3ad2e0';
     } else if (soul >= 20) {
-      tcolor = 'c18d4b'; // 橙色
+      tcolor = '3cb371';
     } else if (soul >= 1) {
-      tcolor = 'c14b4b'; // 红色
+      tcolor = 'e69c5b';
     } else if (soul === 0) {
-      tcolor = '666666'; // 灰色
+      tcolor = '666666';
     }
 
     return new Paragraph({
       children: [
         new TextRun({
-          text: "灵魂完整度：",
+          text: "赐福经验值（BXP）：",
           bold: true,
           color: "666666"
         }),
         new TextRun({
           text: `${soul?.toString() || 0}\t`,
           bold: true,
-          color: "333333"
+          color: "28a745"
         }),
         new TextRun({
-          text: `  【${document.getElementById('soul-status').textContent}】` || "  【永恒沉眠】",
+          text: `  【${document.getElementById('soul-status').textContent}】` || "  【世俗之人】",
           bold: true,
           color: tcolor,
         }),
@@ -612,7 +609,7 @@ class DataHandler {
     });
   }
 
-  // 创建权柄特技表格
+  // 创建赐福特技表格
   createBlessingSkillsTable(blessingSkills) {
     const rows = blessingSkills.map((skill, index) => {
       return new TableRow({
