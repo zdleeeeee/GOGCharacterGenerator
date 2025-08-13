@@ -490,6 +490,11 @@ input.blessingFullName {
 }
 
 /* 属性系统 */
+.isGod-container {
+    display: grid;
+    grid-template-columns: 25% 75%;
+}
+
 .btn-isGod {
     margin-left: 15px;
     color: #ffffff;
@@ -890,6 +895,14 @@ input.current-value {
         text-align:center;
     }
 
+    .isGod-container {
+        grid-template-columns: 1fr;
+    }
+
+    .blessingFullName {
+        font-size: 12px;
+    }
+    
     .attributes-grid {
         grid-template-columns: 1fr;
     }
