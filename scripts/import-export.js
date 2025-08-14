@@ -117,7 +117,7 @@ class DataHandler {
             }),
           ],
         }),
-        this.createPropertyParagraph("身份", character.isGod),
+        this.createPropertyParagraph("身份", character.isGod || "人类"),
         this.createAttributeTable(character.attributes),
         new Paragraph({
           spacing: { after: 200 }  // 调整这个值控制间距大小

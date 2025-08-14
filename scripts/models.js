@@ -68,7 +68,7 @@ class Character {
     this.nationality = data.nationality || '';
     this.class = data.class || '';  // 职业
     this.description = data.description || '';
-    this.isGod = data.isGod || '';  // 身份
+    this.isGod = data.isGod || '人类';  // 身份
     this.attributes = data.attributes || {
       STR: { base: 5, statusAdj: 0, blessingAdj: 0 },
       DEX: { base: 5, statusAdj: 0, blessingAdj: 0 },
