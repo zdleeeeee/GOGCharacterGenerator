@@ -26,8 +26,7 @@ window.staticData = {
         "力量": [
             { name: "攀爬", class: "基础", description: "力量；" },
             { name: "游泳", class: "基础", description: "力量；" },
-            { name: "角斗", class: "基础", description: "力量；挣脱、抢夺、近身格斗等能力；" },
-            { name: "破坏", class: "基础", description: "力量；" },
+            { name: "角斗", class: "基础", description: "力量；蛮力、挣脱、抢夺、近身格斗等能力；" },
             { name: "投掷", class: "基础", description: "力量；" },
             { name: "强韧", class: "基础", description: "力量；抵抗中毒、疲惫、物理伤害的能力；" },
             { name: "械斗（）", class: "基础", description: "力量；选择某种武器；" },

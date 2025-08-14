@@ -455,6 +455,7 @@ class DataHandler {
   // 辅助方法：获取属性中文名
   getAttributeName(key) {
     const names = {
+      PRF: '职业',
       STR: '力量',
       DEX: '敏捷',
       INT: '智慧',

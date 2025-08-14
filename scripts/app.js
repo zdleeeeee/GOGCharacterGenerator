@@ -1435,6 +1435,7 @@ class GOGCharacterApp {
     }
     collectSkillsData() {
         const skillsData = {
+            PRF: [],
             STR: [],
             DEX: [],
             INT: [],
@@ -2037,6 +2038,17 @@ class GOGCharacterApp {
         // 添加技能
         document.getElementById('add-skill').addEventListener('click', () => {
             const category = document.getElementById('skill-category-select').value;
+
+            if (!this.currentCharacter.skills.hasOwnProperty(category)) {
+                this.currentCharacter.skills[category] = [];
+                // 确保技能分类顺序正确
+                const orderedSkills = {};
+                Object.keys(Character.standardSkillsStructure).forEach(key => {
+                    orderedSkills[key] = this.currentCharacter.skills[key] || [];
+                });
+                this.currentCharacter.skills = orderedSkills;
+            }
+
             this.currentCharacter.skills[category].push({
                 name: '',
                 proficiency: 0,

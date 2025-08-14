@@ -1,7 +1,8 @@
 // models.js - 角色数据结构
 class Character {
   static categoryMappings = {
-    // 属性映射
+    // 属性（技能）映射
+    '职业': 'PRF',
     '力量': 'STR',
     '敏捷': 'DEX',
     '智慧': 'INT',
@@ -16,6 +17,7 @@ class Character {
     '药剂': 'potions',
     '储备/其他物品': 'supplies',
     // 反向映射
+    'PRF': '职业',
     'STR': '力量',
     'DEX': '敏捷',
     'INT': '智慧',
@@ -28,6 +30,15 @@ class Character {
     'medical': '医疗物品',
     'potions': '药剂',
     'supplies': '储备/其他物品'
+  };
+  static standardSkillsStructure = {
+    PRF: [], // 职业类技能
+    STR: [], // 力量类技能
+    DEX: [], // 敏捷类技能
+    INT: [], // 智慧类技能
+    CHA: [], // 魅力类技能
+    WIS: [], // 感知类技能
+    MAG: []  // 法力类技能
   };
   constructor(data = {}) {
     if (data.id !== undefined && data.id !== null) {
@@ -42,9 +53,9 @@ class Character {
     this.blessingFullName = data.blessingFullName || '';
     this.blessinglevel = data.blessinglevel || 0;
     this.blessingSystem = data.blessingSystem || [
-      { level: '', attribute: '', skill: '', corruption: ''},
-      { level: '', attribute: '', skill: '', corruption: ''},
-      { level: '', attribute: '', skill: '', corruption: ''}
+      { level: '', attribute: '', skill: '', corruption: '' },
+      { level: '', attribute: '', skill: '', corruption: '' },
+      { level: '', attribute: '', skill: '', corruption: '' }
     ];  // 赐福系统数据结构
     this.blessingSkills = data.blessingSkills || Array(5).fill().map(() => ({
       name: '',
@@ -72,6 +83,7 @@ class Character {
 
     this.status = data.status || [];
     this.skills = data.skills || {
+      PRF: [], // 职业类技能
       STR: [], // 力量类技能
       DEX: [], // 敏捷类技能
       INT: [], // 智慧类技能
