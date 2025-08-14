@@ -75,9 +75,9 @@ window.staticData = {
             { name: "普通魔动枪", type: "魔动枪", modifier: "", description: ""}
         ],
         "法器": [
-            { name: "麟笏", type: "礼器", modifier: "", description: "迦南人用于祭祀的礼器"},
-            { name: "福带", type: "礼器", modifier: "", description: "迦南人传统丝织品，用于祭祀的礼器"},
-            { name: "福神杖", type: "礼器", modifier: "", description: "迦南人用于祭祀的礼器，大致造型为一根由蛇盘绕的木杖"}
+            { name: "麟笏", type: "礼器", modifier: "", description: "哈维耶人用于祭祀的礼器"},
+            { name: "福带", type: "礼器", modifier: "", description: "哈维耶人传统丝织品，用于祭祀的礼器"},
+            { name: "福神杖", type: "礼器", modifier: "", description: "哈维耶人用于祭祀的礼器，大致造型为一根由蛇盘绕的木杖"}
         ]
     },
 

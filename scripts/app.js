@@ -76,9 +76,9 @@ class GOGCharacterApp {
                 Math.max(0, char.attributes.STR.base + char.attributes.STR.statusAdj + char.attributes.STR.blessingAdj) :
                 Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.STR.base + char.attributes.STR.statusAdj + char.attributes.STR.blessingAdj)))
             }</span>
-            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base + char.isGod === '神明' ?
+            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base + (char.isGod === '神明' ?
                 Math.max(0, char.attributes.MAG.base + char.attributes.MAG.statusAdj + char.attributes.MAG.blessingAdj) :
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.MAG.base + char.attributes.MAG.statusAdj + char.attributes.MAG.blessingAdj))}</span>
+                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.MAG.base + char.attributes.MAG.statusAdj + char.attributes.MAG.blessingAdj)))}</span>
             <span>BXP: <strong>${char.soul}</strong>%</span>
           </div>
         </div>
@@ -730,9 +730,6 @@ class GOGCharacterApp {
             this.style.letterSpacing = '12px';
             this.style.fontSize = '16px';
             this.style.padding = '4px';
-
-            // 存储动画ID以便清除
-            this.dataset.floatAnimation = floatAnimation;
         };
 
         // 鼠标离开事件
@@ -743,9 +740,6 @@ class GOGCharacterApp {
             this.style.letterSpacing = '6px';
             this.style.fontSize = '14px';
             this.style.padding = '4px';
-
-            // 清除浮动动画
-            clearInterval(this.dataset.floatAnimation);
         };
     }
 
