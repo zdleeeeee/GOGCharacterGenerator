@@ -865,6 +865,24 @@ class DataHandler {
 
     logs.forEach(log => {
       // 每个日志之间添加一些间距
+      const logText = log.content || "无内容";
+    const valueParts = logText.split('\n'); // 分割换行符
+    
+    // 为每个部分添加TextRun，并在需要时添加换行
+    const children = [];
+    valueParts.forEach((part, index) => {
+        if (index > 0) {
+            children.push(new TextRun({
+                text: "",
+                break: 1 // 添加换行
+            }));
+        }
+        children.push(new TextRun({
+            text: part,
+            color: "333333"
+        }));
+    });
+
       logElements.push(
 
         new Table({
@@ -910,7 +928,7 @@ class DataHandler {
                 new TableCell({
                   children: [
                     new Paragraph({
-                      text: log.content || "无内容",
+                      children: children,
                       spacing: { after: 0 }
                     })
                   ],
