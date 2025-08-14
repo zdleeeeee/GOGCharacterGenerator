@@ -92,7 +92,7 @@ class DataHandler {
           ],
         }),
         this.createPropertyParagraph("角色名", character.name),
-        this.createPropertyParagraph("玩家", character.playerName),
+        this.createPropertyParagraph("玩家", character.player),
         this.createPropertyParagraph("性别", character.gender),
         this.createPropertyParagraph("年龄", character.age?.toString() || "未知"),
         this.createPropertyParagraph("阵营", character.alignment),
