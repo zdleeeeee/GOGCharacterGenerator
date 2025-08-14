@@ -317,21 +317,36 @@ class DataHandler {
 
   // 辅助方法：创建属性段落
   createPropertyParagraph(label, value) {
+    const valueText = value || "无";
+    const valueParts = valueText.split('\n'); // 分割换行符
+    
+    const children = [
+        new TextRun({
+            text: `${label}: `,
+            bold: true,
+            color: "666666"
+        })
+    ];
+    
+    // 为每个部分添加TextRun，并在需要时添加换行
+    valueParts.forEach((part, index) => {
+        if (index > 0) {
+            children.push(new TextRun({
+                text: "",
+                break: 1 // 添加换行
+            }));
+        }
+        children.push(new TextRun({
+            text: part,
+            color: "333333"
+        }));
+    });
+    
     return new Paragraph({
-      children: [
-        new TextRun({
-          text: `${label}: `,
-          bold: true,
-          color: "666666"
-        }),
-        new TextRun({
-          text: value || "无",
-          color: "333333"
-        }),
-      ],
-      spacing: {
-        after: 100,
-      },
+        children: children,
+        spacing: {
+            after: 100,
+        },
     });
   }
 
