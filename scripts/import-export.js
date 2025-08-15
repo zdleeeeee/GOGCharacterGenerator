@@ -549,10 +549,10 @@ class DataHandler {
     const rows = blessingSystem.map((level, index) => {
       return new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ text: level.level })], width: { size: 10, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.level })], width: { size: 15, type: WidthType.PERCENTAGE } }),
           new TableCell({ children: [new Paragraph({ text: level.attribute })], width: { size: 20, type: WidthType.PERCENTAGE } }),
           new TableCell({ children: [new Paragraph({ text: level.skill })], width: { size: 30, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ text: level.corruption })], width: { size: 40, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ text: level.corruption })], width: { size: 35, type: WidthType.PERCENTAGE } }),
         ],
       });
     });
