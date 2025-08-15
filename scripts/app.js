@@ -686,23 +686,23 @@ class GOGCharacterApp {
         let bkcolor1 = '#888888';
 
         // 根据灵魂完整度范围设置不同状态
-        if (soulValue >= 90) {
+        if (soulValue > 90) {
             statusElement.textContent = '神明代行者';
             bkcolor = '#6d35ddff'; // 中紫色 - 半神领域
             bkcolor1 = '#8d56faff';
-        } else if (soulValue >= 80) {
+        } else if (soulValue > 80) {
             statusElement.textContent = '圣徒';
             bkcolor = '#ca2cabff'; // 玫红色 - 神圣高阶
             bkcolor1 = '#ff3bd8ff';
-        } else if (soulValue >= 60) {
+        } else if (soulValue > 60) {
             statusElement.textContent = '蒙恩者';
             bkcolor = '#4169E1'; // 皇家蓝 - 神明恩宠
             bkcolor1 = '#517cfbff';
-        } else if (soulValue >= 40) {
+        } else if (soulValue > 40) {
             statusElement.textContent = '受膏者';
             bkcolor = '#3ad2e0ff'; // 天青蓝 - 正式祝福
             bkcolor1 = 'rgba(140, 227, 220, 1)';
-        } else if (soulValue >= 20) {
+        } else if (soulValue > 20) {
             statusElement.textContent = '逐圣者';
             bkcolor = '#3CB371'; // 海洋绿 - 追寻圣道
             bkcolor1 = '#54de92ff';

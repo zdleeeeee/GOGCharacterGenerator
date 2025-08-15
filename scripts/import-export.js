@@ -585,15 +585,15 @@ class DataHandler {
   // 获取精神状态
   createSoulParagraph(soul) {
     let tcolor = '666666';
-    if (soul >= 90) {
+    if (soul > 90) {
       tcolor = '6d35dd'
-    } else if (soul >= 80) {
+    } else if (soul > 80) {
       tcolor = 'ca2cab';
-    } else if (soul >= 60) {
+    } else if (soul > 60) {
       tcolor = '4169e1';
-    } else if (soul >= 40) {
+    } else if (soul > 40) {
       tcolor = '3ad2e0';
-    } else if (soul >= 20) {
+    } else if (soul > 20) {
       tcolor = '3cb371';
     } else if (soul >= 1) {
       tcolor = 'e69c5b';
