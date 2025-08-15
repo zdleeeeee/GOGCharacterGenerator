@@ -1,5 +1,5 @@
 // import-export.js - 数据导入导出
-const { AlignmentType, BorderStyle, Document, HeadingLevel, ImageRun, Paragraph, ShadingType, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
+const { AlignmentType, BorderStyle, CompatibilityMode, Document, HeadingLevel, ImageRun, Paragraph, ShadingType, TableLayoutType, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
 const { saveAs } = window;
 class DataHandler {
   constructor(db) {
@@ -289,8 +289,22 @@ class DataHandler {
         ...this.createLogsSection(character.logs),
       );
       const doc = new Document({
+        creator: "GOG角色系统",  // 必须设置
+        title: `GOG角色档案_${character.name}`,
+        description: "角色数据导出",
         sections: [{
-          properties: {},
+          properties: {
+            page: {
+              width: 11906,  // A4宽度(21cm)
+              height: 16838, // A4高度(29.7cm)
+              margins: {
+                top: 1440,   // 2.54cm
+                bottom: 1440,
+                left: 1800,  // 3.17cm
+                right: 1800
+              }
+            }
+          },
           children: docChildren, // 使用构建好的子元素数组
         }],
         // 添加中文字体支持
@@ -307,7 +321,7 @@ class DataHandler {
 
       // 2. 生成Word文件
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${character.name} _GOG角色档案.docx`);
+      saveAs(blob, `${character.name}_GOG角色档案.docx`);
 
     } catch (error) {
       console.error("导出Word失败:", error);
@@ -319,34 +333,34 @@ class DataHandler {
   createPropertyParagraph(label, value) {
     const valueText = value || "无";
     const valueParts = valueText.split('\n'); // 分割换行符
-    
+
     const children = [
-        new TextRun({
-            text: `${label}: `,
-            bold: true,
-            color: "666666"
-        })
+      new TextRun({
+        text: `${label}: `,
+        bold: true,
+        color: "666666"
+      })
     ];
-    
+
     // 为每个部分添加TextRun，并在需要时添加换行
     valueParts.forEach((part, index) => {
-        if (index > 0) {
-            children.push(new TextRun({
-                text: "",
-                break: 1 // 添加换行
-            }));
-        }
+      if (index > 0) {
         children.push(new TextRun({
-            text: part,
-            color: "333333"
+          text: "",
+          break: 1 // 添加换行
         }));
+      }
+      children.push(new TextRun({
+        text: part,
+        color: "333333"
+      }));
     });
-    
+
     return new Paragraph({
-        children: children,
-        spacing: {
-            after: 100,
-        },
+      children: children,
+      spacing: {
+        after: 100,
+      },
     });
   }
 
@@ -442,6 +456,7 @@ class DataHandler {
     );
 
     return new Table({
+      layout: TableLayoutType.FIXED,
       rows: [
         new TableRow({
           children: [
@@ -866,22 +881,22 @@ class DataHandler {
     logs.forEach(log => {
       // 每个日志之间添加一些间距
       const logText = log.content || "无内容";
-    const valueParts = logText.split('\n'); // 分割换行符
-    
-    // 为每个部分添加TextRun，并在需要时添加换行
-    const children = [];
-    valueParts.forEach((part, index) => {
+      const valueParts = logText.split('\n'); // 分割换行符
+
+      // 为每个部分添加TextRun，并在需要时添加换行
+      const children = [];
+      valueParts.forEach((part, index) => {
         if (index > 0) {
-            children.push(new TextRun({
-                text: "",
-                break: 1 // 添加换行
-            }));
+          children.push(new TextRun({
+            text: "",
+            break: 1 // 添加换行
+          }));
         }
         children.push(new TextRun({
-            text: part,
-            color: "333333"
+          text: part,
+          color: "333333"
         }));
-    });
+      });
 
       logElements.push(
 

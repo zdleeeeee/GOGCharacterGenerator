@@ -1784,7 +1784,7 @@ class GOGCharacterApp {
                 const skillData = {
                     name: e.target.dataset.name,
                     class: e.target.dataset.class,
-                    description: e.target.dataset.description + "职业：" + e.target.dataset.class,
+                    description: e.target.dataset.description + "类别：" + e.target.dataset.class,
                 };
                 this.addSkillToCharacter(skillData);
             }
