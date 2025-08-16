@@ -456,7 +456,8 @@ class DataHandler {
     );
 
     return new Table({
-      layout: TableLayoutType.FIXED,
+      layout: TableLayoutType.AUTOFIT,
+      columnWidths: [1760, 1760, 1760, 1760, 1760], // 我最终不得已这样写代码了，经测试这样可以保持在office上自动将表格宽度填满页面，同时在qq上按固定宽度显示，真的无语了，sjb
       rows: [
         new TableRow({
           children: [
@@ -515,6 +516,8 @@ class DataHandler {
       .join('  \t'); // 分隔状态
 
     return new Table({
+      layout: TableLayoutType.AUTOFIT,
+      columnWidths: [8800],
       width: {
         size: 100,
         type: WidthType.PERCENTAGE
@@ -573,6 +576,8 @@ class DataHandler {
     });
 
     return new Table({
+      layout: TableLayoutType.AUTOFIT,
+      columnWidths: [1320, 1760, 2640, 3080],
       rows: [
         new TableRow({
           children: [
@@ -655,13 +660,15 @@ class DataHandler {
     });
 
     return new Table({
+      layout: TableLayoutType.AUTOFIT,
+      columnWidths: [1320, 7480],
       rows: [
         new TableRow({
           children: [
             new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: '特技名称', bold: true })] })], shading: { fill: "f2f2f2" } }),
             new TableCell({
               children: [new Paragraph({ children: [new TextRun({ text: '特技描述', bold: true })] })],
-              colSpan: 2, shading: { fill: "f2f2f2" }
+              shading: { fill: "f2f2f2" }
             }),
           ],
         }),
@@ -715,13 +722,15 @@ class DataHandler {
             new TableCell({ children: [new Paragraph({ text: skill.name })], width: { size: 25, type: WidthType.PERCENTAGE } }),
             new TableCell({ children: [new Paragraph({ text: skill.proficiency.toString() })], width: { size: 10, type: WidthType.PERCENTAGE } }),
             new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })], width: { size: 15, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 60, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 50, type: WidthType.PERCENTAGE } }),
           ],
         });
       });
 
       tables.push(
         new Table({
+          layout: TableLayoutType.AUTOFIT,
+          columnWidths: [2200, 880, 1320, 4400],
           rows: [
             new TableRow({
               children: [
@@ -771,6 +780,8 @@ class DataHandler {
     });
 
     return new Table({
+      layout: TableLayoutType.AUTOFIT,
+      columnWidths: [1760, 1760, 2200, 3080],
       rows: [
         new TableRow({
           children: [
@@ -835,6 +846,8 @@ class DataHandler {
 
       tables.push(
         new Table({
+          layout: TableLayoutType.AUTOFIT,
+          columnWidths: [2200, 1320, 4400, 880],
           rows: [
             new TableRow({
               children: [
@@ -901,6 +914,8 @@ class DataHandler {
       logElements.push(
 
         new Table({
+          layout: TableLayoutType.AUTOFIT,
+          columnWidths: [8800],
           width: {
             size: 100,
             type: WidthType.PERCENTAGE
