@@ -387,7 +387,7 @@ class GOGCharacterApp {
 
         const filteredClasses = allClasses.filter(cl => {
             // 按职业类别筛选
-            if (selectedType && cl.type !== selectedType) return false;
+            if (selectedType && !cl.type.toLowerCase().includes(selectedType)) return false;
 
             // 通用搜索
             if (!searchTerm) return true;
