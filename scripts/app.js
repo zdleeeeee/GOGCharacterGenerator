@@ -132,7 +132,7 @@ class GOGCharacterApp {
             if (!searchTerm) return true;
 
             // 检查名称和描述
-            const nameMatch = blessing.name && blessing.name.toLowerCase().includes(searchTerm);
+            const nameMatch = blessing.fullName && blessing.fullName.toLowerCase().includes(searchTerm);
 
             // 检查系统描述
             const systemMatch = blessing.system && blessing.system.some(level =>
