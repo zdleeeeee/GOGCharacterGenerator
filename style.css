@@ -937,16 +937,21 @@ input.current-value {
 .blessing-item,
 .skill-item,
 .equipment-item,
-.inventory-item {
+.inventory-item,
+.class-item {
     padding: 10px;
     margin: 10px;
     border: 1px solid #eeeeee;
     border-radius: 8px;
 }
 
-.blessing-item p {
+.blessing-item p,
+.class-item p,
+.class-bkgd {
     color: #666666;
     font-size: 12px;
+    padding: 2px 0px;
+    margin: 0;
 }
 
 .item-header,
@@ -958,9 +963,15 @@ input.current-value {
 .item-header h5,
 .blessing-header h5 {
     padding-left: 5px;
-    padding-top: 5px;
+    padding-top: 8px;
     margin: 0px;
     font-size: 14px;
+}
+
+.blessing-skills h5,
+.class-skills h5 {
+    padding: 0px;
+    margin: 10px 0px 5px 0px;
 }
 
 .header-actions {
@@ -989,7 +1000,8 @@ input.current-value {
 .btn-apply-blessing,
 .btn-add-skill,
 .btn-add-equipment,
-.btn-add-inventory {
+.btn-add-inventory,
+.btn-apply-class {
     margin: 0;
     padding: 6px 12px;
     font-size: 12px;
@@ -1016,7 +1028,8 @@ input.current-value {
 .btn-add-skill:hover,
 .btn-clear-search:hover,
 .btn-add-equipment:hover,
-.btn-add-inventory:hover {
+.btn-add-inventory:hover,
+.btn-apply-class:hover {
     background: #dddddd80;
 }
 
@@ -1024,7 +1037,7 @@ input.current-value {
     display: grid;
     grid-template-columns: 56% 30% 10%;
     gap: 2%;
-    padding: 12px;
+    padding: 12px 0px;
     max-width: 100%;
 }
 

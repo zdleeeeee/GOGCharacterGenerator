@@ -22,6 +22,7 @@ class GOGCharacterApp {
         this.renderSkillsList();
         this.renderEquipmentsList();
         this.renderInventoryList();
+        this.renderClassesList();
         this.setupEventListeners();
     }
 
@@ -201,9 +202,9 @@ class GOGCharacterApp {
         searchContainer.className = 'skill-search-container';
         searchContainer.innerHTML = `
         <div class="search-controls">
-            <input type="text" id="skill-search-input" placeholder="搜索技能名称、职业或描述">
+            <input type="text" id="skill-search-input" placeholder="搜索技能名称、类别或描述">
             <select id="skill-class-filter">
-                <option value="">所有职业</option>
+                <option value="">所有类别</option>
                 ${[...new Set(Object.values(window.staticData.skills).flat().map(s => s.class))].map(c =>
             `<option value="${c}">${c}</option>`
         ).join('')}
@@ -321,6 +322,152 @@ class GOGCharacterApp {
 
         if (filteredSkills.length === 0) {
             container.innerHTML = '<div class="no-results">没有找到匹配的技能</div>';
+        }
+    }
+
+    renderClassesList() {
+        const container = document.getElementById('classes-list');
+        container.innerHTML = '';
+
+        // 添加搜索框和筛选器
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'class-search-container';
+        searchContainer.innerHTML = `
+        <div class="search-controls">
+            <input type="text" id="class-search-input" placeholder="搜索职业名称或描述">
+            <select id="class-type-filter">
+                <option value="">所有职业</option>
+                <option value="前线">前线（近战/防御）</option>
+                <option value="远程">远程（物理/魔法）</option>
+                <option value="支援">支援（控场/治疗）</option>
+                <option value="社交">社交（谈判/情报）</option>
+                <option value="工农">工农（生产/贸易）</option>
+                <option value="学者">学者（解密/研究）</option>
+                <option value="浪人">浪人（侦查/生存）</option>
+            </select>
+            <button id="clear-class-search" class="btn-clear-search">重置</button>
+        </div>
+    `;
+        container.appendChild(searchContainer);
+
+        // 创建技能列表容器
+        const classesListContainer = document.createElement('div');
+        classesListContainer.id = 'classes-list-content';
+        container.appendChild(classesListContainer);
+
+        // 初始渲染
+        this.filterAndRenderClasses();
+
+        // 添加事件监听
+        document.getElementById('class-search-input').addEventListener('input', () => {
+            this.filterAndRenderClasses();
+        });
+
+        document.getElementById('class-type-filter').addEventListener('change', () => {
+            this.filterAndRenderClasses();
+        });
+
+        document.getElementById('clear-class-search').addEventListener('click', () => {
+            document.getElementById('class-search-input').value = '';
+            document.getElementById('class-type-filter').value = '';
+            this.filterAndRenderClasses();
+        });
+    }
+    filterAndRenderClasses() {
+        const searchTerm = document.getElementById('class-search-input').value.toLowerCase();
+        const selectedType = document.getElementById('class-type-filter').value;
+
+        const container = document.getElementById('classes-list-content');
+        container.innerHTML = '';
+
+        // 获取所有职业并应用筛选
+        const allClasses = Object.entries(window.staticData.classes).flatMap(([category, classes]) =>
+            classes.map(cl => ({ ...cl, category }))
+        );
+
+        const filteredClasses = allClasses.filter(cl => {
+            // 按职业类别筛选
+            if (selectedType && cl.type !== selectedType) return false;
+
+            // 通用搜索
+            if (!searchTerm) return true;
+
+            const skillsMatch = cl.skills && cl.skills.some(skill =>
+                (skill.name && skill.name.toLowerCase().includes(searchTerm)) ||
+                (skill.description && skill.description.toLowerCase().includes(searchTerm))
+            );
+
+            return (
+                cl.name.toLowerCase().includes(searchTerm) ||
+                cl.bkgd.toLowerCase().includes(searchTerm) ||
+                cl.type.toLowerCase().includes(searchTerm) ||
+                skillsMatch
+            );
+        });
+
+        // 按类别分组
+        const classesByCategory = filteredClasses.reduce((acc, cl) => {
+            if (!acc[cl.category]) acc[cl.category] = [];
+            acc[cl.category].push(cl);
+            return acc;
+        }, {});
+
+        Object.entries(classesByCategory).forEach(([category, classes]) => {
+            const categoryElement = document.createElement('div');
+            categoryElement.className = 'class-category';
+
+            // 创建分类标题（可点击折叠）
+            const header = document.createElement('div');
+            header.className = 'class-category-header';
+            header.innerHTML = `
+        <div class="item-header">
+            <h5>${category}</h5>
+            <span class="toggle-icon">-</span>
+        </div>
+      `;
+
+            // 创建职业列表容器
+            const listContainer = document.createElement('div');
+            listContainer.className = 'class-items-container';
+            listContainer.style.display = 'block';
+
+            listContainer.innerHTML = classes.map(cl => `
+        <div class="class-item">
+        <div class="item-header">
+          <div style="padding: 5px;margin: 0px;font-size: 14px;">
+          <span class="class-name" style="font-weight: bold;">${cl.name}</span>
+          <span class="class-type">(${cl.type})</span>
+          </div>
+          <button class="btn-apply-class" 
+                  data-name="${cl.name}"
+                  data-category="${category}">
+            应用
+          </button>
+        </div>
+          <div class="class-bkgd">${cl.bkgd}</div>
+          <div class="class-skills">
+            <h5>职业技能</h5>
+            ${cl.skills.map(skill => `
+                <p><strong>${skill.name}:</strong> ${skill.description}</p>
+           `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+            // 点击标题切换折叠状态
+            header.addEventListener('click', () => {
+                const isHidden = listContainer.style.display === 'none';
+                listContainer.style.display = isHidden ? 'block' : 'none';
+                header.querySelector('.toggle-icon').textContent = isHidden ? '-' : '+';
+            });
+
+            categoryElement.appendChild(header);
+            categoryElement.appendChild(listContainer);
+            container.appendChild(categoryElement);
+        });
+
+        if (filteredClasses.length === 0) {
+            container.innerHTML = '<div class="no-results">没有找到匹配的职业</div>';
         }
     }
 
@@ -566,7 +713,7 @@ class GOGCharacterApp {
         document.getElementById('blessingFullName').value = blessing.fullName;
         this.renderBlessingSystem(blessing.system, blessing.name);
         this.renderBlessingSkills(skillsWithUnlearnedTag);
-        this.showToast(`${blessing.name}权柄已应用`);
+        this.showToast(`权柄 【${blessing.name}】 已应用`);
     }
     addSkillToCharacter(skillData) {
         const categories = [];
@@ -654,6 +801,32 @@ class GOGCharacterApp {
         this.updateTotalWeight();
         const category = this.mapItemCategoryNameToKey(item.category);
         this.showToast(`物品${item.name}(${category})已放入背包`);
+    }
+    applyClass(clnm, clcat) {
+        const cl = window.staticData.classes[clcat].find(c => c.name === clnm);
+        if (!cl) return;
+        this.currentCharacter.class = cl.name;
+        if (!this.currentCharacter.skills.PRF) {
+            this.currentCharacter.skills.PRF = [];
+        }
+        this.currentCharacter.skills.PRF.push({
+            name: "职业背景",
+            proficiency: 0,
+            description: `${cl.name}（${cl.type}）：${cl.bkgd}`,
+            uses: 0
+        })
+        cl.skills.forEach(skill => {
+            this.currentCharacter.skills.PRF.push({
+                name: skill.name,
+                proficiency: 0,
+                description: skill.description,
+                uses: 0
+            });
+        })
+
+        document.getElementById('character-class').value = cl.name;
+        this.renderSkills(this.currentCharacter.skills);
+        this.showToast(`职业 【${cl.name}】 已应用`);
     }
 
     // 通用输入绑定方法
@@ -743,29 +916,24 @@ class GOGCharacterApp {
         };
     }
 
-
     updateIdentityStyle(button, identity) {
         const allstyles = {
             '人类': {
-                color: '#79cc60ff',  // 浅灰色
-                textShadow: '0 0 10px #9eff37ff'  // 灰色阴影
+                color: '#00b6b3ff',
             },
             '神明': {
-                color: '#d3b71aff',  // 金色
-                textShadow: '0 0 10px #ffe656ff'  // 金色光晕
+                color: '#dec11cff',
             },
             '其他': {
-                color: '#7a24a5',  // 浅蓝色
-                textShadow: '0 0 10px #efa2f4'  // 蓝色光晕
+                color: '#b93aa6ff',
             }
         };
         const styles = allstyles[identity] || styles['人类'];
         button.textContent = identity;
         Object.assign(button.style, {
             color: styles.color,
-            textShadow: styles.textShadow,
-            letterSpacing: '2px',
-            fontSize: '14px',
+            letterSpacing: '6px',
+            fontSize: '16px',
             transition: 'all 0.3s ease'
         });
     }
@@ -820,80 +988,25 @@ class GOGCharacterApp {
 
                 const allstyles = {
                     '人类': {
-                        color: '#79cc60ff',
-                        textShadow: '0 0 15px #9eff37ff, 0 0 30px #9eff37ff'  // 白色光晕+灰色扩散
+                        color: '#00b6b3ff',
                     },
                     '神明': {
-                        color: '#d3b71aff',
-                        textShadow: '0 0 15px #ffe656ff, 0 0 30px #ffe656ff'  // 强烈金色光晕
+                        color: '#dec11cff',
                     },
                     '其他': {
-                        color: '#7a24a5',
-                        textShadow: '0 0 15px #efa2f4, 0 0 30px #efa2f4'  // 蓝色光晕扩散
+                        color: '#b93aa6ff',
                     }
                 };
                 const styles = allstyles[identities[nextIndex]] || allstyles['人类'];
 
                 Object.assign(isGodButton.style, {
                     color: styles.color,
-                    textShadow: styles.textShadow,
-                    letterSpacing: '6px',
-                    fontSize: '16px',
                     transition: 'all 0.3s ease'
                 });
 
                 // 身份变化触发其他逻辑
                 this.renderAttributes(this.currentCharacter.attributes, this.currentCharacter.isGod);
             });
-
-            isGodButton.onmouseenter = function () {
-                const currentIdentity = this.textContent;
-                const allstyles = {
-                    '人类': {
-                        textShadow: '0 0 15px #9eff37ff, 0 0 30px #9eff37ff'  // 白色光晕+灰色扩散
-                    },
-                    '神明': {
-                        textShadow: '0 0 15px #ffe656ff, 0 0 30px #ffe656ff'  // 强烈金色光晕
-                    },
-                    '其他': {
-                        textShadow: '0 0 15px #efa2f4, 0 0 30px #efa2f4'  // 蓝色光晕扩散
-                    }
-                };
-                const styles = allstyles[currentIdentity] || allstyles['人类'];
-
-                Object.assign(this.style, {
-                    textShadow: styles.textShadow,
-                    letterSpacing: '6px',
-                    fontSize: '16px',
-                    transition: 'all 0.3s ease'
-                });
-            };
-            isGodButton.onmouseleave = function () {
-                const currentIdentity = this.textContent;
-                const allstyles = {
-                    '人类': {
-                        color: '#79cc60ff',  // 浅灰色
-                        textShadow: '0 0 10px #9eff37ff'  // 灰色阴影
-                    },
-                    '神明': {
-                        color: '#d3b71aff',  // 金色
-                        textShadow: '0 0 10px #ffe656ff'  // 金色光晕
-                    },
-                    '其他': {
-                        color: '#7a24a5',  // 浅蓝色
-                        textShadow: '0 0 10px #efa2f4'  // 蓝色光晕
-                    }
-                };
-                const styles = allstyles[currentIdentity] || allstyles['人类'];
-
-                Object.assign(this.style, {
-                    color: styles.color,
-                    textShadow: styles.textShadow,
-                    letterSpacing: '2px',
-                    fontSize: '14px',
-                    transition: 'all 0.3s ease'
-                });
-            };
         }
 
         // 动态表格绑定
@@ -1813,6 +1926,13 @@ class GOGCharacterApp {
                     category: e.target.dataset.category
                 };
                 this.addInventoryToCharacter(inventoryData);
+            }
+        });
+
+        // 职业应用
+        document.getElementById('classes-list').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-apply-class')) {
+                this.applyClass(e.target.dataset.name, e.target.dataset.category);
             }
         });
 
