@@ -881,54 +881,6 @@ input.current-value {
     border-bottom: 2px solid #3498db;
 }
 
-/* 响应式调整 */
-@media (max-width: 480px) {
-    .data-panel {
-        left: auto;
-        right: 0;
-        transform: none;
-    }
-
-    .tab-btn {
-        padding: 8px 10px 8px 8px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        writing-mode: vertical-rl;
-        text-orientation: upright;
-        letter-spacing: 8px;
-        text-align:center;
-    }
-
-    .isGod-container {
-        grid-template-columns: 1fr;
-    }
-
-    input.blessingFullName {
-        font-size: 12px;
-    }
-
-    .attributes-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .roster-list {
-        height: 365px;
-    }
-
-    .search-controls {
-        grid-template-columns: 1fr;
-    }
-
-    .btn-clear-search {
-        width: 100%;
-    }
-
-    .character-form-fields {
-        grid-template-columns: 1fr;
-    }
-}
-
 .tab-content {
     display: none;
 }
@@ -1041,12 +993,20 @@ input.current-value {
     background: #dddddd80;
 }
 
+.search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 .search-controls {
     display: grid;
     grid-template-columns: 56% 30% 10%;
     gap: 2%;
     padding: 12px 0px;
-    max-width: 100%;
+    width: 100%;
 }
 
 .search-controls input,
@@ -1144,6 +1104,56 @@ input.current-value {
 #toast.toast-visible {
     display: block;
     z-index: 1100;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .data-panel {
+        left: auto;
+        right: 0;
+        transform: none;
+    }
+
+    .tab-btn {
+        padding: 8px 10px 8px 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        letter-spacing: 8px;
+        text-align:center;
+    }
+
+    .isGod-container {
+        grid-template-columns: 1fr;
+    }
+
+    input.blessingFullName {
+        font-size: 12px;
+    }
+
+    .attributes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .roster-list {
+        height: 365px;
+    }
+
+    .search-controls {
+        grid-template-columns: 1fr;
+        gap: 1px;
+    }
+
+    .btn-clear-search {
+        width: 100%;
+        min-height: 34px;
+    }
+
+    .character-form-fields {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media print {

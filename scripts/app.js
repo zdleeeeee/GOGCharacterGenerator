@@ -97,7 +97,7 @@ class GOGCharacterApp {
 
         // 添加搜索框和筛选器
         const searchContainer = document.createElement('div');
-        searchContainer.className = 'blessing-search-container';
+        searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
         <div class="search-controls" style="grid-template-columns: 88% 10%;">
             <input type="text" id="blessing-search-input" placeholder="搜索赐福名称或描述">
@@ -199,7 +199,7 @@ class GOGCharacterApp {
 
         // 添加搜索框和筛选器
         const searchContainer = document.createElement('div');
-        searchContainer.className = 'skill-search-container';
+        searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
         <div class="search-controls">
             <input type="text" id="skill-search-input" placeholder="搜索技能名称、类别或描述">
@@ -331,7 +331,7 @@ class GOGCharacterApp {
 
         // 添加搜索框和筛选器
         const searchContainer = document.createElement('div');
-        searchContainer.className = 'class-search-container';
+        searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
         <div class="search-controls">
             <input type="text" id="class-search-input" placeholder="搜索职业名称或描述">
@@ -477,7 +477,7 @@ class GOGCharacterApp {
 
         // 添加搜索框和筛选器
         const searchContainer = document.createElement('div');
-        searchContainer.className = 'equipment-search-container';
+        searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
         <div class="search-controls" style="grid-template-columns: 88% 10%;">
             <input type="text" id="equipment-search-input" placeholder="搜索装备名称、类型或描述">
@@ -589,7 +589,7 @@ class GOGCharacterApp {
 
         // 添加搜索框和筛选器
         const searchContainer = document.createElement('div');
-        searchContainer.className = 'inventory-search-container';
+        searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
         <div class="search-controls" style="grid-template-columns: 88% 10%;">
             <input type="text" id="inventory-search-input" placeholder="搜索物品名称或描述">
