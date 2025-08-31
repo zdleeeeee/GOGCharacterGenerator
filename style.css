@@ -11,7 +11,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: var(--background-color);
+    background-color: #f6f6f6;
     margin: 0;
     padding: 20px;
 }
@@ -118,6 +118,10 @@ input::placeholder {
     /* 确保颜色不透明（某些浏览器默认有透明度） */
 }
 
+select:hover {
+    cursor: pointer;
+}
+
 textarea {
     min-height: 100px;
     resize: vertical;
@@ -189,7 +193,7 @@ textarea {
 }
 
 .btn {
-    padding: 8px 15px;
+    padding: 7px 15px;
     background-color: white;
     color: #dddddd;
     border: 1px solid #eeeeee;
@@ -296,8 +300,6 @@ td input[type="number"] {
 .blessing-grid>.form-group {
     min-width: 0;
     /* 关键修复：覆盖默认的 min-width: auto */
-    overflow: hidden;
-    /* 创建新的BFC */
 }
 
 /* 基本信息网格布局 */
@@ -678,7 +680,7 @@ input.current-value {
     height: 400px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
     z-index: 1102;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .data-button-container {
@@ -690,16 +692,23 @@ input.current-value {
 
 .data-button-container::-webkit-scrollbar {
     background-color: transparent;
-    width: 8px;
+    width: 10px;
 }
 
 .data-button-container::-webkit-scrollbar-thumb {
-    background-color: #999999;
-    border-radius: 4px;
+    background-color: #eeeeee;
+    border-radius: 5px;
+    border: 2px solid #ffffff;
+}
+
+.data-button-container::-webkit-scrollbar-thumb:hover {
+    background-color: #dddddd;
+    cursor: pointer;
 }
 
 .data-button-container::-webkit-scrollbar-button {
-    display: none;
+    background-color: #ffffff;
+    height: 3px;
 }
 
 .data-button-container small {
@@ -781,7 +790,23 @@ input.current-value {
 }
 
 .roster-list::-webkit-scrollbar {
-    display: none;
+    background-color: transparent;
+    width: 4px;
+}
+
+.roster-list::-webkit-scrollbar-thumb {
+    background-color: #eeeeee;
+    border-radius: 2px;
+}
+
+.roster-list::-webkit-scrollbar-thumb:hover {
+    background-color: #dddddd;
+    cursor: pointer;
+}
+
+.roster-list::-webkit-scrollbar-button {
+    height: 4px;
+    background-color: transparent;
 }
 
 /* 确保主要内容不被遮挡 */
@@ -800,11 +825,11 @@ input.current-value {
     z-index: 1105;
     max-width: 300px;
     border-bottom: 1px solid #eee;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
 }
 
 .roster-item:hover {
-    background: #f8f9fa;
+    background-color: #eeeeee50;
 }
 
 .roster-avatar {
@@ -814,7 +839,6 @@ input.current-value {
     background-size: cover;
     background-position: center;
     margin-right: 12px;
-    border: 2px solid #3498db;
 }
 
 .roster-info {
@@ -872,13 +896,17 @@ input.current-value {
 .tab-btn {
     padding: 8px 16px;
     background: none;
-    border: none;
+    border-radius: 6px;
     cursor: pointer;
     text-align: center;
 }
 
 .tab-btn.active {
-    border-bottom: 2px solid #3498db;
+    box-shadow: 0 3px 0 0px #e1e1e1;
+    background-color: #eeeeee;
+    font-weight: bold;
+    color: #333333;
+    transform: translateY(-3px);
 }
 
 .tab-content {
@@ -1086,6 +1114,136 @@ input.current-value {
     padding: 8px 15px;
 }
 
+/* 自定义select样式 */
+.select-container {
+    width: 100%;
+}
+
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select select {
+    display: none;
+    /* 隐藏原始select */
+}
+
+.select-selected {
+    width: 100%;
+    background: transparent;
+    padding: 8px 0px 8px 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.select-selected:after {
+    position: absolute;
+    content: "";
+    top: 50%;
+    right: 12px;
+    width: 7px;
+    height: 7px;
+    border: solid #999999;
+    border-width: 0 1px 1px 0;
+    transform: translateY(-50%) rotate(135deg);
+    transition: transform 0.3s ease;
+}
+
+/* 激活状态箭头 */
+.select-selected.select-arrow-active:after {
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* 选项列表 */
+.select-items {
+    position: absolute;
+    background-color: #f6f6f6;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    margin-top: 5px;
+    max-height: 310px;
+    overflow-y: auto;
+    display: none;
+    border: solid #333333;
+    border-width: 0px 0px 4px 0px;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+/* 选项项样式 */
+.select-item {
+    padding: 6px 10px;
+    margin: 8px 4px 8px 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+    color: #666666;
+}
+
+.select-item:hover {
+    background-color: #ffffff;
+}
+
+/* 相同选项样式 */
+.select-same-as-selected {
+    background-color: #333333;
+    color: #dddddd;
+    font-weight: bold;
+}
+
+.select-same-as-selected:hover {
+    background-color: #666666;
+    color: #ffffff;
+}
+
+/* 焦点状态 */
+.select-selected:focus {
+    outline: none;
+}
+
+.select-style-2 .select-selected {
+    background: #eeeeee80;
+    color: #333333;
+    padding-left: 12px;
+}
+
+.select-style-2 .select-selected:hover,
+.select-style-2 .select-selected:focus {
+    background: #dddddd80;
+    outline: none;
+}
+
+.select-style-2 .select-items::-webkit-scrollbar {
+    background-color: transparent;
+    width: 12px;
+}
+
+.select-style-2 .select-items::-webkit-scrollbar-thumb {
+    background-color: #aaaaaa;
+    border-radius: 6px;
+    border: 4px solid #f6f6f6;
+}
+
+.select-style-2 .select-items::-webkit-scrollbar-thumb:hover {
+    background-color: #666666;
+    cursor: pointer;
+}
+
+.select-style-2 .select-items::-webkit-scrollbar-button {
+    background-color: #f6f6f6;
+    height: 3px;
+}
+
 /* 提示 */
 #toast {
     position: fixed;
@@ -1122,7 +1280,7 @@ input.current-value {
         writing-mode: vertical-rl;
         text-orientation: upright;
         letter-spacing: 8px;
-        text-align:center;
+        text-align: center;
     }
 
     .isGod-container {

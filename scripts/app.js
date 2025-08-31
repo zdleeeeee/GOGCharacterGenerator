@@ -203,12 +203,23 @@ class GOGCharacterApp {
         searchContainer.innerHTML = `
         <div class="search-controls">
             <input type="text" id="skill-search-input" placeholder="搜索技能名称、类别或描述">
-            <select id="skill-class-filter">
-                <option value="">所有类别</option>
-                ${[...new Set(Object.values(window.staticData.skills).flat().map(s => s.class))].map(c =>
-            `<option value="${c}">${c}</option>`
-        ).join('')}
-            </select>
+            <div class="select-container">
+                <div class="custom-select select-style-2" tabindex="0">
+                    <select id="skill-class-filter">
+                        <option value="">所有类别</option>
+                        <option value="基础">基础</option>
+                        <option value="西方学院派魔法">西方学院派魔法</option>
+                        <option value="怀武炁术法">怀武炁术法</option>
+                    </select>
+                    <div class="select-selected">所有类别</div>
+                    <div class="select-items">
+                        <div class="select-item" data-value="">所有类别</div>
+                        <div class="select-item" data-value="基础">基础</div>
+                        <div class="select-item" data-value="西方学院派魔法">西方学院派魔法</div>
+                        <div class="select-item" data-value="怀武炁术法">怀武炁术法</div>
+                    </div>
+                </div>
+            </div>
             <button id="clear-skill-search" class="btn-clear-search">重置</button>
         </div>
     `;
@@ -335,16 +346,31 @@ class GOGCharacterApp {
         searchContainer.innerHTML = `
         <div class="search-controls">
             <input type="text" id="class-search-input" placeholder="搜索职业名称或描述">
-            <select id="class-type-filter">
-                <option value="">所有职业</option>
-                <option value="前线">前线（近战/防御）</option>
-                <option value="远程">远程（物理/魔法）</option>
-                <option value="支援">支援（控场/治疗）</option>
-                <option value="社交">社交（谈判/情报）</option>
-                <option value="工农">工农（生产/贸易）</option>
-                <option value="学者">学者（解密/研究）</option>
-                <option value="浪人">浪人（侦查/生存）</option>
-            </select>
+            <div class="select-container">
+                <div class="custom-select select-style-2" tabindex="0">
+                <select id="class-type-filter">
+                    <option value="">所有职业</option>
+                    <option value="前线">前线（近战/防御）</option>
+                    <option value="远程">远程（物理/魔法）</option>
+                    <option value="支援">支援（控场/治疗）</option>
+                    <option value="社交">社交（谈判/情报）</option>
+                    <option value="工农">工农（生产/贸易）</option>
+                    <option value="学者">学者（解密/研究）</option>
+                    <option value="浪人">浪人（侦查/生存）</option>
+                </select>
+                <div class="select-selected">所有职业</div>
+                    <div class="select-items">
+                        <div class="select-item" data-value="">所有职业</div>
+                        <div class="select-item" data-value="前线">前线<br>-近战/防御</div>
+                        <div class="select-item" data-value="远程">远程<br>-物理/魔法</div>
+                        <div class="select-item" data-value="支援">支援<br>-控场/治疗</div>
+                        <div class="select-item" data-value="社交">社交<br>-谈判/情报</div>
+                        <div class="select-item" data-value="工农">工农<br>-生产/贸易</div>
+                        <div class="select-item" data-value="学者">学者<br>-解密/研究</div>
+                        <div class="select-item" data-value="浪人">浪人<br>-侦查/生存</div>
+                    </div>
+                </div>
+            </div>
             <button id="clear-class-search" class="btn-clear-search">重置</button>
         </div>
     `;
@@ -1040,6 +1066,21 @@ class GOGCharacterApp {
 
         // 渲染日志系统
         this.renderLogs(character.logs);
+
+        const customSelects = document.querySelectorAll('.custom-select');
+        customSelects.forEach((select) => {
+            const selected = select.querySelector('.select-selected');
+            const items = select.querySelector('.select-items');
+            const originalSelect = select.querySelector('select');
+            const options = items.querySelectorAll('.select-item');
+
+            const initialValue = originalSelect.value;
+            const initialOption = Array.from(options).find(opt => opt.getAttribute('data-value') === initialValue);
+            if (initialOption) {
+                selected.textContent = initialOption.textContent;
+                options.forEach(opt => opt.classList.remove('select-same-as-selected'));
+                initialOption.classList.add('select-same-as-selected');
+            }});
     }
 
     // 渲染属性
@@ -2254,6 +2295,72 @@ class GOGCharacterApp {
             if (e.target.classList.contains('btn-danger')) {
                 setTimeout(() => this.updateTotalWeight(), 0);
             }
+        });
+
+        // 自定义select
+        const customSelects = document.querySelectorAll('.custom-select');
+
+        // 关闭所有下拉框的函数
+        const closeAllSelect = (elmnt) => {
+            const selectItems = document.querySelectorAll('.select-items');
+            const selectSelected = document.querySelectorAll('.select-selected');
+
+            selectItems.forEach((item) => {
+                if (elmnt !== item && elmnt !== item.previousElementSibling) {
+                    item.style.display = 'none';
+                }
+            });
+
+            selectSelected.forEach((select) => {
+                if (elmnt !== select) {
+                    select.classList.remove('select-arrow-active');
+                }
+            });
+        };
+
+        customSelects.forEach((select) => {
+            const selected = select.querySelector('.select-selected');
+            const items = select.querySelector('.select-items');
+            const originalSelect = select.querySelector('select');
+            const options = items.querySelectorAll('.select-item');
+
+            // 点击选择框
+            selected.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeAllSelect(selected);
+                items.style.display = (items.style.display === 'block') ? 'none' : 'block';
+                selected.classList.toggle('select-arrow-active');
+            });
+
+            // 选项点击
+            options.forEach((option) => {
+                option.addEventListener('click', (e) => {
+                    const value = option.getAttribute('data-value');
+                    const text = option.textContent;
+
+                    // 更新显示的选择
+                    selected.textContent = text;
+                    selected.classList.remove('select-arrow-active');
+
+                    originalSelect.value = value;
+
+                    options.forEach((opt) => {
+                        opt.classList.remove('select-same-as-selected');
+                    });
+                    option.classList.add('select-same-as-selected');
+
+                    const event = new Event('change');
+                    originalSelect.dispatchEvent(event);
+
+                    // 隐藏选项列表
+                    items.style.display = 'none';
+                });
+            });
+        });
+
+        // 点击页面其他区域关闭所有下拉框
+        document.addEventListener('click', (e) => {
+            closeAllSelect(e.target);
         });
 
         // 初始计算
