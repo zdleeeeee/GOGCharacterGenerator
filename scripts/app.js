@@ -204,9 +204,9 @@ class GOGCharacterApp {
         <div class="search-controls">
             <input type="text" id="skill-search-input" placeholder="搜索技能名称、类别或描述">
             <div class="select-container">
-                <div class="custom-select select-style-2" tabindex="0">
+                <div class="custom-select select-style-2" tabindex="0" id="skill-class-filter-c">
                     <select id="skill-class-filter">
-                        <option value="">所有类别</option>
+                        <option value="" selected>所有类别</option>
                         <option value="基础">基础</option>
                         <option value="西方学院派魔法">西方学院派魔法</option>
                         <option value="怀武炁术法">怀武炁术法</option>
@@ -245,6 +245,18 @@ class GOGCharacterApp {
         document.getElementById('clear-skill-search').addEventListener('click', () => {
             document.getElementById('skill-search-input').value = '';
             document.getElementById('skill-class-filter').value = '';
+            const select = document.getElementById('skill-class-filter-c');
+            const selected = select.querySelector('.select-selected');
+            const items = select.querySelector('.select-items');
+            const options = items.querySelectorAll('.select-item');
+
+            const initialValue = '';
+            const initialOption = Array.from(options).find(opt => (opt.getAttribute('data-value') === initialValue) || (!initialValue && !opt.getAttribute('data-value')));
+            if (initialOption) {
+                selected.textContent = initialOption.textContent;
+                options.forEach(opt => opt.classList.remove('select-same-as-selected'));
+                initialOption.classList.add('select-same-as-selected');
+            }
             this.filterAndRenderSkills();
         });
     }
@@ -347,9 +359,9 @@ class GOGCharacterApp {
         <div class="search-controls">
             <input type="text" id="class-search-input" placeholder="搜索职业名称或描述">
             <div class="select-container">
-                <div class="custom-select select-style-2" tabindex="0">
+                <div class="custom-select select-style-2" tabindex="0" id="class-type-filter-c">
                 <select id="class-type-filter">
-                    <option value="">所有职业</option>
+                    <option value="" selected>所有职业</option>
                     <option value="前线">前线（近战/防御）</option>
                     <option value="远程">远程（物理/魔法）</option>
                     <option value="支援">支援（控场/治疗）</option>
@@ -396,6 +408,18 @@ class GOGCharacterApp {
         document.getElementById('clear-class-search').addEventListener('click', () => {
             document.getElementById('class-search-input').value = '';
             document.getElementById('class-type-filter').value = '';
+            const select = document.getElementById('class-type-filter-c');
+            const selected = select.querySelector('.select-selected');
+            const items = select.querySelector('.select-items');
+            const options = items.querySelectorAll('.select-item');
+
+            const initialValue = '';
+            const initialOption = Array.from(options).find(opt => (opt.getAttribute('data-value') === initialValue) || (!initialValue && !opt.getAttribute('data-value')));
+            if (initialOption) {
+                selected.textContent = initialOption.textContent;
+                options.forEach(opt => opt.classList.remove('select-same-as-selected'));
+                initialOption.classList.add('select-same-as-selected');
+            }
             this.filterAndRenderClasses();
         });
     }
@@ -1075,7 +1099,7 @@ class GOGCharacterApp {
             const options = items.querySelectorAll('.select-item');
 
             const initialValue = originalSelect.value;
-            const initialOption = Array.from(options).find(opt => opt.getAttribute('data-value') === initialValue);
+            const initialOption = Array.from(options).find(opt => (opt.getAttribute('data-value') === initialValue) || (!initialValue && !opt.getAttribute('data-value')));
             if (initialOption) {
                 selected.textContent = initialOption.textContent;
                 options.forEach(opt => opt.classList.remove('select-same-as-selected'));
