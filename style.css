@@ -755,7 +755,6 @@ input.current-value {
     bottom: 50px;
     left: 0px;
     right: 0px;
-    min-width: 300px;
     height: 480px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
