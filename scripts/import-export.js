@@ -1064,4 +1064,86 @@ class DataHandler {
     // 保存到数据库
     await this.db.saveCharacter(character);
   }
+
+  // 处理图鉴数据文件上传
+  async handleDataFileUpload(file) {
+    if (!file) return;
+
+    try {
+      const fileContent = await this.readFileContent(file);
+      const data = this.parseDataFile(fileContent, file.name);
+
+      // 保存到 IndexedDB
+      await this.db.saveStaticData(data);
+
+      // 重新初始化应用
+      this.staticData = data;
+      window.staticData = data;
+
+      // 重新渲染界面
+      const overlay = document.getElementById('data-upload-overlay');
+      if (overlay) {
+        document.body.removeChild(overlay);
+      }
+
+      const toast = document.getElementById('toast');
+      toast.textContent = '数据文件加载成功！';
+      toast.classList.add('toast-visible');
+
+      setTimeout(() => {
+        toast.classList.remove('toast-visible');
+      }, 2000);
+
+    } catch (error) {
+      alert(`数据文件加载失败: ${error.message}`);
+      console.error('数据文件加载错误:', error);
+    }
+  }
+
+  // 读取文件内容
+  readFileContent(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (e) => reject(new Error('文件读取失败'));
+      reader.readAsText(file);
+    });
+  }
+
+  // 解析数据文件
+  parseDataFile(content, filename) {
+    try {
+      if (filename.endsWith('.json')) {
+        // JSON 格式
+        return JSON.parse(content);
+      } else if (filename.endsWith('.js')) {
+        // JS 文件格式（提取 window.staticData 赋值）
+        const jsContent = content;
+
+        // 创建一个临时环境来执行 JS 代码
+        const sandbox = {
+          window: {},
+          console: console
+        };
+
+        // 使用 Function 构造函数而不是 eval
+        const execute = new Function('window', `
+                    ${jsContent};
+                    return window.staticData;
+                `);
+
+        const result = execute(sandbox.window);
+
+        if (!result) {
+          throw new Error('JS 文件中未找到 staticData 对象');
+        }
+
+        return result;
+      } else {
+        throw new Error('不支持的文件格式，请上传 .js 或 .json 文件');
+      }
+    } catch (error) {
+      throw new Error(`数据文件解析失败: ${error.message}`);
+    }
+  }
 };

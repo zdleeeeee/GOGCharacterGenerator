@@ -2,7 +2,7 @@
 class CharacterDB {
     constructor() {
         this.dbName = 'GOGCharacterDB';
-        this.dbVersion = 1;
+        this.dbVersion = 2;
         this.db = null;
     }
 
@@ -13,8 +13,14 @@ class CharacterDB {
 
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
+                const oldVersion = event.oldVersion || 0;
                 if (!db.objectStoreNames.contains('characters')) {
                     db.createObjectStore('characters', { keyPath: 'id', autoIncrement: true });
+                }
+                if (oldVersion < 2) {
+                    if (!db.objectStoreNames.contains('staticData')) {
+                        db.createObjectStore('staticData');
+                    }
                 }
             };
 
@@ -81,6 +87,36 @@ class CharacterDB {
             request.onerror = (event) => reject(event.target.error);
         });
     }
+
+    // 保存静态数据（图鉴数据）
+    async saveStaticData(data) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['staticData'], 'readwrite');
+            const store = transaction.objectStore('staticData');
+
+            const request = store.put(data, 'staticData');
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    // 获取静态数据（图鉴数据）
+    async getStaticData() {
+        if (!this.db.objectStoreNames.contains('staticData')) {
+            return null; // 存储不存在，返回 null
+        }
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['staticData'], 'readonly');
+            const store = transaction.objectStore('staticData');
+
+            const request = store.get('staticData');
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
 
     // 完全删除数据库
     async deleteEntireDB() {

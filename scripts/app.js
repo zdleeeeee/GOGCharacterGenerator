@@ -13,17 +13,48 @@ class GOGCharacterApp {
 
     async init() {
         await this.db.openDB();
+        this.staticData = await this.db.getStaticData();
+        if (this.staticData) {
+            window.staticData = this.staticData;
+        }
+
         this.renderCharacterList();
-
-
         this.currentCharacter = new Character();
-        this.renderCharacterDetail(this.currentCharacter);
         this.renderBlessingsList();
         this.renderSkillsList();
         this.renderEquipmentsList();
         this.renderInventoryList();
         this.renderClassesList();
+        this.renderCharacterDetail(this.currentCharacter);
         this.setupEventListeners();
+
+
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const h = parseInt(hours);
+        let greeting = '';
+        let bgGradient = '';
+        if (h >= 5 && h < 8) {
+            greeting = '清晨好！新的一天开始了！🥝';
+            bgGradient = 'linear-gradient(120deg, #8fe52dff, #f3bd0cff)';
+        } else if (h >= 8 && h < 11) {
+            greeting = '早上好！祝您有美好的一天！🌈';
+            bgGradient = 'linear-gradient(120deg, #32f1ffff, #34ed43ff)';
+        } else if (h >= 11 && h < 13) {
+            greeting = '中午好！记得吃午餐哦！😄🍜';
+            bgGradient = 'linear-gradient(120deg, #f74248ff, #ffc800ff)';
+        } else if (h >= 13 && h < 18) {
+            greeting = '下午好！工作学习顺利吗？💪😈';
+            bgGradient = 'linear-gradient(120deg, #2676f8ff, #25adecff)';
+        } else if (h >= 18 && h < 23) {
+            greeting = '晚上好！今天过得怎么样？😳🍸';
+            bgGradient = 'linear-gradient(120deg, #c95bf8ff, #f25d96ff)';
+        } else {
+            greeting = '夜深了，早点休息哦！🌛';
+            bgGradient = 'linear-gradient(120deg, #0c2461, #1e3799)';
+        }
+        this.showToast(greeting, 3000, bgGradient);
+
     }
 
     // 切换图鉴面板
@@ -197,6 +228,15 @@ class GOGCharacterApp {
         const container = document.getElementById('skills-list');
         container.innerHTML = '';
 
+        // 获取技能类别，如果没有则使用默认值
+        const skillClasses = window.staticData?.skillClasses || ["基础", "西方学院派魔法", "怀武炁术法"];
+        const optionsHTML = skillClasses.map(cls =>
+            `<option value="${cls}">${cls}</option>`
+        ).join('');
+        const selectItemsHTML = skillClasses.map(cls =>
+            `<div class="select-item" data-value="${cls}">${cls}</div>`
+        ).join('');
+
         // 添加搜索框和筛选器
         const searchContainer = document.createElement('div');
         searchContainer.className = 'search-container';
@@ -207,16 +247,12 @@ class GOGCharacterApp {
                 <div class="custom-select select-style-2" tabindex="0" id="skill-class-filter-c">
                     <select id="skill-class-filter">
                         <option value="" selected>所有类别</option>
-                        <option value="基础">基础</option>
-                        <option value="西方学院派魔法">西方学院派魔法</option>
-                        <option value="怀武炁术法">怀武炁术法</option>
+                        ${optionsHTML}
                     </select>
                     <div class="select-selected">所有类别</div>
                     <div class="select-items">
                         <div class="select-item" data-value="">所有类别</div>
-                        <div class="select-item" data-value="基础">基础</div>
-                        <div class="select-item" data-value="西方学院派魔法">西方学院派魔法</div>
-                        <div class="select-item" data-value="怀武炁术法">怀武炁术法</div>
+                        ${selectItemsHTML}
                     </div>
                 </div>
             </div>
@@ -1104,7 +1140,8 @@ class GOGCharacterApp {
                 selected.textContent = initialOption.textContent;
                 options.forEach(opt => opt.classList.remove('select-same-as-selected'));
                 initialOption.classList.add('select-same-as-selected');
-            }});
+            }
+        });
     }
 
     // 渲染属性
@@ -1856,10 +1893,11 @@ class GOGCharacterApp {
         });
     }
 
-    showToast(message, duration = 2000) {
+    showToast(message, duration = 2000, bk = 'rgba(0, 0, 0, 0.7)') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.classList.add('toast-visible');
+        toast.style.background = bk;
 
         setTimeout(() => {
             toast.classList.remove('toast-visible');
@@ -2097,6 +2135,75 @@ class GOGCharacterApp {
                 alert(`导入失败: ${error.message}`);
             } finally {
                 e.target.value = ''; // 重置input
+            }
+        });
+
+        document.getElementById('import-full-data').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                if ((!file.name.endsWith('.json') && !file.type.includes('json')) && (!file.name.endsWith('.js') && !file.type.includes('js'))) {
+                    throw new Error('请导入JS或JSON格式的图鉴数据文件');
+                }
+                await this.dataHandler.handleDataFileUpload(file);
+                this.renderBlessingsList();
+                this.renderSkillsList();
+                this.renderEquipmentsList();
+                this.renderInventoryList();
+                this.renderClassesList();
+                const customSelects = [document.getElementById('skill-class-filter-c'), document.getElementById('class-type-filter-c')];
+                customSelects.forEach((select) => {
+                    const selected = select.querySelector('.select-selected');
+                    const items = select.querySelector('.select-items');
+                    const originalSelect = select.querySelector('select');
+                    const options = items.querySelectorAll('.select-item');
+
+                    // 点击选择框
+                    selected.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeAllSelect(selected);
+                        items.style.display = (items.style.display === 'block') ? 'none' : 'block';
+                        selected.classList.toggle('select-arrow-active');
+                    });
+
+                    // 选项点击
+                    options.forEach((option) => {
+                        option.addEventListener('click', (e) => {
+                            const value = option.getAttribute('data-value');
+                            const text = option.textContent;
+
+                            // 更新显示的选择
+                            selected.textContent = text;
+                            selected.classList.remove('select-arrow-active');
+
+                            originalSelect.value = value;
+
+                            options.forEach((opt) => {
+                                opt.classList.remove('select-same-as-selected');
+                            });
+                            option.classList.add('select-same-as-selected');
+
+                            const event = new Event('change');
+                            originalSelect.dispatchEvent(event);
+
+                            // 隐藏选项列表
+                            items.style.display = 'none';
+                        });
+                    });
+
+                    const initialOption = Array.from(options).find(opt => (!opt.getAttribute('data-value')));
+                    if (initialOption) {
+                        selected.textContent = initialOption.textContent;
+                        options.forEach(opt => opt.classList.remove('select-same-as-selected'));
+                        initialOption.classList.add('select-same-as-selected');
+                    }
+                });
+                this.showToast('图鉴导入成功！');
+            } catch (error) {
+                alert(`导入失败: ${error.message}`);
+            } finally {
+                e.target.value = '';
             }
         });
 

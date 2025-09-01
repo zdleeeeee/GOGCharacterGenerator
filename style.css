@@ -783,8 +783,7 @@ input.current-value {
     padding: 0;
     z-index: 1104;
     min-height: 0;
-    height: 380px;
-    overflow-x: scroll;
+    height: 420px;
     overflow-y: scroll;
 }
 
@@ -906,6 +905,7 @@ input.current-value {
     font-weight: bold;
     color: #333333;
     transform: translateY(-3px);
+    transition: all 0.2s;
 }
 
 .tab-content {
@@ -914,9 +914,7 @@ input.current-value {
 
 .tab-content.active {
     display: block;
-    border-bottom: none;
-    padding: 10px;
-    max-width: 500px;
+    max-width: 580px;
     margin: 0px auto;
 }
 
@@ -1032,7 +1030,7 @@ input.current-value {
     display: grid;
     grid-template-columns: 56% 30% 10%;
     gap: 2%;
-    padding: 12px 0px;
+    padding: 12px 4px;
     width: 100%;
 }
 
@@ -1246,7 +1244,7 @@ input.current-value {
 /* 提示 */
 #toast {
     position: fixed;
-    bottom: 30%;
+    bottom: 50%;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.7);
