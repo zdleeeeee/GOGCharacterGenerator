@@ -17,507 +17,502 @@
 <body>
     <div id="toast" class="toast-hidden">角色已保存！</div>
 
-    <div class="slider-container">
-        <div class="container" id="main-container">
+    <div class="container" id="main-container">
 
-            <header>
-                <h1 style="color:#333333">GOG 角色档案</h1>
-            </header>
+        <header>
+            <h1 style="color:#333333">GOG 角色档案</h1>
+        </header>
 
-            <div class="character-sheet">
-                <div class="basic-attribution-container">
-                    <div class="section">
-                        <h2>基本信息</h2>
-                        <div class="character-info-grid">
-                            <div class="character-portrait-container">
-                                <!-- 肖像显示区域 -->
-                                <div class="portrait-preview">
-                                    <img id="character-portrait" src="" alt="角色肖像"
-                                        style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                    <div id="portrait-placeholder">暂无肖像<br />(w:h=4:5)</div>
-                                </div>
-                                <!-- 上传控件 -->
-                                <div class="portrait-controls">
-                                    <label for="upload-portrait" class="btn"
-                                        style="border-radius: 8px 0px 0px 8px;">上传肖像</label>
-                                    <input type="file" id="upload-portrait" accept="image/*" style="display: none;">
-                                    <button id="remove-portrait" class="btn btn-danger"
-                                        style="border-radius: 0px 8px 8px 0px;border-left: none;">移除肖像</button>
-                                </div>
+        <div class="character-sheet">
+            <div class="basic-attribution-container">
+                <div class="section">
+                    <h2>基本信息</h2>
+                    <div class="character-info-grid">
+                        <div class="character-portrait-container">
+                            <!-- 肖像显示区域 -->
+                            <div class="portrait-preview">
+                                <img id="character-portrait" src="" alt="角色肖像"
+                                    style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                <div id="portrait-placeholder">暂无肖像<br />(w:h=4:5)</div>
                             </div>
-
-                            <div class="character-form-fields">
-                                <div class="form-group">
-                                    <label for="character-name">角色名：</label>
-                                    <div class="auto-height-content" contenteditable="true" id="character-name"
-                                        style="font-size: 14px;"></div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="player-name">玩家：</label>
-                                    <div class="auto-height-content" contenteditable="true" id="player-name"
-                                        style="font-size: 14px;"></div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="character-gender">性别：</label>
-                                    <div class="select-container">
-                                        <div class="custom-select" tabindex="0">
-                                            <select id="character-gender">
-                                                <option value="男">男</option>
-                                                <option value="女">女</option>
-                                                <option value="其他">其他</option>
-                                                <option value="未知">未知</option>
-                                            </select>
-                                            <div class="select-selected">男</div>
-                                            <div class="select-items">
-                                                <div class="select-item" data-value="男">男</div>
-                                                <div class="select-item" data-value="女">女</div>
-                                                <div class="select-item" data-value="其他">其他</div>
-                                                <div class="select-item" data-value="未知">未知</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="character-age">年龄：</label>
-                                    <input type="number" id="character-age" min="0">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="character-alignment">阵营：</label>
-                                    <div class="select-container">
-                                        <div class="custom-select" tabindex="0">
-                                            <select id="character-alignment">
-                                                <option value="守序善良">守序善良</option>
-                                                <option value="中立善良">中立善良</option>
-                                                <option value="混乱善良">混乱善良</option>
-                                                <option value="守序中立">守序中立</option>
-                                                <option value="绝对中立">绝对中立</option>
-                                                <option value="混乱中立">混乱中立</option>
-                                                <option value="守序邪恶">守序邪恶</option>
-                                                <option value="中立邪恶">中立邪恶</option>
-                                                <option value="混乱邪恶">混乱邪恶</option>
-                                            </select>
-                                            <div class="select-selected">守序善良</div>
-                                            <div class="select-items">
-                                                <div class="select-item" data-value="守序善良">守序善良</div>
-                                                <div class="select-item" data-value="中立善良">中立善良</div>
-                                                <div class="select-item" data-value="混乱善良">混乱善良</div>
-                                                <div class="select-item" data-value="守序中立">守序中立</div>
-                                                <div class="select-item" data-value="绝对中立">绝对中立</div>
-                                                <div class="select-item" data-value="混乱中立">混乱中立</div>
-                                                <div class="select-item" data-value="守序邪恶">守序邪恶</div>
-                                                <div class="select-item" data-value="中立邪恶">中立邪恶</div>
-                                                <div class="select-item" data-value="混乱邪恶">混乱邪恶</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="character-nationality">国籍：</label>
-                                    <input type="text" id="character-nationality">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="character-class">职业：</label>
-                                    <input type="text" id="character-class">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="character-blessing">赐福：</label>
-                                    <input type="text" id="character-blessing">
-                                </div>
+                            <!-- 上传控件 -->
+                            <div class="portrait-controls">
+                                <label for="upload-portrait" class="btn"
+                                    style="border-radius: 8px 0px 0px 8px;">上传肖像</label>
+                                <input type="file" id="upload-portrait" accept="image/*" style="display: none;">
+                                <button id="remove-portrait" class="btn btn-danger"
+                                    style="border-radius: 0px 8px 8px 0px;border-left: none;">移除肖像</button>
                             </div>
                         </div>
 
-                        <div class="form-group full-width">
-                            <label for="character-description">描述：</label>
-                            <div class="auto-height-content" contenteditable="true" id="character-description"
-                                placeholder="可以描述种族、个人背景故事等" style="font-size: 14px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="section">
-                        <h2>属性系统</h2>
-                        <div class="isGod-container">
-                            <div class="form-group" style="display:flex;margin-bottom: 10px;margin-top: 0px;">
-                                <label for="isGod"
-                                    style="min-width: max-content;padding-top: 9px; padding-bottom: 9px;">身份：</label>
-                                <button id="isGod" class="btn-isGod"></button> <!--内容动态生成-->
-                            </div>
-                            <div style="font-size: 12px; color: #dddddd; margin-bottom: 10px;">
-                                （人类六大属性基础值范围：0~10，总值范围0~20；神明不设上限）<br>（人类健康/魔力属性基础值范围：0~20；神明不设上限）</div>
-                        </div>
-                        <div class="attributes-grid">
-                            <div class="attribute-item">
-                                <label for="attr-STR-base">力量：</label>
-                                <div class="attribute-controls">
-                                    <input type="number" id="attr-STR-base" min="0" value="5" title="基础值"
-                                        class="base-value">
-                                    <span>+</span>
-                                    <input type="number" id="attr-STR-status" step="1" value="0" title="状态调整"
-                                        class="status-adj">
-                                    <span>+</span>
-                                    <input type="number" id="attr-STR-blessing" step="1" value="0" title="赐福调整"
-                                        class="blessing-adj">
-                                    <span>=</span>
-                                    <span class="total-value" id="attr-STR-total">5</span>
-                                </div>
+                        <div class="character-form-fields">
+                            <div class="form-group">
+                                <label for="character-name">角色名：</label>
+                                <div class="auto-height-content" contenteditable="true" id="character-name"
+                                    style="font-size: 14px;"></div>
                             </div>
 
-                            <div class="attribute-item">
-                                <label for="attr-DEX-base">敏捷：</label>
-                                <div class="attribute-controls">
-                                    <input type="number" id="attr-DEX-base" min="0" value="5" title="基础值"
-                                        class="base-value"><span>+</span>
-                                    <input type="number" id="attr-DEX-status" step="1" value="0" title="状态调整"
-                                        class="status-adj"><span>+</span>
-                                    <input type="number" id="attr-DEX-blessing" step="1" value="0" title="赐福调整"
-                                        class="blessing-adj"><span>=</span>
-                                    <span class="total-value" id="attr-DEX-total">5</span>
-                                </div>
+                            <div class="form-group">
+                                <label for="player-name">玩家：</label>
+                                <div class="auto-height-content" contenteditable="true" id="player-name"
+                                    style="font-size: 14px;"></div>
                             </div>
 
-                            <div class="attribute-item">
-                                <label for="attr-INT-base">智慧：</label>
-                                <div class="attribute-controls">
-                                    <input type="number" id="attr-INT-base" min="0" value="5" title="基础值"
-                                        class="base-value"><span>+</span>
-                                    <input type="number" id="attr-INT-status" step="1" value="0" title="状态调整"
-                                        class="status-adj"><span>+</span>
-                                    <input type="number" id="attr-INT-blessing" step="1" value="0" title="赐福调整"
-                                        class="blessing-adj"><span>=</span>
-                                    <span class="total-value" id="attr-INT-total">5</span>
-                                </div>
-                            </div>
-
-                            <div class="attribute-item">
-                                <label for="attr-CHA-base">魅力：</label>
-                                <div class="attribute-controls">
-                                    <input type="number" id="attr-CHA-base" min="0" value="5" title="基础值"
-                                        class="base-value"><span>+</span>
-                                    <input type="number" id="attr-CHA-status" step="1" value="0" title="状态调整"
-                                        class="status-adj"><span>+</span>
-                                    <input type="number" id="attr-CHA-blessing" step="1" value="0" title="赐福调整"
-                                        class="blessing-adj"><span>=</span>
-                                    <span class="total-value" id="attr-CHA-total">5</span>
-                                </div>
-                            </div>
-
-                            <div class="attribute-item">
-                                <label for="attr-WIS-base">感知：</label>
-                                <div class="attribute-controls">
-                                    <input type="number" id="attr-WIS-base" min="0" value="5" title="基础值"
-                                        class="base-value"><span>+</span>
-                                    <input type="number" id="attr-WIS-status" step="1" value="0" title="状态调整"
-                                        class="status-adj"><span>+</span>
-                                    <input type="number" id="attr-WIS-blessing" step="1" value="0" title="赐福调整"
-                                        class="blessing-adj"><span>=</span>
-                                    <span class="total-value" id="attr-WIS-total">5</span>
-                                </div>
-                            </div>
-
-                            <div class="attribute-item">
-                                <label for="attr-MAG-base">法力：</label>
-                                <div class="attribute-controls">
-                                    <input type="number" id="attr-MAG-base" min="0" value="5" title="基础值"
-                                        class="base-value"><span>+</span>
-                                    <input type="number" id="attr-MAG-status" step="1" value="0" title="状态调整"
-                                        class="status-adj"><span>+</span>
-                                    <input type="number" id="attr-MAG-blessing" step="1" value="0" title="赐福调整"
-                                        class="blessing-adj"><span>=</span>
-                                    <span class="total-value" id="attr-MAG-total">5</span>
-                                </div>
-                            </div>
-
-                            <div class="attribute-item">
-                                <label for="attr-HP-current">健康：</label>
-                                <div class="attribute-controls" style="gap: 0px;">
-                                    <input type="number" id="attr-HP-base" min="0" value="5" title="基础值"
-                                        class="base-value">
-                                    <input type="number" id="attr-HP-current" value="5" title="当前值"
-                                        class="current-value">
-                                    <div class="health-bar-container">
-                                        <div class="health-bar" id="hp-bar"></div>
-                                        <div class="health-base-bar" id="hpb-bar"></div>
-                                    </div>
-                                    <span class="max-value" id="attr-HP-max" title="上限=种族基础值+力量×2">15</span>
-                                </div>
-                            </div>
-
-                            <div class="attribute-item">
-                                <label for="attr-MP-current">魔力：</label>
-                                <div class="attribute-controls" style="gap: 0px;">
-                                    <input type="number" id="attr-MP-base" min="0" value="5" title="基础值"
-                                        class="base-value">
-                                    <input type="number" id="attr-MP-current" value="5" title="当前值"
-                                        class="current-value">
-                                    <div class="mana-bar-container">
-                                        <div class="mana-bar" id="mp-bar"></div>
-                                        <div class="mana-base-bar" id="mpb-bar"></div>
-                                    </div>
-                                    <span class="max-value" id="attr-MP-max" title="上限=种族基础值+法力">10</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h2>状态系统</h2>
-                        <div id="status-tags">
-                            <!-- 标签将通过JavaScript动态生成 -->
-                        </div>
-                        <div class="tag-input" style="border: 1px solid #eeeeee; border-radius: 8px;">
-                            <input type="text" id="new-tag" placeholder="示例：疯狂(1)：魅力-1，法力-1"
-                                style="padding: 7px 15px; border-radius: 0; border: none; border-right: 1px solid #eeeeee;">
-                            <button id="add-tag" class="btn"
-                                style="border-radius: 0px 7px 7px 0px;border: none;">添加</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section" style="grid-column: span 2;">
-                    <div class="blessing-grid">
-                        <div class="form-group" style="margin-top: 0;">
-                            <h2>赐福系统</h2>
-                            <input class="blessingFullName" type="text" id="blessingFullName"
-                                placeholder="权柄编号-神明职能-神明称号-神明真名">
-                            <div id="soul-status"
-                                style="color: #ffffffe0;min-width: max-content;text-align: center; margin-bottom: 6px;">
-                                世俗之人
-                            </div>
-                            <div class="character-form-fields">
-                                <div class="form-group" style="display:flex;">
-                                    <label for="blessing-soul"
-                                        style="min-width: max-content;padding-top: 7px;">赐福经验值：</label>
-                                    <!--原先为“灵魂完整度”-->
-                                    <div style="display: flex;padding-right: 10px;">
-                                        <input type="number" id="blessing-soul" style=" padding-top: 9px;" min="0"
-                                            max="100" value="100">
-                                    </div>
-                                </div>
-
-                                <div class="form-group" style="display:flex;">
-                                    <label for="blessing-level"
-                                        style="min-width: max-content;padding-top: 7px;">赐福等级：</label>
-                                    <div class="select-container">
-                                        <div class="custom-select" tabindex="0">
-                                            <select id="blessing-level">
-                                                <option value="0">0级</option>
-                                                <option value="1">1级</option>
-                                                <option value="2">2级</option>
-                                                <option value="3">3级</option>
-                                                <option value="4">4级</option>
-                                                <option value="5">5级</option>
-                                                <option value="6">6级</option>
-                                                <option value="7">7级</option>
-                                                <option value="8">8级</option>
-                                                <option value="9">9级</option>
-                                                <option value="10">10级</option>
-                                            </select>
-                                            <div class="select-selected">0级</div>
-                                            <div class="select-items">
-                                                <div class="select-item" data-value="0">0级</div>
-                                                <div class="select-item" data-value="1">1级</div>
-                                                <div class="select-item" data-value="2">2级</div>
-                                                <div class="select-item" data-value="3">3级</div>
-                                                <div class="select-item" data-value="4">4级</div>
-                                                <div class="select-item" data-value="5">5级</div>
-                                                <div class="select-item" data-value="6">6级</div>
-                                                <div class="select-item" data-value="7">7级</div>
-                                                <div class="select-item" data-value="8">8级</div>
-                                                <div class="select-item" data-value="9">9级</div>
-                                                <div class="select-item" data-value="10">10级</div>
-                                            </div>
+                            <div class="form-group">
+                                <label for="character-gender">性别：</label>
+                                <div class="select-container">
+                                    <div class="custom-select" tabindex="0">
+                                        <select id="character-gender">
+                                            <option value="男">男</option>
+                                            <option value="女">女</option>
+                                            <option value="其他">其他</option>
+                                            <option value="未知">未知</option>
+                                        </select>
+                                        <div class="select-selected">男</div>
+                                        <div class="select-items">
+                                            <div class="select-item" data-value="男">男</div>
+                                            <div class="select-item" data-value="女">女</div>
+                                            <div class="select-item" data-value="其他">其他</div>
+                                            <div class="select-item" data-value="未知">未知</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-auto">
-                                <table class="blessing-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10%;">赐福等级</th>
-                                            <th style="width: 20%;">关联属性</th>
-                                            <th style="width: 30%;">权柄特技</th>
-                                            <th style="width: 30%;">异化程度</th>
-                                            <th style="width: 10%;">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="blessing-container">
-                                        <!-- 动态生成数据 -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="form-group" style="margin-top: 15px;">
-                                <button id="add-blessingSystem" class="btn">添加</button>
-                            </div>
-                        </div>
 
-                        <div class="form-group" style="margin-top: 0;">
-                            <h4 style="text-align: center;color:#666666;font-size: 16px; margin-bottom: 15px;">赐福特技
-                            </h4>
-                            <div class="table-auto">
-                                <table class="blessing-skills-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10%;">名称</th>
-                                            <th style="width: 80%;">描述</th>
-                                            <th style="width: 10%;">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="blessing-skills-container">
-                                        <!-- 动态生成数据 -->
-                                    </tbody>
-                                </table>
+                            <div class="form-group">
+                                <label for="character-age">年龄：</label>
+                                <input type="number" id="character-age" min="0">
                             </div>
-                            <div class="form-group" style="margin-top: 15px;">
-                                <button id="add-blessingSkills" class="btn">添加</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="section" style="grid-column: span 2;">
-                    <h2>技能系统</h2>
-                    <label>技能熟练度总点数: <span id="skill-prof-left" style="color: #28a745;">0</span></label>
-                    <div class="table-auto">
-                        <table class="skills-list">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%;">技能名</th>
-                                    <th style="width: 10%;" title="技能熟练度在1~5之间；1：略懂；2：学徒；3：专家；4：精通；5：大师。">熟练度</th>
-                                    <th style="width: 10%;">使用次数</th>
-                                    <th style="width: 50%;">描述</th>
-                                    <th style="width: 10%;">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="skills-container">
-                                <!-- 技能列表将通过JavaScript动态生成 -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="form-group"
-                        style="margin-top: 15px;max-width: 250px;display: grid;grid-template-columns: 2fr 1fr;">
-                        <div class="select-container">
-                            <div class="custom-select" tabindex="0">
-                                <select id="skill-category-select"
-                                    style="color: #666666;border-left: 1px solid #eeeeee;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;border-radius: 8px 0px 0px 8px;">
-                                    <option value="STR">力量类技能</option>
-                                    <option value="DEX">敏捷类技能</option>
-                                    <option value="INT">智慧类技能</option>
-                                    <option value="CHA">魅力类技能</option>
-                                    <option value="WIS">感知类技能</option>
-                                    <option value="MAG">法力类技能</option>
-                                    <option value="PRF">职业类技能</option>
-                                </select>
-                                <div class="select-selected"
-                                    style="color: #666666;border: 1px solid #eeeeee; border-right: none; border-radius: 8px 0px 0px 8px;padding-left: 12px;">
-                                    力量类技能</div>
-                                <div class="select-items">
-                                    <div class="select-item" data-value="STR">力量类技能</div>
-                                    <div class="select-item" data-value="DEX">敏捷类技能</div>
-                                    <div class="select-item" data-value="INT">智慧类技能</div>
-                                    <div class="select-item" data-value="CHA">魅力类技能</div>
-                                    <div class="select-item" data-value="WIS">感知类技能</div>
-                                    <div class="select-item" data-value="MAG">法力类技能</div>
-                                    <div class="select-item" data-value="PRF">职业类技能</div>
+                            <div class="form-group">
+                                <label for="character-alignment">阵营：</label>
+                                <div class="select-container">
+                                    <div class="custom-select" tabindex="0">
+                                        <select id="character-alignment">
+                                            <option value="守序善良">守序善良</option>
+                                            <option value="中立善良">中立善良</option>
+                                            <option value="混乱善良">混乱善良</option>
+                                            <option value="守序中立">守序中立</option>
+                                            <option value="绝对中立">绝对中立</option>
+                                            <option value="混乱中立">混乱中立</option>
+                                            <option value="守序邪恶">守序邪恶</option>
+                                            <option value="中立邪恶">中立邪恶</option>
+                                            <option value="混乱邪恶">混乱邪恶</option>
+                                        </select>
+                                        <div class="select-selected">守序善良</div>
+                                        <div class="select-items">
+                                            <div class="select-item" data-value="守序善良">守序善良</div>
+                                            <div class="select-item" data-value="中立善良">中立善良</div>
+                                            <div class="select-item" data-value="混乱善良">混乱善良</div>
+                                            <div class="select-item" data-value="守序中立">守序中立</div>
+                                            <div class="select-item" data-value="绝对中立">绝对中立</div>
+                                            <div class="select-item" data-value="混乱中立">混乱中立</div>
+                                            <div class="select-item" data-value="守序邪恶">守序邪恶</div>
+                                            <div class="select-item" data-value="中立邪恶">中立邪恶</div>
+                                            <div class="select-item" data-value="混乱邪恶">混乱邪恶</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <button id="add-skill" class="btn" style="border-radius: 0px 8px 8px 0px;"
-                            title="支持自创技能喵~">添加技能</button>
-                    </div>
-                </div>
 
-                <div class="section" style="grid-column: span 2;">
-                    <h2>装备系统</h2>
-                    <div class="table-auto">
-                        <table class="items-list">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%;">名称</th>
-                                    <th style="width: 15%;">类别</th>
-                                    <th style="width: 25%;">属性影响</th>
-                                    <th style="width: 30%;">描述</th>
-                                    <th style="width: 10%;">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="equipment-container">
-                                <!-- 装备列表将通过JavaScript动态生成 -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="form-group" style="margin-top: 15px;">
-                        <button id="add-equipment" class="btn" title="支持自创装备喵~">添加装备</button>
-                    </div>
-                </div>
+                            <div class="form-group">
+                                <label for="character-nationality">国籍：</label>
+                                <input type="text" id="character-nationality">
+                            </div>
 
-                <div class="section" style="grid-column: span 2;">
-                    <h2>背包系统</h2>
-                    <label>总负重: <span style="color: #28a745;"><span id="total-weight">0.0</span> kg</span></label>
-                    <div class="table-auto">
-                        <table class="items-list">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%;">名称</th>
-                                    <th style="width: 15%;">重量</th>
-                                    <th style="width: 45%;">描述</th>
-                                    <th style="width: 10%;">数量</th>
-                                    <th style="width: 10%;">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="inventory-container">
-                                <!-- 物品列表将通过JavaScript动态生成 -->
-                            </tbody>
-                        </table>
-                    </div>
+                            <div class="form-group">
+                                <label for="character-class">职业：</label>
+                                <input type="text" id="character-class">
+                            </div>
 
-                    <div class="form-group"
-                        style="margin-top: 15px;max-width: 250px;display: grid;grid-template-columns: 2fr 1fr;">
-                        <div class="select-container">
-                            <div class="custom-select" tabindex="0">
-                                <select id="item-category-select"
-                                    style="color: #666666;border-left: 1px solid #eeeeee;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;border-radius: 8px 0px 0px 8px;">
-                                    <option value="equipment">装备</option>
-                                    <option value="food">食物</option>
-                                    <option value="currency">钱币</option>
-                                    <option value="medical">医疗物品</option>
-                                    <option value="potions">药剂</option>
-                                    <option value="supplies">储备/其他物品</option>
-                                </select>
-                                <div class="select-selected"
-                                    style="color: #666666;border: 1px solid #eeeeee; border-right: none; border-radius: 8px 0px 0px 8px;padding-left: 12px;">
-                                    装备</div>
-                                <div class="select-items">
-                                    <div class="select-item" data-value="equipment">装备</div>
-                                    <div class="select-item" data-value="food">食物</div>
-                                    <div class="select-item" data-value="currency">钱币</div>
-                                    <div class="select-item" data-value="medical">医疗物品</div>
-                                    <div class="select-item" data-value="potions">药剂</div>
-                                    <div class="select-item" data-value="supplies">储备/其他物品</div>
-                                </div>
+                            <div class="form-group">
+                                <label for="character-blessing">赐福：</label>
+                                <input type="text" id="character-blessing">
                             </div>
                         </div>
-                        <button id="add-item" class="btn" style="border-radius: 0px 8px 8px 0px;"
-                            title="支持自创物品喵~">添加物品</button>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="character-description">描述：</label>
+                        <div class="auto-height-content" contenteditable="true" id="character-description"
+                            placeholder="可以描述种族、个人背景故事等" style="font-size: 14px;"></div>
                     </div>
                 </div>
-                <div class="section" style="grid-column: span 2;">
-                    <h2>日志系统</h2>
-                    <p style="font-size: 14px; color: #dddddd">（你的形象描述、思想与信念、重要之人、珍视之物、意义非凡之地、特质、伤口与疤痕……）</p>
-                    <div id="log-sections">
+
+                <div class="section">
+                    <h2>属性系统</h2>
+                    <div class="isGod-container">
+                        <div class="form-group" style="display:flex;margin-bottom: 10px;margin-top: 0px;">
+                            <label for="isGod"
+                                style="min-width: max-content;padding-top: 9px; padding-bottom: 9px;">身份：</label>
+                            <button id="isGod" class="btn-isGod"></button> <!--内容动态生成-->
+                        </div>
+                        <div style="font-size: 12px; color: #dddddd; margin-bottom: 10px;">
+                            （人类六大属性基础值范围：0~10，总值范围0~20；神明不设上限）<br>（人类健康/魔力属性基础值范围：0~20；神明不设上限）</div>
+                    </div>
+                    <div class="attributes-grid">
+                        <div class="attribute-item">
+                            <label for="attr-STR-base">力量：</label>
+                            <div class="attribute-controls">
+                                <input type="number" id="attr-STR-base" min="0" value="5" title="基础值"
+                                    class="base-value">
+                                <span>+</span>
+                                <input type="number" id="attr-STR-status" step="1" value="0" title="状态调整"
+                                    class="status-adj">
+                                <span>+</span>
+                                <input type="number" id="attr-STR-blessing" step="1" value="0" title="赐福调整"
+                                    class="blessing-adj">
+                                <span>=</span>
+                                <span class="total-value" id="attr-STR-total">5</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-DEX-base">敏捷：</label>
+                            <div class="attribute-controls">
+                                <input type="number" id="attr-DEX-base" min="0" value="5" title="基础值"
+                                    class="base-value"><span>+</span>
+                                <input type="number" id="attr-DEX-status" step="1" value="0" title="状态调整"
+                                    class="status-adj"><span>+</span>
+                                <input type="number" id="attr-DEX-blessing" step="1" value="0" title="赐福调整"
+                                    class="blessing-adj"><span>=</span>
+                                <span class="total-value" id="attr-DEX-total">5</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-INT-base">智慧：</label>
+                            <div class="attribute-controls">
+                                <input type="number" id="attr-INT-base" min="0" value="5" title="基础值"
+                                    class="base-value"><span>+</span>
+                                <input type="number" id="attr-INT-status" step="1" value="0" title="状态调整"
+                                    class="status-adj"><span>+</span>
+                                <input type="number" id="attr-INT-blessing" step="1" value="0" title="赐福调整"
+                                    class="blessing-adj"><span>=</span>
+                                <span class="total-value" id="attr-INT-total">5</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-CHA-base">魅力：</label>
+                            <div class="attribute-controls">
+                                <input type="number" id="attr-CHA-base" min="0" value="5" title="基础值"
+                                    class="base-value"><span>+</span>
+                                <input type="number" id="attr-CHA-status" step="1" value="0" title="状态调整"
+                                    class="status-adj"><span>+</span>
+                                <input type="number" id="attr-CHA-blessing" step="1" value="0" title="赐福调整"
+                                    class="blessing-adj"><span>=</span>
+                                <span class="total-value" id="attr-CHA-total">5</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-WIS-base">感知：</label>
+                            <div class="attribute-controls">
+                                <input type="number" id="attr-WIS-base" min="0" value="5" title="基础值"
+                                    class="base-value"><span>+</span>
+                                <input type="number" id="attr-WIS-status" step="1" value="0" title="状态调整"
+                                    class="status-adj"><span>+</span>
+                                <input type="number" id="attr-WIS-blessing" step="1" value="0" title="赐福调整"
+                                    class="blessing-adj"><span>=</span>
+                                <span class="total-value" id="attr-WIS-total">5</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-MAG-base">法力：</label>
+                            <div class="attribute-controls">
+                                <input type="number" id="attr-MAG-base" min="0" value="5" title="基础值"
+                                    class="base-value"><span>+</span>
+                                <input type="number" id="attr-MAG-status" step="1" value="0" title="状态调整"
+                                    class="status-adj"><span>+</span>
+                                <input type="number" id="attr-MAG-blessing" step="1" value="0" title="赐福调整"
+                                    class="blessing-adj"><span>=</span>
+                                <span class="total-value" id="attr-MAG-total">5</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-HP-current">健康：</label>
+                            <div class="attribute-controls" style="gap: 0px;">
+                                <input type="number" id="attr-HP-base" min="0" value="5" title="基础值" class="base-value">
+                                <input type="number" id="attr-HP-current" value="5" title="当前值" class="current-value">
+                                <div class="health-bar-container">
+                                    <div class="health-bar" id="hp-bar"></div>
+                                    <div class="health-base-bar" id="hpb-bar"></div>
+                                </div>
+                                <span class="max-value" id="attr-HP-max" title="上限=种族基础值+力量×2">15</span>
+                            </div>
+                        </div>
+
+                        <div class="attribute-item">
+                            <label for="attr-MP-current">魔力：</label>
+                            <div class="attribute-controls" style="gap: 0px;">
+                                <input type="number" id="attr-MP-base" min="0" value="5" title="基础值" class="base-value">
+                                <input type="number" id="attr-MP-current" value="5" title="当前值" class="current-value">
+                                <div class="mana-bar-container">
+                                    <div class="mana-bar" id="mp-bar"></div>
+                                    <div class="mana-base-bar" id="mpb-bar"></div>
+                                </div>
+                                <span class="max-value" id="attr-MP-max" title="上限=种族基础值+法力">10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>状态系统</h2>
+                    <div id="status-tags">
                         <!-- 标签将通过JavaScript动态生成 -->
                     </div>
-                    <div class="form-group" style="margin-top: 15px;">
-                        <button id="add-log" class="btn">添加日志</button>
+                    <div class="tag-input" style="border: 1px solid #eeeeee; border-radius: 8px;">
+                        <input type="text" id="new-tag" placeholder="示例：疯狂(1)：魅力-1，法力-1"
+                            style="padding: 7px 15px; border-radius: 0; border: none; border-right: 1px solid #eeeeee;">
+                        <button id="add-tag" class="btn"
+                            style="border-radius: 0px 7px 7px 0px;border: none;">添加</button>
                     </div>
+                </div>
+            </div>
+
+            <div class="section" style="grid-column: span 2;">
+                <div class="blessing-grid">
+                    <div class="form-group" style="margin-top: 0;">
+                        <h2>赐福系统</h2>
+                        <input class="blessingFullName" type="text" id="blessingFullName"
+                            placeholder="权柄编号-神明职能-神明称号-神明真名">
+                        <div id="soul-status"
+                            style="color: #ffffffe0;min-width: max-content;text-align: center; margin-bottom: 6px;">
+                            世俗之人
+                        </div>
+                        <div class="character-form-fields">
+                            <div class="form-group" style="display:flex;">
+                                <label for="blessing-soul"
+                                    style="min-width: max-content;padding-top: 7px;">赐福经验值：</label>
+                                <!--原先为“灵魂完整度”-->
+                                <div style="display: flex;padding-right: 10px;">
+                                    <input type="number" id="blessing-soul" style=" padding-top: 9px;" min="0" max="100"
+                                        value="100">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="display:flex;">
+                                <label for="blessing-level"
+                                    style="min-width: max-content;padding-top: 7px;">赐福等级：</label>
+                                <div class="select-container">
+                                    <div class="custom-select" tabindex="0">
+                                        <select id="blessing-level">
+                                            <option value="0">0级</option>
+                                            <option value="1">1级</option>
+                                            <option value="2">2级</option>
+                                            <option value="3">3级</option>
+                                            <option value="4">4级</option>
+                                            <option value="5">5级</option>
+                                            <option value="6">6级</option>
+                                            <option value="7">7级</option>
+                                            <option value="8">8级</option>
+                                            <option value="9">9级</option>
+                                            <option value="10">10级</option>
+                                        </select>
+                                        <div class="select-selected">0级</div>
+                                        <div class="select-items">
+                                            <div class="select-item" data-value="0">0级</div>
+                                            <div class="select-item" data-value="1">1级</div>
+                                            <div class="select-item" data-value="2">2级</div>
+                                            <div class="select-item" data-value="3">3级</div>
+                                            <div class="select-item" data-value="4">4级</div>
+                                            <div class="select-item" data-value="5">5级</div>
+                                            <div class="select-item" data-value="6">6级</div>
+                                            <div class="select-item" data-value="7">7级</div>
+                                            <div class="select-item" data-value="8">8级</div>
+                                            <div class="select-item" data-value="9">9级</div>
+                                            <div class="select-item" data-value="10">10级</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-auto">
+                            <table class="blessing-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">赐福等级</th>
+                                        <th style="width: 20%;">关联属性</th>
+                                        <th style="width: 30%;">权柄特技</th>
+                                        <th style="width: 30%;">异化程度</th>
+                                        <th style="width: 10%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blessing-container">
+                                    <!-- 动态生成数据 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <button id="add-blessingSystem" class="btn">添加</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 0;">
+                        <h4 style="text-align: center;color:#666666;font-size: 16px; margin-bottom: 15px;">赐福特技
+                        </h4>
+                        <div class="table-auto">
+                            <table class="blessing-skills-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">名称</th>
+                                        <th style="width: 80%;">描述</th>
+                                        <th style="width: 10%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blessing-skills-container">
+                                    <!-- 动态生成数据 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <button id="add-blessingSkills" class="btn">添加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" style="grid-column: span 2;">
+                <h2>技能系统</h2>
+                <label>技能熟练度总点数: <span id="skill-prof-left" style="color: #28a745;">0</span></label>
+                <div class="table-auto">
+                    <table class="skills-list">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">技能名</th>
+                                <th style="width: 10%;" title="技能熟练度在1~5之间；1：略懂；2：学徒；3：专家；4：精通；5：大师。">熟练度</th>
+                                <th style="width: 10%;">使用次数</th>
+                                <th style="width: 50%;">描述</th>
+                                <th style="width: 10%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="skills-container">
+                            <!-- 技能列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group"
+                    style="margin-top: 15px;max-width: 250px;display: grid;grid-template-columns: 2fr 1fr;">
+                    <div class="select-container">
+                        <div class="custom-select" tabindex="0">
+                            <select id="skill-category-select"
+                                style="color: #666666;border-left: 1px solid #eeeeee;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;border-radius: 8px 0px 0px 8px;">
+                                <option value="STR">力量类技能</option>
+                                <option value="DEX">敏捷类技能</option>
+                                <option value="INT">智慧类技能</option>
+                                <option value="CHA">魅力类技能</option>
+                                <option value="WIS">感知类技能</option>
+                                <option value="MAG">法力类技能</option>
+                                <option value="PRF">职业类技能</option>
+                            </select>
+                            <div class="select-selected"
+                                style="color: #666666;border: 1px solid #eeeeee; border-right: none; border-radius: 8px 0px 0px 8px;padding-left: 12px;">
+                                力量类技能</div>
+                            <div class="select-items">
+                                <div class="select-item" data-value="STR">力量类技能</div>
+                                <div class="select-item" data-value="DEX">敏捷类技能</div>
+                                <div class="select-item" data-value="INT">智慧类技能</div>
+                                <div class="select-item" data-value="CHA">魅力类技能</div>
+                                <div class="select-item" data-value="WIS">感知类技能</div>
+                                <div class="select-item" data-value="MAG">法力类技能</div>
+                                <div class="select-item" data-value="PRF">职业类技能</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="add-skill" class="btn" style="border-radius: 0px 8px 8px 0px;"
+                        title="支持自创技能喵~">添加技能</button>
+                </div>
+            </div>
+
+            <div class="section" style="grid-column: span 2;">
+                <h2>装备系统</h2>
+                <div class="table-auto">
+                    <table class="items-list">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">名称</th>
+                                <th style="width: 15%;">类别</th>
+                                <th style="width: 25%;">属性影响</th>
+                                <th style="width: 30%;">描述</th>
+                                <th style="width: 10%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="equipment-container">
+                            <!-- 装备列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <button id="add-equipment" class="btn" title="支持自创装备喵~">添加装备</button>
+                </div>
+            </div>
+
+            <div class="section" style="grid-column: span 2;">
+                <h2>背包系统</h2>
+                <label>总负重: <span style="color: #28a745;"><span id="total-weight">0.0</span> kg</span></label>
+                <div class="table-auto">
+                    <table class="items-list">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">名称</th>
+                                <th style="width: 15%;">重量</th>
+                                <th style="width: 45%;">描述</th>
+                                <th style="width: 10%;">数量</th>
+                                <th style="width: 10%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-container">
+                            <!-- 物品列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group"
+                    style="margin-top: 15px;max-width: 250px;display: grid;grid-template-columns: 2fr 1fr;">
+                    <div class="select-container">
+                        <div class="custom-select" tabindex="0">
+                            <select id="item-category-select"
+                                style="color: #666666;border-left: 1px solid #eeeeee;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;border-radius: 8px 0px 0px 8px;">
+                                <option value="equipment">装备</option>
+                                <option value="food">食物</option>
+                                <option value="currency">钱币</option>
+                                <option value="medical">医疗物品</option>
+                                <option value="potions">药剂</option>
+                                <option value="supplies">储备/其他物品</option>
+                            </select>
+                            <div class="select-selected"
+                                style="color: #666666;border: 1px solid #eeeeee; border-right: none; border-radius: 8px 0px 0px 8px;padding-left: 12px;">
+                                装备</div>
+                            <div class="select-items">
+                                <div class="select-item" data-value="equipment">装备</div>
+                                <div class="select-item" data-value="food">食物</div>
+                                <div class="select-item" data-value="currency">钱币</div>
+                                <div class="select-item" data-value="medical">医疗物品</div>
+                                <div class="select-item" data-value="potions">药剂</div>
+                                <div class="select-item" data-value="supplies">储备/其他物品</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="add-item" class="btn" style="border-radius: 0px 8px 8px 0px;"
+                        title="支持自创物品喵~">添加物品</button>
+                </div>
+            </div>
+            <div class="section" style="grid-column: span 2;">
+                <h2>日志系统</h2>
+                <p style="font-size: 14px; color: #dddddd">（你的形象描述、思想与信念、重要之人、珍视之物、意义非凡之地、特质、伤口与疤痕……）</p>
+                <div id="log-sections">
+                    <!-- 标签将通过JavaScript动态生成 -->
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <button id="add-log" class="btn">添加日志</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="bottom-nav">
         <div class="nav-container">
             <!-- 新建按钮 -->
