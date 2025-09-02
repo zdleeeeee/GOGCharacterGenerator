@@ -130,7 +130,7 @@ class GOGCharacterApp {
         const searchContainer = document.createElement('div');
         searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
-        <div class="search-controls" style="grid-template-columns: 88% 10%;">
+        <div class="search-controls search-controls-style2">
             <input type="text" id="blessing-search-input" placeholder="搜索赐福名称或描述">
             <button id="clear-blessing-search" class="btn-clear-search">重置</button>
         </div>
@@ -565,7 +565,7 @@ class GOGCharacterApp {
         const searchContainer = document.createElement('div');
         searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
-        <div class="search-controls" style="grid-template-columns: 88% 10%;">
+        <div class="search-controls search-controls-style2">
             <input type="text" id="equipment-search-input" placeholder="搜索装备名称、类型或描述">
             <button id="clear-equipment-search" class="btn-clear-search">重置</button>
         </div>
@@ -677,7 +677,7 @@ class GOGCharacterApp {
         const searchContainer = document.createElement('div');
         searchContainer.className = 'search-container';
         searchContainer.innerHTML = `
-        <div class="search-controls" style="grid-template-columns: 88% 10%;">
+        <div class="search-controls search-controls-style2">
             <input type="text" id="inventory-search-input" placeholder="搜索物品名称或描述">
             <button id="clear-inventory-search" class="btn-clear-search">重置</button>
         </div>

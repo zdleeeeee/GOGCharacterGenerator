@@ -13,14 +13,27 @@ body {
     color: var(--text-color);
     background-color: #f6f6f6;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.slider-container {
+    display: block;
+    height: calc(100% - 57px);
+    overflow-y: scroll;
 }
 
 .container {
     max-width: 1150px;
     margin: 0 auto;
     padding-bottom: 40px;
-    z-index: 1;
+    padding-top: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
+    flex-shrink: 0;
 }
 
 header {
@@ -610,10 +623,6 @@ input.current-value {
 
 /* 底部导航栏 */
 .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0px;
-    right: 0px;
     height: 40px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
@@ -624,6 +633,7 @@ input.current-value {
 }
 
 .nav-container {
+    z-index: 3;
     display: flex;
     justify-content: space-around;
     max-width: 600px;
@@ -1055,6 +1065,10 @@ input.current-value {
     outline: none;
 }
 
+.search-controls-style2 {
+    grid-template-columns: 88% 10%;
+}
+
 .no-results {
     max-width: max-content;
     margin: 20px auto;
@@ -1293,12 +1307,17 @@ input.current-value {
     }
 
     .roster-list {
-        height: 365px;
+        height: 390px;
     }
 
     .search-controls {
         grid-template-columns: 1fr;
-        gap: 1px;
+        gap: 2px;
+    }
+
+    .search-controls-style2 {
+        grid-template-columns: 86% 10%;
+        gap: 2%;
     }
 
     .btn-clear-search {
