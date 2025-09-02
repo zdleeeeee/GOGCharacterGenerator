@@ -21,10 +21,10 @@ body {
 .container {
     max-width: 1150px;
     margin: 0 auto;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
     padding-top: 20px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
     flex-shrink: 0;
 }
 
@@ -269,6 +269,8 @@ td input[type="number"] {
     display: flex;
     align-items: center;
     margin-top: 10px;
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
 }
 
 .tag-input input {
@@ -1009,8 +1011,7 @@ input.current-value {
     font-size: 13px;
     text-align: center;
     width: max-content;
-    max-height: 100%;
-    min-height: min-content;
+    height: 100%;
     color: #666666;
     background: #eeeeee80;
 }
@@ -1033,10 +1034,9 @@ input.current-value {
 }
 
 .search-controls {
-    display: grid;
-    grid-template-columns: 56% 30% 10%;
-    gap: 2%;
-    padding: 12px 4px;
+    display: flex;
+    padding: 12px 0px;
+    margin: 0 5px;
     width: 100%;
 }
 
@@ -1044,6 +1044,16 @@ input.current-value {
 .search-controls select {
     background: #eeeeee80;
     color: #333333;
+    height: 34px;
+}
+
+.search-container input,
+.search-container .select-container {
+    margin-right: 5px;
+}
+
+.search-container .select-container {
+    max-width: 180px;
 }
 
 .form-group select:hover,
@@ -1059,10 +1069,6 @@ input.current-value {
 .search-controls select:focus {
     background: #dddddd80;
     outline: none;
-}
-
-.search-controls-style2 {
-    grid-template-columns: 88% 10%;
 }
 
 .no-results {
@@ -1222,6 +1228,7 @@ input.current-value {
     background: #eeeeee80;
     color: #333333;
     padding-left: 12px;
+    height: 34px;
 }
 
 .select-style-2 .select-selected:hover,
@@ -1307,18 +1314,27 @@ input.current-value {
     }
 
     .search-controls {
+        display: grid;
         grid-template-columns: 1fr;
         gap: 2px;
     }
 
-    .search-controls-style2 {
-        grid-template-columns: 86% 10%;
-        gap: 1%;
-    }
-
     .btn-clear-search {
         width: 100%;
-        min-height: 34px;
+        height: 34px;
+        margin: 0px;
+    }
+
+    .search-controls-style2 {
+        display: flex;
+    }
+
+    .search-controls-style2 .btn-clear-search {
+        width: max-content;
+    }
+
+    .search-container .select-container {
+        max-width: 100%;
     }
 
     .character-form-fields {

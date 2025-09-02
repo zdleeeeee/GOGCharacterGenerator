@@ -409,13 +409,13 @@ class GOGCharacterApp {
                 <div class="select-selected">所有职业</div>
                     <div class="select-items">
                         <div class="select-item" data-value="">所有职业</div>
-                        <div class="select-item" data-value="前线">前线<br>-近战/防御</div>
-                        <div class="select-item" data-value="远程">远程<br>-物理/魔法</div>
-                        <div class="select-item" data-value="支援">支援<br>-控场/治疗</div>
-                        <div class="select-item" data-value="社交">社交<br>-谈判/情报</div>
-                        <div class="select-item" data-value="工农">工农<br>-生产/贸易</div>
-                        <div class="select-item" data-value="学者">学者<br>-解密/研究</div>
-                        <div class="select-item" data-value="浪人">浪人<br>-侦查/生存</div>
+                        <div class="select-item" data-value="前线">前线（近战/防御）</div>
+                        <div class="select-item" data-value="远程">远程（物理/魔法）</div>
+                        <div class="select-item" data-value="支援">支援（控场/治疗）</div>
+                        <div class="select-item" data-value="社交">社交（谈判/情报）</div>
+                        <div class="select-item" data-value="工农">工农（生产/贸易）</div>
+                        <div class="select-item" data-value="学者">学者（解密/研究）</div>
+                        <div class="select-item" data-value="浪人">浪人（侦查/生存）</div>
                     </div>
                 </div>
             </div>
