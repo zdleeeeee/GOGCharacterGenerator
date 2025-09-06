@@ -76,7 +76,7 @@ class GOGCharacterApp {
     closeRosterPanel() {
         document.getElementById('roster-panel').style.display = 'none';
         const mainContainer = document.getElementById('main-container');
-        mainContainer.style.paddingBottom = '40px';
+        mainContainer.style.paddingBottom = '60px';
     }
 
     // 切换数据面板
@@ -310,7 +310,7 @@ class GOGCharacterApp {
 
         const filteredSkills = allSkills.filter(skill => {
             // 按职业筛选
-            if (selectedClass && skill.class !== selectedClass) return false;
+            if (selectedClass && !skill.class.toLowerCase().includes(selectedClass)) return false;
 
             // 通用搜索
             if (!searchTerm) return true;
