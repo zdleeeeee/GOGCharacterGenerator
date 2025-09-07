@@ -34,7 +34,7 @@ header {
     padding: 20px;
     background-color: white;
     color: #333333;
-    border: 1px solid #999999;
+    border: 2px solid #dddddd;
     border-radius: 12px;
 }
 
@@ -79,7 +79,7 @@ button:hover {
     background-color: var(--card-color);
     border-radius: 12px;
     padding: 20px;
-    border: 1px solid #999999;
+    border: 2px solid #dddddd;
     margin-bottom: 20px;
 }
 
@@ -902,7 +902,7 @@ input.current-value {
 .tab-btn {
     padding: 8px 16px;
     background: none;
-    border-radius: 6px;
+    border-radius:17px;
     cursor: pointer;
     text-align: center;
 }
@@ -1287,7 +1287,7 @@ input.current-value {
     }
 
     .tab-btn {
-        padding: 8px 10px 8px 8px;
+        padding: 12px 10px 8px 8px;
         background: none;
         border: none;
         cursor: pointer;
