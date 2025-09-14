@@ -1,7 +1,11 @@
-This is an auxiliary character creation system for our original TRPG game Goofing Off Gods, based on our original shared universe of the same name. 
+This is an auxiliary character creation tool for our original TRPG game *Goofing Off Gods*, set in a self-contained fantasy world of the same name. 
 
-The system is still under development and not yet finalized. 
+Please note that the system is still under active development and has not been finalized.
 
-**I'm not very good at programming, so I can't guarantee the website will work perfectly. Please use it with caution.**
+The frontend is built primarily with JavaScript, with no backend implementation. Data is stored locally using IndexedDB.
 
-To use it, please visit the link: [GOG Character Generator](https://zdleeeeee.github.io/GOGCharacterGenerator/).
+**As I am not a professional JavaScript developer, I can't guarantee the perfect functionality. Please use with caution.**
+
+You can access the tool here:
+
+[GOG Character Generator](https://zdleeeeee.github.io/GOGCharacterGenerator/)
