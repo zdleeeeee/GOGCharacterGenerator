@@ -649,13 +649,10 @@ input.current-value {
     flex-direction: column;
     align-items: center;
     border-radius: 4px;
-    transform: translateY(0) !important;
-    transition: none !important;
     top: 0 !important;
 }
 
 .nav-btn:active {
-    transform: translateY(0) !important;
     top: 0;
 }
 
@@ -665,10 +662,7 @@ input.current-value {
 
 .nav-btn i {
     font-size: 20px;
-}
-
-.nav-text {
-    transform: translateY(0) !important;
+    transition: all 0.3s;
 }
 
 /* 数据管理面板 */
@@ -757,6 +751,29 @@ input.current-value {
     text-align: center;
 }
 
+/* 骰子面板 */
+#show-dice-icon:hover {
+    transform: rotate(360deg);
+    transition: all 1s ease;
+}
+#show-dice-icon {
+    transform: rotate(0deg);
+    transition: all 1s ease;
+}
+.dice-panel {
+    position: fixed;
+    bottom: 50px;
+    left: 0px;
+    right: 0px;
+    height: 480px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px 12px 0px 0px;
+    box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    display: none;
+}
+
 /* 图鉴面板 */
 .roster-panel {
     position: fixed;
@@ -785,31 +802,204 @@ input.current-value {
     color: #333333;
 }
 
+.dice-panel-header-btn {
+    font-size: 14px;
+    color: #666666;
+    background: none;
+    border-radius: 8px;
+    height: min-content;
+    padding: 5px 8px;
+}
+
+.dice-panel-header-btn:hover {
+    background: #eeeeee80;
+}
+
+.btn-roll:hover {
+    transform: rotate(30deg);
+    transition: all 0.3s;
+}
+
+.btn-roll {
+    transform: rotate(0deg);
+    transition: all 0.3s;
+}
+
+.dice-config,
+.dice-panel-list {
+    display: none;
+    margin: 0 auto;
+    padding: 0 10px 10px 10px;
+}
+
+.dice-config {
+    max-width: 580px;
+}
+
+.dice-panel-list.active,
+.dice-config.active {
+    display: block;
+}
+
+.dices-list {
+    margin: 0 auto;
+    padding: 0 0 0 4px;
+    z-index: 1104;
+    min-height: 0;
+    max-height: 420px;
+    max-width: 580px;
+    overflow-y: scroll;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow-y: scroll;
+}
+
+.expression-help {
+    display: none;
+    padding: 3px 8px;
+    border: 1px solid #eeeeee;
+    color: #aaaaaa;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+input[type="text"].dice-expression {
+    background: #eeeeee80;
+    padding: 0px 15px;
+    height: 30px;
+    border-radius: 15px 0px 0px 15px;
+}
+input[type="text"].dice-expression:hover {
+    background: #dddddd80;
+}
+.roll-dice {
+    height: 30px;
+    border: none;
+    border-radius: 0px 15px 15px 0px;
+    text-align: center;
+    width: max-content;
+    padding: 0 15px 0px 10px;
+    background: #333333;
+    color: #eeeeee;
+}
+.roll-dice:hover {
+    background: #444444;
+}
+
+#dice-result-modal {
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    color: white;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+    padding: 0px;
+    opacity: 0;
+}
+
+#dice-result-modal.result-modal-visible {
+    display: flex;
+    z-index: 1099;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+.modal-header h4 {
+    margin: 0px 10px;
+}
+
+.close-result-modal {
+    border-radius: 10px;
+    height: 20px;
+    width: 20px;
+    align-content: center;
+    justify-content: center;
+    padding: 0px;
+    margin: 0px 5px;
+    font-size: 17px;
+    background: #ffffff;
+}
+
+.close-result-modal:hover {
+    background: #dddddd;
+}
+
+.modal-body {
+    text-align: center;
+    padding: 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#dice-calculation {
+    font-size: 18px;
+    color: #aaaaaa;
+    margin: 0px 15px 15px 15px;
+    word-break: break-all;
+}
+
+#dice-result {
+    font-size: 40px;
+    font-weight: bold;
+    align-content: center;
+    justify-content: center;
+    color: #ffffff;
+    margin-bottom: 30px;
+    text-shadow: 0px 0px 15px #aaaaaa;
+}
+
 .roster-list {
     margin: 0 auto;
     display: block;
-    padding: 0;
+    padding: 0 0 0 4px;
     z-index: 1104;
     min-height: 0;
     height: 420px;
     overflow-y: scroll;
 }
 
+.dices-list::-webkit-scrollbar,
 .roster-list::-webkit-scrollbar {
     background-color: transparent;
     width: 4px;
 }
 
+.dices-list::-webkit-scrollbar-thumb,
 .roster-list::-webkit-scrollbar-thumb {
     background-color: #eeeeee;
     border-radius: 2px;
 }
 
+.dices-list::-webkit-scrollbar-thumb:hover,
 .roster-list::-webkit-scrollbar-thumb:hover {
     background-color: #dddddd;
     cursor: pointer;
 }
 
+.dices-list::-webkit-scrollbar-button,
 .roster-list::-webkit-scrollbar-button {
     height: 4px;
     background-color: transparent;
@@ -902,7 +1092,7 @@ input.current-value {
 .tab-btn {
     padding: 8px 16px;
     background: none;
-    border-radius:17px;
+    border-radius: 17px;
     cursor: pointer;
     text-align: center;
 }
@@ -927,6 +1117,7 @@ input.current-value {
 }
 
 /* 列表项样式 */
+.dice-item,
 .blessing-item,
 .skill-item,
 .equipment-item,
@@ -936,6 +1127,17 @@ input.current-value {
     margin: 10px;
     border: 1px solid #eeeeee;
     border-radius: 8px;
+}
+
+.dice-item {
+    height: min-content;
+}
+
+.dice-item p {
+    color: #666666;
+    font-size: 12px;
+    padding: 0px 5px;
+    margin: 0;
 }
 
 .blessing-item p,
@@ -976,12 +1178,13 @@ input.current-value {
 .toggle-icon {
     cursor: pointer;
     margin: 10px;
-    width: 20px;
+    width: max-content;
+    min-width: 20px;
     height: 20px;
     font-size: 11px;
     font-weight: bold;
     text-align: center;
-    border-radius: 50%;
+    border-radius: 10px;
     color: #666666;
     background: #eeeeee;
 }
@@ -1284,6 +1487,10 @@ input.current-value {
         left: auto;
         right: 0;
         transform: none;
+    }
+
+    .dices-list {
+        grid-template-columns: 1fr;
     }
 
     .tab-btn {

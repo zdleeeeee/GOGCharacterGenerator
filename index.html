@@ -525,11 +525,14 @@
                 <span class="nav-text">保存</span>
             </button>
 
+            <button id="show-dice" class="nav-btn" title="显示骰子面板">
+                <span class="nav-text" id="show-dice-icon" style="background-image: linear-gradient(0deg, #333333, #333333); background-clip: text; -webkit-text-fill-color: transparent;"><i class="fa-solid fa-dice-d6"></i></span>
+            </button>
+
             <!-- 图鉴按钮 -->
             <button id="show-roster" class="nav-btn" title="显示角色列表">
                 <span class="nav-text">图鉴</span>
             </button>
-
 
             <!-- 数据管理按钮 (带下拉面板) -->
             <div class="nav-dropdown">
@@ -574,7 +577,56 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- 骰子面板 -->
+    <div id="dice-panel" class="dice-panel">
+        <div id="dice-panel-list" class="dice-panel-list active">
+            <div class="panel-header">
+                <div style="display: flex;max-width: 550px;margin: 0px auto;justify-content: space-around;">
+                    <button id="delete-all-dices" class="dice-panel-header-btn">清空</button>
+                    <h4 style="margin: 5px auto;">投掷鉴定</h4>
+                    <button id="new-dice-preset" class="dice-panel-header-btn">新建</button>
+                </div>
+            </div>
 
+            <div id="dices-list" class="dices-list active"></div>
+        </div>
+
+        <!-- 投掷配置 -->
+        <div id="dice-config" class="dice-config">
+            <div style="display: flex;justify-content: space-between; width: 100%;">
+                <button id="back-to-list" class="toggle-icon"><i class="fa-solid fa-angle-left"></i></button>
+                <div style="display: flex;">
+                    <button id="show-expression-help" class="toggle-icon">语法指引</button>
+                    <button id="save-preset" class="toggle-icon">保存</button>
+                </div>
+            </div>
+            <input type="text" id="preset-name" placeholder="给这个组合起个名字" style="margin:0 auto;text-align: center; font-weight: bold; padding: 0 15px;">
+            <div class="config-form">
+                <div id="expression-help" class="expression-help">支持格式: 2d6, 3d6kh2, 4d6kl3, (1d4+5)等，不支持乘除和中文括号<br>
+                    <strong>kh</strong>=保留高值, <strong>kl</strong>=保留低值<br>
+                    建议输入顺序：命运骰（2d6）+属性+技能+装备+奖励/惩罚<br>
+                    示例：2d6+4+5-3+(2d6kh1+1)
+                </div>
+                <div style="display: flex; padding: 10px 0px; margin: 0 10px;">
+                    <input type="text" id="dice-expression" class="dice-expression" placeholder="请输入骰子表达式，如：2d6+3">
+                    <button id="roll-dice" class="roll-dice">投掷</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 投掷结果显示模态框 -->
+    <div id="dice-result-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>投掷结果</h4>
+                <button class="close-result-modal" id="close-result-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="dice-calculation"></div>
+                <div id="dice-result" class="result-final"></div>
+            </div>
+        </div>
     </div>
     <!-- 图鉴面板 -->
     <div id="roster-panel" class="roster-panel">

@@ -2,7 +2,7 @@
 class CharacterDB {
     constructor() {
         this.dbName = 'GOGCharacterDB';
-        this.dbVersion = 2;
+        this.dbVersion = 3;
         this.db = null;
     }
 
@@ -22,6 +22,11 @@ class CharacterDB {
                         db.createObjectStore('staticData');
                     }
                 }
+                if (oldVersion < 3) {
+                    if (!db.objectStoreNames.contains('dices')) {
+                        db.createObjectStore('dices', { keyPath: 'id', autoIncrement: true });
+                    }
+                }
             };
 
             request.onsuccess = (event) => {
@@ -31,6 +36,85 @@ class CharacterDB {
 
             request.onerror = (event) => {
                 reject('Database error: ' + event.target.error);
+            };
+        });
+    }
+
+    // 添加/更新骰子
+    async saveDice(dice) {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(['dices'], 'readwrite');
+            const store = transaction.objectStore('dices');
+
+            // 确保有有效的id
+            if (dice.id === null || dice.id === undefined) {
+                // autoIncrement生成id
+                delete dice.id;
+            }
+
+            const request = store.put(dice);
+
+            request.onsuccess = () => {
+                // 返回完整的数据（包括 id）
+                const updatedDice = { ...dice, id: request.result };
+                resolve(updatedDice);
+            };
+            request.onerror = (event) => {
+                console.error('保存错误:', event.target.error);
+                reject(new Error(`保存失败: ${event.target.error.message}`));
+            };
+        });
+    }
+
+    // 获取所有dice
+    async getAllDices() {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(['dices'], 'readonly');
+            const store = transaction.objectStore('dices');
+            const request = store.getAll();
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = (event) => reject(event.target.error);
+        });
+    }
+
+    // 删除dice
+    async deleteDice(id) {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(['dices'], 'readwrite');
+            const store = transaction.objectStore('dices');
+            const request = store.delete(id);
+
+            request.onsuccess = () => resolve();
+            request.onerror = (event) => reject(event.target.error);
+        });
+    }
+
+    // 清空所有dices
+    async clearAllDices() {
+        return new Promise((resolve, reject) => {
+            if (!this.db || !this.db.objectStoreNames.contains('dices')) {
+                resolve(); // 如果存储不存在，直接返回成功
+                return;
+            }
+
+            const transaction = this.db.transaction(['dices'], 'readwrite');
+            const store = transaction.objectStore('dices');
+
+            // 使用clear()方法清空整个对象存储
+            const request = store.clear();
+
+            request.onsuccess = () => {
+                console.log('投掷组合数据已清空');
+                resolve();
+            };
+
+            request.onerror = () => {
+                console.error('清空投掷组合失败:', request.error);
+                reject(request.error);
             };
         });
     }

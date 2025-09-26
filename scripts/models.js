@@ -105,3 +105,13 @@ class Character {
     this.updatedAt = new Date().toISOString();
   }
 }
+
+class Dice {
+  constructor(data = {}) {
+    if (data.id !== undefined && data.id !== null) {
+      this.id = data.id;
+    }
+    this.expr = data.expr || "";
+    this.name = data.name || "未命名";
+  }
+}

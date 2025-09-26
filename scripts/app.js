@@ -18,6 +18,8 @@ class GOGCharacterApp {
             window.staticData = this.staticData;
         }
 
+        this.renderDiceList();
+        this.currentDice = new Dice();
         this.renderCharacterList();
         this.currentCharacter = new Character();
         this.renderBlessingsList();
@@ -57,6 +59,255 @@ class GOGCharacterApp {
 
     }
 
+    // 切换骰子面板
+    toggleDicePanel() {
+        const panel = document.getElementById('dice-panel');
+        if (panel.style.display === 'block') {
+            this.closeDicePanel();
+        } else {
+            this.openDicePanel();
+        }
+    }
+    openDicePanel() {
+        const panel = document.getElementById('dice-panel');
+        const mainContainer = document.getElementById('main-container');
+        const icon = document.getElementById('show-dice-icon');
+        panel.style.display = 'block';
+        mainContainer.style.paddingBottom = '480px';
+        icon.style.backgroundImage = 'linear-gradient(217deg, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0) 70.71%),linear-gradient(127deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0) 70.71%),linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%)'
+        icon.querySelector('.fa-solid').style.fontSize = '22px';
+        document.getElementById('roster-panel').style.display = 'none';
+    }
+    closeDicePanel() {
+        document.getElementById('dice-panel').style.display = 'none';
+        const mainContainer = document.getElementById('main-container');
+        const icon = document.getElementById('show-dice-icon');
+        mainContainer.style.paddingBottom = '60px';
+        icon.style.backgroundImage = 'linear-gradient(0deg, #333333, #333333)';
+        icon.querySelector('.fa-solid').style.fontSize = '20px';
+    }
+
+    // 渲染骰子列表
+    async renderDiceList() {
+        const dices = await this.db.getAllDices();
+        const listContainer = document.getElementById('dices-list');
+
+        listContainer.innerHTML = dices.map(dc => `
+      <div class="dice-item" data-id="${dc.id}">
+        <div class="item-header">
+          <h5 style="padding-top: 0px;">${dc.name}</h5>
+          <div class="header-actions">
+            <button class="btn-roll  toggle-icon" title="投掷组合" style="padding: 0; margin: 0px;"><i class="fa-solid fa-dice-d6"></i></button>
+            <button class="btn-load toggle-icon" title="编辑组合" style="padding: 0; margin: 0px;"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn-delete toggle-icon" title="删除组合" style="padding: 0; margin:0px;"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+        <div>
+          <p>${dc.expr}</p>
+        </div>
+      </div>
+    `).join('');
+    }
+
+    // 解析dice表达式(支持括号)
+    parseDiceExpression(expr) {
+        try {
+            // 去掉所有空格
+            expr = expr.replace(/\s+/g, '');
+
+            let total = 0;
+            let details = [];
+            let currentOperator = '+';
+            let i = 0;
+            const l = expr.length;
+
+            while (i < l) {
+                if (expr[i] === '(') {
+                    if (currentOperator === '') throw new Error('不支持乘法');
+
+                    let depth = 1;
+                    let j = i + 1;
+                    while (j < l && depth > 0) {
+                        if (expr[j] === '(') depth++;
+                        else if (expr[j] === ')') depth--;
+                        j++;
+                    }
+
+                    if (depth !== 0) {
+                        throw new Error('括号不匹配');
+                    }
+
+                    const innerExpr = expr.substring(i + 1, j - 1);
+
+                    const innerResult = this.parseDiceExpression(innerExpr);
+
+                    const value = currentOperator === '+' ? innerResult.result : -innerResult.result;
+
+                    total += value;
+                    details.push({
+                        operator: currentOperator,
+                        value: value,
+                        details: `(${innerResult.details})`
+                    });
+
+                    i = j;
+                    currentOperator = '';
+                } else if (expr[i] === '+' || expr[i] === '-') {
+                    currentOperator = expr[i];
+                    i++;
+                } else {
+                    if (currentOperator === '') throw new Error('不支持乘法');
+
+                    let j = i;
+                    while (j < l && expr[j] !== '+' && expr[j] !== '-' && expr[j] !== '(' && expr[j] !== ')') {
+                        j++;
+                    }
+
+                    const part = expr.substring(i, j);
+                    const partResult = this.parseDicePart(part);
+
+                    const value = currentOperator === '+' ? partResult.result : -partResult.result;
+                    total += value;
+                    details.push({
+                        operator: currentOperator,
+                        value: value,
+                        details: partResult.details
+                    });
+
+                    i = j;
+                    currentOperator = '';
+                }
+
+                while (i < expr.length && (expr[i] === ' ' || expr[i] === '\t')) {
+                    i++;
+                }
+            }
+
+            // 构建详细的计算过程
+            const calculation = details.map((detail, index) => {
+                if (index === 0 && detail.operator === '+') {
+                    return detail.details;
+                }
+                return `${detail.operator}${detail.details}`;
+            }).join(' ');
+
+            return {
+                result: total,
+                details: `${calculation}`,
+            };
+        } catch (error) {
+            console.error('表达式解析错误:', error);
+            return { result: 0, details: `错误: ${expr}` };
+        }
+    }
+
+    parseDicePart(part) {
+        const diceMatch = part.match(/(\d*)d(\d+)(kh|kl)?(\d+)?/i);
+        if (diceMatch) {
+            const [, countStr, sidesStr, mode, keepStr] = diceMatch;
+            const count = countStr ? parseInt(countStr) : 1;  // 默认1个骰子
+            const sides = parseInt(sidesStr);  // 骰子面数
+            const keep = keepStr ? parseInt(keepStr) : null;  // 保留数量
+
+            const rolls = [];
+            for (let i = 0; i < count; i++) {
+                rolls.push(Math.floor(Math.random() * sides) + 1);
+            }
+
+            let result;
+            let details = `${count}d${sides}`;
+
+            if (mode === 'kh' && keep) {
+                // 保留高值 (Keep Highest)
+                const sorted = [...rolls].sort((a, b) => b - a);
+                const kept = sorted.slice(0, keep);
+                result = kept.reduce((sum, val) => sum + val, 0);
+                details = `(${count}d${sides}kh${keep}: ${rolls.join(',')}→${kept.join('+')})`;
+            } else if (mode === 'kl' && keep) {
+                // 保留低值 (Keep Lowest)
+                const sorted = [...rolls].sort((a, b) => a - b);
+                const kept = sorted.slice(0, keep);
+                result = kept.reduce((sum, val) => sum + val, 0);
+                details = `(${count}d${sides}kl${keep}: ${rolls.join(',')}→${kept.join('+')})`;
+            } else {
+                // 普通投掷
+                result = rolls.reduce((sum, val) => sum + val, 0);
+                details = `(${count}d${sides}: ${rolls.join(',')}→${rolls.join('+')})`;
+            }
+
+            return { result, details };
+        }
+
+        // 处理纯数字
+        const num = parseInt(part);
+        if (!isNaN(num)) {
+            return { result: num, details: num.toString() };
+        }
+
+        // 无法解析的部分
+        return { result: 0, details: `无效: ${part}` };
+    }
+
+    // 执行投掷
+    performRoll(expr) {
+        const expression = expr.trim();
+
+        if (!expression) {
+            this.showToast('请输入投掷表达式');
+            return;
+        }
+
+        try {
+            const result = this.parseDiceExpression(expression);
+            this.showDiceResult(`${result.details}=`, result.result);
+            return result;
+        } catch (error) {
+            this.showToast('表达式格式错误');
+            console.error('投掷错误:', error);
+        }
+    }
+
+    showDiceResult(calculation, result) {
+        document.getElementById('dice-calculation').innerHTML = calculation;
+        document.getElementById('dice-result').textContent = `${result}`;
+        document.getElementById('dice-result-modal').classList.add('result-modal-visible');
+    }
+
+    loadPresetToForm(preset) {
+        document.getElementById('dice-panel').style.height = 'max-content';
+        document.getElementById('dice-panel-list').classList.remove('active');
+        document.getElementById('dice-config').classList.add('active');
+
+        document.getElementById('dice-expression').value = preset.expr;
+        document.getElementById('preset-name').value = preset.name;
+    }
+
+    getPresetFromForm() {
+        return { name: document.getElementById('preset-name').value.toString(), expr: document.getElementById('dice-expression').value.toString() };
+    }
+
+    // 保存投掷组合
+    async saveDicePreset() {
+        const expression = document.getElementById('dice-expression').value.trim();
+        const name = document.getElementById('preset-name').value.trim() || `未命名`;
+
+        if (!expression) {
+            this.showToast('请输入投掷表达式');
+            return;
+        }
+
+        const preset = {
+            id: this.currentDice.id,
+            name: name,
+            expr: expression,
+        };
+
+        this.dicePresets.push(preset);
+        await this.db.saveDicePresets(this.dicePresets);
+        this.renderDicePresets();
+        this.showToast('投掷组合已保存');
+    }
+
     // 切换图鉴面板
     toggleRosterPanel() {
         const panel = document.getElementById('roster-panel');
@@ -71,6 +322,10 @@ class GOGCharacterApp {
         const mainContainer = document.getElementById('main-container');
         panel.style.display = 'block';
         mainContainer.style.paddingBottom = '480px';
+        document.getElementById('dice-panel').style.display = 'none';
+        const icon = document.getElementById('show-dice-icon');
+        icon.style.backgroundImage = 'linear-gradient(0deg, #333333, #333333)';
+        icon.querySelector('.fa-solid').style.fontSize = '20px';
         this.renderCharacterList();
     }
     closeRosterPanel() {
@@ -1930,7 +2185,118 @@ class GOGCharacterApp {
     // 设置事件监听
     setupEventListeners() {
 
-        /* 图鉴相关 */
+        // ****************************************骰子相关***********************************
+        // 骰子按钮点击事件
+        document.getElementById('show-dice').addEventListener('click', () => {
+            this.toggleDicePanel();
+        });
+        // 骰子卡片操作
+        document.getElementById('dices-list').addEventListener('click', async (e) => {
+            const card = e.target.closest('.dice-item');
+            if (!card) return;
+
+            const id = parseInt(card.dataset.id);
+
+            if (e.target.closest('.btn-load')) {
+                const dcs = await this.db.getAllDices();
+                const dc = dcs.find(c => c.id === id);
+                this.currentDice = dc;
+                this.loadPresetToForm(dc);
+            }
+            else if (e.target.closest('.btn-roll')) {
+                const dcs = await this.db.getAllDices();
+                const dc = dcs.find(c => c.id === id);
+                this.performRoll(dc.expr);
+            }
+            else if (e.target.closest('.btn-delete')) {
+                if (confirm('确定删除这个投掷组合吗？')) {
+                    await this.db.deleteDice(id);
+                    this.renderDiceList();
+                }
+            }
+        });
+        // 新建组合按钮
+        document.getElementById('new-dice-preset').addEventListener('click', () => {
+            this.currentDice = new Dice();
+            this.currentDice.expr = "2d6";
+            this.loadPresetToForm(this.currentDice);
+        });
+        // 清空骰子
+        document.getElementById('delete-all-dices').addEventListener('click', () => {
+            const confirmed = confirm(
+                "确定要清空骰子？"
+            );
+
+            if (confirmed) {
+                this.db.clearAllDices();
+                this.renderDiceList();
+                if (document.getElementById('dice-config').classList.contains('active')) {
+                    document.getElementById('dice-config').classList.remove('active');
+                    document.getElementById('dice-panel-list').classList.add('active');
+                    document.getElementById('dice-panel').style.height = '480px';
+                }
+            }
+        });
+
+        // 显示语法指引
+        document.getElementById('show-expression-help').addEventListener('click', () => {
+            const exhp = document.getElementById('expression-help');
+            if (exhp.style.display === 'block') {
+                exhp.style.display = 'none';
+            } else {
+                exhp.style.display = 'block';
+            }
+        });
+
+        // 投掷
+        document.getElementById('roll-dice').addEventListener('click', () => {
+            this.performRoll(this.getPresetFromForm().expr);
+        });
+
+        // 返回列表
+        document.getElementById('back-to-list').addEventListener('click', () => {
+            document.getElementById('dice-config').classList.remove('active');
+            document.getElementById('dice-panel-list').classList.add('active');
+            document.getElementById('dice-panel').style.height = '480px';
+        });
+
+        // 仅保存
+        document.getElementById('save-preset').addEventListener('click', async () => {
+            const saveBtn = document.getElementById('save-preset');
+            const preset = this.getPresetFromForm();
+            try {
+                saveBtn.disabled = true;
+                const diceData = {
+                    ...this.currentDice,
+                    expr: preset.expr,
+                    name: preset.name
+                };
+
+                if (this.currentDice && this.currentDice.id) {
+                    diceData.id = this.currentDice.id;
+                }
+
+                const dice = new Dice(diceData);
+
+                const savedDice = await this.db.saveDice(dice);
+
+                this.currentDice = savedDice;
+                this.renderDiceList();
+                this.showToast('投掷组合已保存！');
+            } catch (error) {
+                console.error('保存错误:', error);
+                alert(`保存失败: ${error.message}`);
+            } finally {
+                saveBtn.disabled = false;
+            }
+        });
+
+        // 关闭结果
+        document.getElementById('close-result-modal').addEventListener('click', () => {
+            document.getElementById('dice-result-modal').classList.remove('result-modal-visible');
+        });
+
+        /******************** 图鉴相关 ***********************/
         // 图鉴按钮点击事件
         document.getElementById('show-roster').addEventListener('click', () => {
             this.toggleRosterPanel();

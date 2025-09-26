@@ -7,7 +7,7 @@ window.staticData = {
             system: [
                 { level: '1~3', attribute: "力/法", skill: "概念亲和、红外视觉 ", corruption: '具鳞之子：皮肤浮现蛇鳞' },
                 { level: '4~6', attribute: "力/法/敏", skill: "水即吾身、蜕皮新生", corruption: '续尾之子：下肢蛇尾化，双性征' },
-                { level: '7~10', attribute: "力/法/敏/健", skill: "塑容、归还源流、延续链", corruption: '源化蛇嗣：头部蛇首化，可自由还原人形' },
+                { level: '7~10', attribute: "力/法/敏/健", skill: "塑容、归还源流、延续长河", corruption: '源化蛇嗣：头部蛇首化，可自由还原人形' },
             ],
             skills: [
                 { name: "概念亲和", description: "（被动技能）延续的蒙福者对治愈、水相关的概念亲和，擅长相关知识点和能力。" },
@@ -16,7 +16,7 @@ window.staticData = {
                 { name: "蜕皮新生", description: "主动脱落外皮，清除所有负面状态，一天限使用两次。" },
                 { name: "塑容", description: "当环境存在清洁水源，可以利用水源改变自身的容貌和修复肢体，差异越大难度越高，水源越充足难度越低。" },
                 { name: "归还源流", description: "当环境温度适宜，角色身躯完全液化为清水，可与外界的水流融为一体而快速移动，也可以用于潜行与窥探，免疫外界物理伤害，但也会造成交互受限，液化与复原均需进行成功判定。" },
-                { name: "延续链", description: "当自己与他人之间存在上下级的关系时，可以向下级“延续”自己的身体特征（比如属性值/技能/状态/记忆/……），或者“延续“上级的身体特征。除此以外，可以进行其他与延续相关的行为，能否发动，视情况而定。" }
+                { name: "延续长河", description: "当自己与他人之间存在上下级的关系时，可以向下级“延续”自己的身体特征（比如属性值/技能/状态/记忆/……），或者“延续“上级的身体特征。除此以外，可以进行其他与延续相关的行为，能否发动，视情况而定。" }
             ]
         },
         {
@@ -42,21 +42,17 @@ window.staticData = {
 
     skills: {
         "力量": [
-            { name: "攀爬", class: "基础", description: "力量；" },
-            { name: "游泳", class: "基础", description: "力量；" },
+            { name: "运动", class: "基础", description: "力量；攀爬、游泳、跳跃等需要体力的活动；" },
             { name: "角斗", class: "基础", description: "力量；蛮力、挣脱、抢夺、近身格斗等能力；" },
-            { name: "投掷", class: "基础", description: "力量；" },
             { name: "强韧", class: "基础", description: "力量；抵抗中毒、疲惫、物理伤害的能力；" },
-            { name: "械斗（）", class: "基础", description: "力量；选择某种武器；" },
+            { name: "械斗", class: "基础", description: "力量；使用近战武器（如剑、斧）的能力；" },
             { name: "气力贯注D", class: "怀武炁术法", description: "力量；消耗：1mp；效果：将一股“炁”短暂灌注于肢体，使力量或敏捷之一暂时提升。" },
         ],
         "敏捷": [
             { name: "闪避", class: "基础", description: "敏捷；快速移动的能力；" },
             { name: "体操", class: "基础", description: "敏捷；精密的全身运动，包括潜行；" },
-            { name: "瞄准", class: "基础", description: "敏捷；" },
+            { name: "瞄准", class: "基础", description: "敏捷；远程攻击（如弓箭、投掷）的精准度；" },
             { name: "巧手", class: "基础", description: "敏捷；精密的手部操作；" },
-            { name: "驾驶", class: "基础", description: "敏捷；" },
-            { name: "表演（）", class: "基础", description: "敏捷；选择某项表演能力，如演奏乐器、歌唱、舞蹈、戏剧等；" },
             { name: "踏枝无痕A", class: "怀武炁术法", description: "敏捷；消耗：5hp/h；效果：使身体轻灵，可以在脆弱或狭窄的立足点（如细树枝、墙头、缆绳）上自如移动而不会跌落。" },
         ],
         "智慧": [
@@ -64,6 +60,8 @@ window.staticData = {
             { name: "解构", class: "基础", description: "智慧；破解机关、谜题，理解文字内容；" },
             { name: "信息搜集", class: "基础", description: "智慧；翻阅图书、提取要点、快速记忆；" },
             { name: "外语（）", class: "基础", description: "智慧；选择某种语言；" },
+            { name: "驾驶", class: "基础", description: "智慧；" },
+            { name: "表演（）", class: "基础", description: "智慧；选择某项表演能力，如演奏乐器、歌唱、舞蹈、戏剧等；" },
         ],
         "魅力": [
             { name: "说服", class: "基础", description: "魅力；" },
@@ -81,13 +79,16 @@ window.staticData = {
             { name: "针灸术C", class: "怀武炁术法", description: "感知；消耗：2mp，需要银针；效果：通过银针将“炁”渡入患者特定穴道。成功则可消除目标一个【眩晕】或【痛苦】状态，并恢复（熟练度）点健康。对疾病和毒素效果减半。" },
         ],
         "法力": [
+            { name: "强化术（）", class: "基础", description: "法力；选择某个基础技能，使用该技能熟练度替换对应熟练度，这一技能可以有多个，分别对应不同的其他属性基础技能；" },
             { name: "照明术D", class: "西方学院派魔法", description: "法力；消耗：1mp/h；效果：在指尖或法器顶端创造一团稳定的光球，提供半径约5米的照明，光色可随施法者心意进行调整。一般无需鉴定。" },
             { name: "护甲术C", class: "西方学院派魔法", description: "法力；消耗：3mp+1mp/h；效果：在身体周围形成一层无形的力场护甲。鉴定成功后，在护甲持续期间，可将此技能熟练度作为额外加值，投入任何用于抵抗物理攻击的鉴定中。" },
+            { name: "火锥术C", class: "西方学院派魔法", description: "法力；消耗：5mp；效果：从双手射出一片锥形火焰。对范围内所有目标造成火焰伤害。" },
+            { name: "飞行术B", class: "西方学院派魔法", description: "法力；消耗：10mp+6mp/h；效果：赋予一目标飞行能力。鉴定溢出值越高，飞得越快越灵活。" },
         ]
         // 更多技能...
     },
 
-    skillClasses: [ "基础", "西方学院派魔法", "怀武炁术法" ],
+    skillClasses: [ "基础", "西方学院派魔法", "怀武炁术法", "神山学派魔法" ],
 
     equipments: {
         "刀剑": [
