@@ -8,7 +8,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
     background-color: #f6f6f6;
@@ -30,9 +30,9 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     padding: 20px;
-    background-color: white;
+    background-color: #ffffff;
     color: #333333;
     border: 2px solid #dddddd;
     border-radius: 12px;
@@ -46,6 +46,14 @@ h3 {
 
 h1 {
     font-size: 24px;
+    letter-spacing: 5px;
+}
+
+h2 {
+    margin: 0;
+    border-radius: 0;
+    color: #333333;
+    font-size: 16px;
 }
 
 th,
@@ -72,19 +80,15 @@ button:hover {
 .character-sheet {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 0px;
 }
 
 .section {
-    background-color: var(--card-color);
+    background-color: #ffffff;
     border-radius: 12px;
     padding: 20px;
     border: 2px solid #dddddd;
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 label {
@@ -96,10 +100,21 @@ label {
     color: #666666;
 }
 
+.form-group {
+    margin-top: 10px;
+    display: flex;
+}
+
+.form-group label {
+    min-width: max-content;
+    margin: auto 0;
+}
+
 input[type="text"],
 input[type="number"],
 select,
 textarea {
+    font-family: 'Segoe UI', sans-serif;
     width: 100%;
     background: transparent;
     padding: 8px 0px 8px 8px;
@@ -110,6 +125,16 @@ textarea {
     line-height: 1.4;
     color: #333333;
     -webkit-user-modify: read-write-plaintext-only;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 input[type="text"]:focus {
@@ -133,7 +158,7 @@ textarea {
 }
 
 .table-auto {
-    overflow-x: auto;
+    overflow-x: scroll;
     /* 水平溢出时显示滚动条 */
     -webkit-overflow-scrolling: touch;
     /* iOS平滑滚动 */
@@ -162,15 +187,26 @@ textarea {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+    margin-bottom: 15px;
 }
 
 .attribute-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
+.attribute-item label {
+    padding: 0;
+    margin: 0;
+    width: max-content;
+}
 .attribute-item input {
-    width: 100%;
+    padding: 0;
+}
+
+.attribute-item input:hover,
+.attribute-item input:focus {
+    outline: none;
 }
 
 .skills-list,
@@ -180,6 +216,7 @@ textarea {
     margin-top: 10px;
 }
 
+.blessing-skills-table td,
 .skills-list td,
 .items-list td {
     padding: 0px;
@@ -188,6 +225,7 @@ textarea {
     overflow-x: hidden;
 }
 
+.blessing-skills-table th,
 .skills-list th,
 .items-list th {
     padding: 6px;
@@ -199,8 +237,8 @@ textarea {
 
 .btn {
     padding: 7px 15px;
-    background-color: white;
-    color: #dddddd;
+    background-color: #ffffff80;
+    color: #666666;
     border: 1px solid #eeeeee;
     border-radius: 8px;
     cursor: pointer;
@@ -213,25 +251,27 @@ textarea {
 
 .btn:hover {
     color: #666666;
-    background-color: #eeeeee;
+    background-color: #eeeeee80;
 }
 
 .btn-danger {
-    min-width: max-content;
-    padding: 8px 15px;
+    padding: 7px 15px;
+    background-color: white;
     color: #dddddd;
     border: 1px solid #eeeeee;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    text-align: center;
     font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    text-align: center;
+    min-height: min-content;
+    min-width: max-content;
+    transition: all 0.3s;
 }
 
 .btn-danger:hover {
     background-color: #e74c3c;
     color: #ffffff;
+    border-color: #e74c3c;
 }
 
 td .btn-danger {
@@ -299,20 +339,15 @@ td input[type="number"] {
 .basic-attribution-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 15px;
     grid-column: span 2;
     /* 确保这个容器也跨两列 */
-}
-
-.blessing-grid>.form-group {
-    min-width: 0;
-    /* 关键修复：覆盖默认的 min-width: auto */
 }
 
 /* 基本信息网格布局 */
 .character-info-grid {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 164px 1fr;
     gap: 20px;
     margin-bottom: 20px;
 }
@@ -320,20 +355,32 @@ td input[type="number"] {
 /* 肖像区域样式 */
 .character-portrait-container {
     display: flex;
+    margin-top: 10px;
     flex-direction: column;
-    gap: 10px;
+    gap: 0px;
+    justify-content: center;
+    align-content: center;
 }
 
 .portrait-preview {
-    width: 200px;
-    height: 250px;
-    border: 2px dashed var(--border-color);
+    width: 160px;
+    height: 200px;
+    margin: 0 auto;
+    border: 2px dashed #eeeeee;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s;
+}
+
+.portrait-preview:hover {
+    cursor: pointer;
+    background-color: #f2f2f240;
+    transition: all  0.3s;
 }
 
 #character-portrait {
@@ -348,17 +395,11 @@ td input[type="number"] {
     padding: 20px;
 }
 
-.portrait-controls {
-    display: flex;
-    margin: 0 auto;
-    gap: 0px;
-}
-
 /* 表单字段容器 */
 .character-form-fields {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    column-gap: 10px;
 }
 
 /* 描述区域（单独一行） */
@@ -370,7 +411,7 @@ td input[type="number"] {
 .blessing-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 10px;
     align-content: start;
 }
 
@@ -383,21 +424,6 @@ input.blessingFullName {
 }
 
 @media (max-width: 768px) {
-
-    .character-info-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .portrait-preview {
-        width: 150px;
-        height: 200px;
-    }
-
-    .portrait-preview {
-        width: 150px;
-        height: 200px;
-        margin: 0 auto;
-    }
 
     .blessing-grid {
         grid-template-columns: 1fr;
@@ -422,13 +448,11 @@ input.blessingFullName {
 
 .blessing-table td {
     border: 1px solid #ddd;
-    padding: 6px;
     text-align: left;
 }
 
 .blessing-table th {
     border: 1px solid #ddd;
-    padding: 6px 12px;
     text-align: center;
     background-color: #f2f2f2;
 }
@@ -462,12 +486,6 @@ input.blessingFullName {
     outline: none;
 }
 
-.items-list .auto-height-cell,
-.skills-list .auto-height-cell {
-    padding: 0px 6px;
-    min-width: 100px;
-}
-
 .auto-height-content {
     height: min-content;
     font-size: 14px;
@@ -481,6 +499,13 @@ input.blessingFullName {
     -webkit-user-modify: read-write-plaintext-only;
 }
 
+.blessing-skills-table .auto-height-cell,
+.items-list .auto-height-cell,
+.skills-list .auto-height-cell {
+    padding: 0px 6px;
+    min-width: 100px;
+}
+
 .log-header .auto-height-content {
     line-height: 1.4;
 }
@@ -491,14 +516,12 @@ input.blessingFullName {
 }
 
 .blessing-skills-table td {
-    border: 1px solid #ddd;
-    padding: 6px;
+    border: 1px solid #dddddd;
     text-align: left;
 }
 
 .blessing-skills-table th {
-    border: 1px solid #ddd;
-    padding: 6px;
+    border: 1px solid #dddddd;
     background-color: #f2f2f2;
     text-align: center;
 }
@@ -518,7 +541,7 @@ input.blessingFullName {
     text-align: center;
     min-height: min-content;
     min-width: max-content;
-    transition: background-color 0.3s;
+    background: none;
 }
 
 .btn-isGod:hover {
@@ -536,6 +559,17 @@ input.blessingFullName {
     text-align: center;
 }
 
+.attribute-controls span,
+input.base-value,
+input.status-adj,
+input.blessing-adj {
+    font-size: 12px;
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+    max-width: 40px;
+}
+
 input.base-value {
     color: #666666;
 }
@@ -548,18 +582,21 @@ input.blessing-adj {
     color: #3498db;
 }
 
-.total-value {
+.attribute-controls .total-value {
     min-width: 30px;
-    display: inline-block;
     text-align: center;
     font-weight: bold;
     font-size: 16px;
+    border-bottom: 1px solid #dddddd;
 }
 
 input.current-value {
+    min-width: 30px;
     text-align: center;
     font-weight: bold;
     font-size: 16px;
+    border-bottom: 1px solid #dddddd;
+    border-radius: 0;
 }
 
 .max-value {
@@ -576,7 +613,7 @@ input.current-value {
 .health-bar-container,
 .mana-bar-container {
     position: relative;
-    width: 120px;
+    width: 100px;
     height: 12px;
     background: #eee;
     border-radius: 6px;
@@ -886,6 +923,7 @@ input[type="text"].dice-expression:hover {
     background: #444444;
 }
 
+#portrait-controls,
 #dice-result-modal {
     position: fixed;
     bottom: 50%;
@@ -902,11 +940,53 @@ input[type="text"].dice-expression:hover {
     opacity: 0;
 }
 
+#portrait-controls.visible,
 #dice-result-modal.result-modal-visible {
     display: flex;
     z-index: 1099;
     opacity: 1;
     transition: opacity 0.3s;
+}
+
+#portrait-controls {
+    padding: 6px;
+    flex-direction: column;
+    height: max-content;
+}
+
+.portrait-controls label.btn {
+    margin: 10px 6px 6px 6px;
+    color: #dddddd;
+    border-color: #dddddd;
+    width: 80px;
+    font-weight: normal;
+    padding: 7px 0px;
+    font-size: 14px;
+    justify-content: center;
+    border-width: 1px;
+    background: none;
+    border-radius: 10px;
+}
+
+.portrait-controls .btn-danger {
+    margin: 6px;
+    color: #ff4343;
+    border-color: #ff4343;
+    font-weight: normal;
+    width: 80px;
+    padding: 8px 0px;
+    border-width: 1px;
+    background: none;
+    border-radius: 10px;
+}
+
+.portrait-controls label.btn:hover {
+    color: #ffffff;
+    background-color: #eeeeee40;
+}
+
+.portrait-controls .btn-danger:hover {
+    background-color: #e74c3c40;
 }
 
 .modal-content {
@@ -1483,6 +1563,11 @@ input[type="text"].dice-expression:hover {
 
 /* 响应式调整 */
 @media (max-width: 480px) {
+
+    .character-info-grid {
+        grid-template-columns: 1fr;
+    }
+
     .data-panel {
         left: auto;
         right: 0;

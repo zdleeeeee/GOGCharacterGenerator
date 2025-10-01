@@ -20,7 +20,7 @@
     <div class="container" id="main-container">
 
         <header>
-            <h1 style="color:#333333">GOG 角色档案</h1>
+            <h1>GOG 角色档案</h1>
         </header>
 
         <div class="character-sheet">
@@ -30,36 +30,27 @@
                     <div class="character-info-grid">
                         <div class="character-portrait-container">
                             <!-- 肖像显示区域 -->
-                            <div class="portrait-preview">
+                            <div class="portrait-preview" id="portrait-preview">
                                 <img id="character-portrait" src="" alt="角色肖像"
                                     style="width: 100%; height: 100%; object-fit: cover; display: none;">
                                 <div id="portrait-placeholder">暂无肖像<br />(w:h=4:5)</div>
                             </div>
-                            <!-- 上传控件 -->
-                            <div class="portrait-controls">
-                                <label for="upload-portrait" class="btn"
-                                    style="border-radius: 8px 0px 0px 8px;">上传肖像</label>
-                                <input type="file" id="upload-portrait" accept="image/*" style="display: none;">
-                                <button id="remove-portrait" class="btn btn-danger"
-                                    style="border-radius: 0px 8px 8px 0px;border-left: none;">移除肖像</button>
-                            </div>
                         </div>
 
                         <div class="character-form-fields">
-                            <div class="form-group">
-                                <label for="character-name">角色名：</label>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label for="character-name">姓名</label>
                                 <div class="auto-height-content" contenteditable="true" id="character-name"
-                                    style="font-size: 14px;"></div>
+                                    style="font-size: 14px; width: 100%;"></div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="player-name">玩家：</label>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label for="player-name">玩家</label>
                                 <div class="auto-height-content" contenteditable="true" id="player-name"
-                                    style="font-size: 14px;"></div>
+                                    style="font-size: 14px; width: 100%;"></div>
                             </div>
-
                             <div class="form-group">
-                                <label for="character-gender">性别：</label>
+                                <label for="character-gender">性别</label>
                                 <div class="select-container">
                                     <div class="custom-select" tabindex="0">
                                         <select id="character-gender">
@@ -80,12 +71,12 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="character-age">年龄：</label>
+                                <label for="character-age">年龄</label>
                                 <input type="number" id="character-age" min="0">
                             </div>
 
                             <div class="form-group">
-                                <label for="character-alignment">阵营：</label>
+                                <label for="character-alignment">阵营</label>
                                 <div class="select-container">
                                     <div class="custom-select" tabindex="0">
                                         <select id="character-alignment">
@@ -116,23 +107,23 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="character-nationality">国籍：</label>
+                                <label for="character-nationality">国籍</label>
                                 <input type="text" id="character-nationality">
                             </div>
 
                             <div class="form-group">
-                                <label for="character-class">职业：</label>
+                                <label for="character-class">职业</label>
                                 <input type="text" id="character-class">
                             </div>
 
                             <div class="form-group">
-                                <label for="character-blessing">赐福：</label>
+                                <label for="character-blessing">赐福</label>
                                 <input type="text" id="character-blessing">
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group full-width">
+                    <div class="form-group full-width" style="display: block;">
                         <label for="character-description">描述：</label>
                         <div class="auto-height-content" contenteditable="true" id="character-description"
                             placeholder="可以描述种族、个人背景故事等" style="font-size: 14px;"></div>
@@ -148,11 +139,11 @@
                             <button id="isGod" class="btn-isGod"></button> <!--内容动态生成-->
                         </div>
                         <div style="font-size: 12px; color: #dddddd; margin-bottom: 10px;">
-                            （人类六大属性基础值范围：0~10，总值范围0~20；神明不设上限）<br>（人类健康/魔力属性基础值范围：0~20；神明不设上限）</div>
+                            （人类六大属性基础值范围：0~10，总值范围0~20；神明不设上限）<br>（人类健康/魔力属性基础值范围：0~100；神明不设上限）</div>
                     </div>
                     <div class="attributes-grid">
                         <div class="attribute-item">
-                            <label for="attr-STR-base">力量：</label>
+                            <label for="attr-STR-base">力量</label>
                             <div class="attribute-controls">
                                 <input type="number" id="attr-STR-base" min="0" value="5" title="基础值"
                                     class="base-value">
@@ -168,7 +159,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-DEX-base">敏捷：</label>
+                            <label for="attr-DEX-base">敏捷</label>
                             <div class="attribute-controls">
                                 <input type="number" id="attr-DEX-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
@@ -181,7 +172,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-INT-base">智慧：</label>
+                            <label for="attr-INT-base">智慧</label>
                             <div class="attribute-controls">
                                 <input type="number" id="attr-INT-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
@@ -194,7 +185,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-CHA-base">魅力：</label>
+                            <label for="attr-CHA-base">魅力</label>
                             <div class="attribute-controls">
                                 <input type="number" id="attr-CHA-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
@@ -207,7 +198,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-WIS-base">感知：</label>
+                            <label for="attr-WIS-base">感知</label>
                             <div class="attribute-controls">
                                 <input type="number" id="attr-WIS-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
@@ -220,7 +211,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-MAG-base">法力：</label>
+                            <label for="attr-MAG-base">法力</label>
                             <div class="attribute-controls">
                                 <input type="number" id="attr-MAG-base" min="0" value="5" title="基础值"
                                     class="base-value"><span>+</span>
@@ -233,7 +224,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-HP-current">健康：</label>
+                            <label for="attr-HP-current">健康</label>
                             <div class="attribute-controls" style="gap: 0px;">
                                 <input type="number" id="attr-HP-base" min="0" value="5" title="基础值" class="base-value">
                                 <input type="number" id="attr-HP-current" value="5" title="当前值" class="current-value">
@@ -246,7 +237,7 @@
                         </div>
 
                         <div class="attribute-item">
-                            <label for="attr-MP-current">魔力：</label>
+                            <label for="attr-MP-current">魔力</label>
                             <div class="attribute-controls" style="gap: 0px;">
                                 <input type="number" id="attr-MP-base" min="0" value="5" title="基础值" class="base-value">
                                 <input type="number" id="attr-MP-current" value="5" title="当前值" class="current-value">
@@ -260,7 +251,7 @@
                     </div>
 
                     <h2>状态系统</h2>
-                    <div id="status-tags">
+                    <div id="status-tags" style="margin-top: 5px;">
                         <!-- 标签将通过JavaScript动态生成 -->
                     </div>
                     <div class="tag-input">
@@ -274,7 +265,7 @@
 
             <div class="section" style="grid-column: span 2;">
                 <div class="blessing-grid">
-                    <div class="form-group" style="margin-top: 0;">
+                    <div style="margin-top: 0; min-width: 0;">
                         <h2>赐福系统</h2>
                         <input class="blessingFullName" type="text" id="blessingFullName"
                             placeholder="权柄编号-神明职能-神明称号-神明真名">
@@ -285,7 +276,7 @@
                         <div class="character-form-fields">
                             <div class="form-group" style="display:flex;">
                                 <label for="blessing-soul"
-                                    style="min-width: max-content;padding-top: 6px;">赐福经验值：</label>
+                                    style="min-width: max-content; margin: auto 0;">赐福经验值：</label>
                                 <!--原先为“灵魂完整度”-->
                                 <div style="display: flex;padding-right: 10px;">
                                     <input type="number" id="blessing-soul" style=" padding-top: 8px;" min="0" max="100"
@@ -295,7 +286,7 @@
 
                             <div class="form-group" style="display:flex;">
                                 <label for="blessing-level"
-                                    style="min-width: max-content;padding-top: 6px;">赐福等级：</label>
+                                    style="min-width: max-content; margin: auto 0;">赐福等级：</label>
                                 <div class="select-container">
                                     <div class="custom-select" tabindex="0">
                                         <select id="blessing-level">
@@ -333,9 +324,9 @@
                             <table class="blessing-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 10%;">赐福等级</th>
+                                        <th style="width: 10%;">赐福<br>等级</th>
                                         <th style="width: 20%;">关联属性</th>
-                                        <th style="width: 30%;">权柄特技</th>
+                                        <th style="width: 30%;">赐福特技</th>
                                         <th style="width: 30%;">异化程度</th>
                                         <th style="width: 10%;">操作</th>
                                     </tr>
@@ -350,9 +341,8 @@
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-top: 0;">
-                        <h4 style="text-align: center;color:#666666;font-size: 16px; margin-bottom: 15px;">赐福特技
-                        </h4>
+                    <div
+                        style="margin-top: 0; padding-top: 0; display: flex; flex-direction: column; min-width: 0; justify-content: center;">
                         <div class="table-auto">
                             <table class="blessing-skills-table">
                                 <thead>
@@ -526,7 +516,9 @@
             </button>
 
             <button id="show-dice" class="nav-btn" title="显示骰子面板">
-                <span class="nav-text" id="show-dice-icon" style="background-image: linear-gradient(0deg, #333333, #333333); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><i class="fa-solid fa-dice-d6"></i></span>
+                <span class="nav-text" id="show-dice-icon"
+                    style="background-image: linear-gradient(0deg, #333333, #333333); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><i
+                        class="fa-solid fa-dice-d6"></i></span>
             </button>
 
             <!-- 图鉴按钮 -->
@@ -601,12 +593,13 @@
                     <button id="save-preset" class="toggle-icon">保存</button>
                 </div>
             </div>
-            <input type="text" id="preset-name" placeholder="给这个组合起个名字" style="margin:0 auto;text-align: center; font-weight: bold; padding: 0 15px;">
+            <input type="text" id="preset-name" placeholder="给这个组合起个名字"
+                style="margin:0 auto;text-align: center; font-weight: bold; padding: 0 15px;">
             <div class="config-form">
                 <div id="expression-help" class="expression-help">支持格式: 2d6, 3d6kh2, 4d6kl3, (1d4+5)等，不支持乘除和中文括号<br>
                     <strong>kh</strong>=保留高值, <strong>kl</strong>=保留低值<br>
                     建议输入顺序：命运骰（2d6）+属性+技能+装备+奖励/惩罚<br>
-                    示例：2d6+4+5-3+(2d6kh1+1)
+                    示例：2d6+4+5-3+(2d6kh1+1)&nbsp;&nbsp;&nbsp;<strong>按[Enter]键投掷</strong>
                 </div>
                 <div style="display: flex; padding: 10px 0px; margin: 0 10px;">
                     <input type="text" id="dice-expression" class="dice-expression" placeholder="请输入骰子表达式，如：2d6+3">
@@ -614,6 +607,13 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- 头像上传控件 -->
+    <div class="portrait-controls" id="portrait-controls">
+        <button class="close-result-modal" id="close-portrait-controls">×</button>
+        <label for="upload-portrait" class="btn">上传肖像</label>
+        <input type="file" id="upload-portrait" accept="image/*" style="display: none;">
+        <button id="remove-portrait" class="btn btn-danger">移除肖像</button>
     </div>
     <!-- 投掷结果显示模态框 -->
     <div id="dice-result-modal">

@@ -1,7 +1,7 @@
 // app.js - 主应用逻辑
 class GOGCharacterApp {
     static MAX_ATTRIBUTE_BASE = 20;
-    static MAX_HP_MP_BASE = 20;
+    static MAX_HP_MP_BASE = 100;
     static MAX_ATTRIBUTE_VALUE = 20;
 
     constructor() {
@@ -114,6 +114,9 @@ class GOGCharacterApp {
         try {
             // 去掉所有空格
             expr = expr.replace(/\s+/g, '');
+
+            // 修改中文括号为英文括号
+            expr = expr.replace(/（/g, '(').replace(/）/g, ')');
 
             let total = 0;
             let details = [];
@@ -2252,6 +2255,11 @@ class GOGCharacterApp {
         document.getElementById('roll-dice').addEventListener('click', () => {
             this.performRoll(this.getPresetFromForm().expr);
         });
+        document.getElementById('dice-expression').addEventListener('keydown', (event) => {
+            if (event.key === "Enter") {
+                this.performRoll(this.getPresetFromForm().expr);
+            }
+        });
 
         // 返回列表
         document.getElementById('back-to-list').addEventListener('click', () => {
@@ -2604,6 +2612,12 @@ class GOGCharacterApp {
         });
 
         /* 角色详情相关 */
+        document.getElementById('portrait-preview').addEventListener('click', () => {
+            document.getElementById('portrait-controls').classList.add('visible');
+        })
+        document.getElementById('close-portrait-controls').addEventListener('click', () => {
+            document.getElementById('portrait-controls').classList.remove('visible');
+        })
         // 上传肖像
         document.getElementById('upload-portrait').addEventListener('change', async (e) => {
             const file = e.target.files[0];
@@ -2640,6 +2654,18 @@ class GOGCharacterApp {
                 this.currentCharacter.status.push(newTag);
                 this.renderStatusTags(this.currentCharacter.status);
                 newTagInput.value = '';
+            }
+        });
+        document.getElementById('new-tag').addEventListener('keydown', (event) => {
+            if (event.key === "Enter") {
+                const newTagInput = document.getElementById('new-tag');
+                const newTag = newTagInput.value.trim();
+
+                if (newTag && !this.currentCharacter.status.includes(newTag)) {
+                    this.currentCharacter.status.push(newTag);
+                    this.renderStatusTags(this.currentCharacter.status);
+                    newTagInput.value = '';
+                }
             }
         });
 

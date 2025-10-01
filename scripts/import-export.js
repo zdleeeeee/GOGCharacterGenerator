@@ -1,5 +1,7 @@
 // import-export.js - 数据导入导出
-const { AlignmentType, BorderStyle, CompatibilityMode, Document, HeadingLevel, ImageRun, Paragraph, ShadingType, TableLayoutType, TextRun, Packer, TableCell, TableRow, Table, WidthType } = docx;
+const { AlignmentType, BorderStyle, CompatibilityMode, Document, HeadingLevel, HeightRule,
+  ImageRun, Paragraph, ShadingType, TableLayoutType, TextRun, Packer, TableCell,
+  TableRow, Table, VerticalAlign, WidthType } = docx;
 const { saveAs } = window;
 class DataHandler {
   constructor(db) {
@@ -18,7 +20,7 @@ class DataHandler {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = `GOG角色档案_${character.name}.json`;
+    a.download = `GOG角色_${character.name}.json`;
     a.click();
 
     setTimeout(() => URL.revokeObjectURL(url), 100);
@@ -51,32 +53,6 @@ class DataHandler {
         }),
       );
 
-      if (character.portrait) {
-        try {
-          // 将Base64字符串转换为Uint8Array
-          const base64Data = character.portrait.split(';base64,').pop();
-          const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-
-          docChildren.push(
-            new Paragraph({
-              alignment: AlignmentType.CENTER,
-              children: [
-                new ImageRun({
-                  data: imageBuffer,
-                  transformation: {
-                    width: 200,  // 图片宽度
-                    height: 250, // 图片高度
-                  },
-                }),
-              ],
-            })
-          );
-        } catch (error) {
-          console.error("处理角色肖像失败:", error);
-          // 即使图像处理失败，也继续导出其他内容
-        }
-      }
-
       docChildren.push(
         // 基本信息
         new Paragraph({
@@ -91,15 +67,10 @@ class DataHandler {
             }),
           ],
         }),
-        this.createPropertyParagraph("角色名", character.name),
-        this.createPropertyParagraph("玩家", character.player),
-        this.createPropertyParagraph("性别", character.gender),
-        this.createPropertyParagraph("年龄", character.age?.toString() || "未知"),
-        this.createPropertyParagraph("阵营", character.alignment),
-        this.createPropertyParagraph("国籍", character.nationality),
-        this.createPropertyParagraph("职业", character.class),
-        this.createPropertyParagraph("赐福", character.blessing),
-        this.createPropertyParagraph("描述", character.description),
+
+        // 基本信息表格
+        this.createBasicInfoTable(character),
+
         new Paragraph({
           spacing: { after: 200 }  // 调整这个值控制间距大小
         }),
@@ -167,14 +138,13 @@ class DataHandler {
         }),
         this.createBlessingSystemTable(character.blessingSystem),
 
-        // 权柄特技
+        // 赐福特技
         new Paragraph({
           heading: HeadingLevel.HEADING_3,
           alignment: AlignmentType.CENTER,
-          spacing: { before: 200, after: 200 },
+          spacing: { before: 0, after: 0 },
           children: [new TextRun({
-            text: "赐福特技",
-            bold: true,
+            text: "",
             size: 22,
             color: "666666",
             alignment: AlignmentType.CENTER
@@ -321,7 +291,7 @@ class DataHandler {
 
       // 2. 生成Word文件
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${character.name}_GOG角色档案.docx`);
+      saveAs(blob, `GOG角色_${character.name}.docx`);
 
     } catch (error) {
       console.error("导出Word失败:", error);
@@ -364,6 +334,198 @@ class DataHandler {
     });
   }
 
+  // 辅助方法：创建基本信息表格
+  createBasicInfoTable(character) {
+    const portraitCell = character.portrait ?
+      new TableCell({
+        children: [
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [
+              new ImageRun({
+                data: Uint8Array.from(
+                  atob(character.portrait.split(';base64,').pop()),
+                  c => c.charCodeAt(0)
+                ),
+                transformation: {
+                  width: 120,
+                  height: 150,
+                },
+              }),
+            ],
+          })
+        ],
+        rowSpan: 5,
+        verticalAlign: "center",
+        width: { size: 20, type: WidthType.PERCENTAGE }
+      }) :
+      new TableCell({
+        children: [new Paragraph({ text: "无头像" })],
+        rowSpan: 5,
+        verticalAlign: "center",
+        width: { size: 20, type: WidthType.PERCENTAGE },
+        shading: { fill: "f2f2f2" }
+      });
+
+    return new Table({
+      layout: TableLayoutType.AUTOFIT,
+      columnWidths: [1776, 3552, 3552],
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        left: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        right: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
+      },
+      rows: [
+        // 第一行：姓名
+        new TableRow({
+          children: [
+            portraitCell,
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "姓名", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.name || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 80, type: WidthType.PERCENTAGE },
+              verticalAlign: VerticalAlign.CENTER,
+              columnSpan: 2,
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            })
+          ],
+        }),
+
+        // 第二行：玩家
+        new TableRow({
+          children: [
+            // 第一格被肖像占用，跳过
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "玩家", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.player || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 80, type: WidthType.PERCENTAGE },
+              columnSpan: 2,
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            })
+          ],
+        }),
+
+        // 第三行：性别和年龄
+        new TableRow({
+          children: [
+            // 第一格被肖像占用，跳过
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "性别", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.gender || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 40, type: WidthType.PERCENTAGE },
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            }),
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "年龄", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.age?.toString() || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 40, type: WidthType.PERCENTAGE },
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            })
+          ],
+        }),
+
+        // 第四行：阵营和国籍
+        new TableRow({
+          children: [
+            // 第一格被肖像占用，跳过
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "阵营", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.alignment || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 40, type: WidthType.PERCENTAGE },
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            }),
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "国籍", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.nationality || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 40, type: WidthType.PERCENTAGE },
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            })
+          ],
+        }),
+
+        // 第五行：职业和赐福
+        new TableRow({
+          children: [
+            // 第一格被肖像占用，跳过
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "职业", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.class || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 40, type: WidthType.PERCENTAGE },
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            }),
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "赐福", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.blessing || "未知", color: "333333" })
+                ]
+              })],
+              width: { size: 40, type: WidthType.PERCENTAGE },
+              margins: { top: 40, bottom: 40, left: 100, right: 100 }
+            })
+          ],
+        }),
+
+        // 第六行：描述（横跨整行）
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: "描述", bold: true, color: "666666" }),
+                  new TextRun({ text: ": " }),
+                  new TextRun({ text: character.description || "无", color: "333333" })
+                ]
+              })],
+              columnSpan: 3,
+              margins: { top: 20, bottom: 20, left: 100, right: 100 }
+            })
+          ]
+        })
+      ]
+    });
+  }
+
   // 辅助方法：创建属性表格
   createAttributeTable(attributes) {
     // 前六个主要属性
@@ -377,7 +539,8 @@ class DataHandler {
         children: [
           new TableCell({
             children: [new Paragraph({ text: this.getAttributeName(key) })],
-            width: { size: 20, type: WidthType.PERCENTAGE }
+            width: { size: 20, type: WidthType.PERCENTAGE },
+            verticalAlign: VerticalAlign.CENTER,
           }),
           new TableCell({
             children: [new Paragraph({ text: attr.base.toString() })],
@@ -404,17 +567,14 @@ class DataHandler {
       new TableRow({
         children: [
           new TableCell({
-            children: [new Paragraph({ text: '健康' })], width: { size: 20, type: WidthType.PERCENTAGE }
+            children: [new Paragraph({ text: '健康' })], width: { size: 20, type: WidthType.PERCENTAGE }, verticalAlign: VerticalAlign.CENTER,
           }),
           new TableCell({
             children: [new Paragraph({ text: `${attributes.HP.base} ` })],
             width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
-            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
-          }),
-          new TableCell({
-            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
+            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }, columnSpan: 2
           }),
           new TableCell({
             children: [new Paragraph({
@@ -430,17 +590,14 @@ class DataHandler {
       new TableRow({
         children: [
           new TableCell({
-            children: [new Paragraph({ text: '魔力' })], width: { size: 20, type: WidthType.PERCENTAGE }
+            children: [new Paragraph({ text: '魔力' })], width: { size: 20, type: WidthType.PERCENTAGE }, verticalAlign: VerticalAlign.CENTER,
           }),
           new TableCell({
             children: [new Paragraph({ text: `${attributes.MP.base}` })],
             width: { size: 20, type: WidthType.PERCENTAGE }
           }),
           new TableCell({
-            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
-          }),
-          new TableCell({
-            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }
+            children: [new Paragraph({ text: '' })], width: { size: 20, type: WidthType.PERCENTAGE }, shading: { fill: "f2f2f2" }, columnSpan: 2
           }),
           new TableCell({
             children: [new Paragraph({
@@ -457,7 +614,7 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [1760, 1760, 1760, 1760, 1760], // 我最终不得已这样写代码了，经测试这样可以保持在office上自动将表格宽度填满页面，同时在qq上按固定宽度显示，真的无语了，sjb
+      columnWidths: [1776, 1776, 1776, 1776, 1776], // 我最终不得已这样写代码了，经测试这样可以保持在office上自动将表格宽度填满页面，同时在qq上按固定宽度显示，真的无语了，sjb
       rows: [
         new TableRow({
           children: [
@@ -479,7 +636,7 @@ class DataHandler {
         insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
       },
       width: { size: 100, type: WidthType.PERCENTAGE },
-      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+      margins: { top: 20, bottom: 20, left: 100, right: 100 }
     });
   }
 
@@ -502,13 +659,6 @@ class DataHandler {
 
   // 辅助方法：创建状态文本
   createStatusTable(statusList) {
-    if (!statusList || statusList.length === 0) {
-      return new Paragraph({
-        text: "当前无任何状态效果",
-        italics: true,
-        color: '666666'
-      });
-    }
 
     // 将状态列表转换为用【】包裹的文本
     const statusText = statusList
@@ -517,7 +667,7 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [8800],
+      columnWidths: [8880],
       width: {
         size: 100,
         type: WidthType.PERCENTAGE
@@ -537,11 +687,6 @@ class DataHandler {
               children: [
                 new Paragraph({
                   children: [
-                    new TextRun({
-                      text: "当前状态: ",
-                      bold: true,
-                      color: "666666"
-                    }),
                     new TextRun({
                       text: statusText,
                       bold: true,
@@ -577,7 +722,7 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [1320, 1760, 2640, 3080],
+      columnWidths: [1332, 1776, 2664, 3108],
       rows: [
         new TableRow({
           children: [
@@ -598,7 +743,7 @@ class DataHandler {
         insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
       },
       width: { size: 100, type: WidthType.PERCENTAGE },
-      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+      margins: { top: 20, bottom: 20, left: 100, right: 100 }
     });
   }
 
@@ -661,7 +806,7 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [1320, 7480],
+      columnWidths: [1332, 7548],
       rows: [
         new TableRow({
           children: [
@@ -683,7 +828,7 @@ class DataHandler {
         insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
       },
       width: { size: 100, type: WidthType.PERCENTAGE },
-      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+      margins: { top: 20, bottom: 20, left: 100, right: 100 }
     });
   }
 
@@ -719,10 +864,10 @@ class DataHandler {
       const rows = skillList.map(skill => {
         return new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ text: skill.name })], width: { size: 25, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.name })], width: { size: 20, type: WidthType.PERCENTAGE } }),
             new TableCell({ children: [new Paragraph({ text: skill.proficiency.toString() })], width: { size: 10, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })], width: { size: 15, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 50, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })], width: { size: 10, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 60, type: WidthType.PERCENTAGE } }),
           ],
         });
       });
@@ -730,13 +875,13 @@ class DataHandler {
       tables.push(
         new Table({
           layout: TableLayoutType.AUTOFIT,
-          columnWidths: [2200, 880, 1320, 4400],
+          columnWidths: [1776, 888, 888, 5328],
           rows: [
             new TableRow({
               children: [
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "技能名", bold: true })] })], shading: { fill: "f2f2f2" } }),
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "熟练度", bold: true })] })], shading: { fill: "f2f2f2" } }),
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "使用次数", bold: true })] })], shading: { fill: "f2f2f2" } }),
+                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "使用", bold: true })] })], shading: { fill: "f2f2f2" } }),
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" } }),
               ],
             }),
@@ -751,7 +896,7 @@ class DataHandler {
             insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
           },
           width: { size: 100, type: WidthType.PERCENTAGE },
-          margins: { top: 100, bottom: 100, left: 100, right: 100 }
+          margins: { top: 20, bottom: 20, left: 100, right: 100 }
         })
       );
     }
@@ -781,7 +926,7 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [1760, 1760, 2200, 3080],
+      columnWidths: [1776, 1776, 2220, 3108],
       rows: [
         new TableRow({
           children: [
@@ -802,7 +947,7 @@ class DataHandler {
         insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
       },
       width: { size: 100, type: WidthType.PERCENTAGE },
-      margins: { top: 100, bottom: 100, left: 100, right: 100 }
+      margins: { top: 20, bottom: 20, left: 100, right: 100 }
     });
   }
 
@@ -847,7 +992,7 @@ class DataHandler {
       tables.push(
         new Table({
           layout: TableLayoutType.AUTOFIT,
-          columnWidths: [2200, 1320, 4400, 880],
+          columnWidths: [2220, 1332, 4440, 888],
           rows: [
             new TableRow({
               children: [
@@ -868,7 +1013,7 @@ class DataHandler {
             insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "DDDDDD" }
           },
           width: { size: 100, type: WidthType.PERCENTAGE },
-          margins: { top: 100, bottom: 100, left: 100, right: 100 }
+          margins: { top: 20, bottom: 20, left: 100, right: 100 }
         })
       );
     }
@@ -948,7 +1093,7 @@ class DataHandler {
                   shading: {
                     fill: "f2f2f2" // 灰色背景
                   },
-                  margins: { top: 100, bottom: 100, left: 100, right: 100 }
+                  margins: { top: 40, bottom: 40, left: 100, right: 100 }
                 })
               ]
             }),
@@ -962,11 +1107,12 @@ class DataHandler {
                       spacing: { after: 0 }
                     })
                   ],
-                  margins: { top: 100, bottom: 100, left: 100, right: 100 }
+                  margins: { top: 20, bottom: 20, left: 100, right: 100 }
                 })
               ]
             }),
-          ]
+          ],
+          margins: { top: 20, bottom: 500, left: 0, right: 0 }
         }),
         new Paragraph({
           spacing: { after: 0 }  // 调整这个值控制间距大小
