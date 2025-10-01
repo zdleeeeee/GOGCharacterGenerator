@@ -77,8 +77,8 @@ class Character {
       WIS: { base: 5, statusAdj: 0, blessingAdj: 0 },
       MAG: { base: 5, statusAdj: 0, blessingAdj: 0 },
 
-      HP: { base: 10, current: 10 },
-      MP: { base: 10, current: 10 }
+      HP: { base: 30, current: 40 },
+      MP: { base: 10, current: 15 }
     };
 
     this.status = data.status || [];
