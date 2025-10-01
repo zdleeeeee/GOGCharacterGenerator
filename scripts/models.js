@@ -77,7 +77,7 @@ class Character {
       WIS: { base: 5, statusAdj: 0, blessingAdj: 0 },
       MAG: { base: 5, statusAdj: 0, blessingAdj: 0 },
 
-      HP: { base: 30, current: 40 },
+      HP: { base: 25, current: 35 },
       MP: { base: 10, current: 15 }
     };
 

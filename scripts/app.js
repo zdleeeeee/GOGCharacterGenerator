@@ -1067,6 +1067,8 @@ class GOGCharacterApp {
         const desc = skillData.description;
         // 查找属性部分（从开头到第一个";"之前）
         const attrEndIndex = desc.indexOf('；');
+        let processedDescription = skillData.description;
+
         if (attrEndIndex !== -1) {
             const attrPart = desc.substring(0, attrEndIndex);
             // 分割属性（由/隔开）
@@ -1080,6 +1082,11 @@ class GOGCharacterApp {
                     catemess.push(trimmedAttr);
                 }
             });
+
+            if (categories.length === 1) {
+                // 去掉开头的属性部分（包括分号）
+                processedDescription = desc.substring(attrEndIndex + 1).trim();
+            }
         }
 
         if (categories.length === 0) {
@@ -1097,7 +1104,7 @@ class GOGCharacterApp {
             this.currentCharacter.skills[category].push({
                 name: skillData.name,
                 proficiency: 0,
-                description: skillData.description,
+                description: processedDescription,
                 uses: 0
             });
 
@@ -2374,7 +2381,7 @@ class GOGCharacterApp {
                 const skillData = {
                     name: e.target.dataset.name,
                     class: e.target.dataset.class,
-                    description: e.target.dataset.description + "类别：" + e.target.dataset.class,
+                    description: e.target.dataset.description,
                 };
                 this.addSkillToCharacter(skillData);
             }
