@@ -1629,9 +1629,6 @@ input[type="text"].dice-expression:hover {
         max-width: 100%;
     }
 
-    .character-form-fields {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media print {
