@@ -917,8 +917,6 @@ class DataHandler {
       return new TableRow({
         children: [
           new TableCell({ children: [new Paragraph({ text: item.name })] }),
-          new TableCell({ children: [new Paragraph({ text: item.type })] }),
-          new TableCell({ children: [new Paragraph({ text: item.modifier })] }),
           new TableCell({ children: [new Paragraph({ text: item.description || "" })] }),
         ],
       });
@@ -926,14 +924,12 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [1776, 1776, 2220, 3108],
+      columnWidths: [2220, 6660],
       rows: [
         new TableRow({
           children: [
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "名称", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 20, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "类型", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 20, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "属性影响", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 25, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 35, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "名称", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 25, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" }, width: { size: 75, type: WidthType.PERCENTAGE } }),
           ],
         }),
         ...rows,
@@ -982,8 +978,8 @@ class DataHandler {
         return new TableRow({
           children: [
             new TableCell({ children: [new Paragraph({ text: item.name || "" })], width: { size: 25, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: item.weight?.toString() || "0" })], width: { size: 15, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: item.description || "" })], width: { size: 50, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: item.weight?.toString() || "0" })], width: { size: 10, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: item.description || "" })], width: { size: 55, type: WidthType.PERCENTAGE } }),
             new TableCell({ children: [new Paragraph({ text: item.quantity?.toString() || "0" })], width: { size: 10, type: WidthType.PERCENTAGE } }),
           ],
         });
@@ -992,7 +988,7 @@ class DataHandler {
       tables.push(
         new Table({
           layout: TableLayoutType.AUTOFIT,
-          columnWidths: [2220, 1332, 4440, 888],
+          columnWidths: [2220, 888, 4884, 888],
           rows: [
             new TableRow({
               children: [

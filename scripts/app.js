@@ -862,7 +862,6 @@ class GOGCharacterApp {
             return (
                 equipment.name.toLowerCase().includes(searchTerm) ||
                 equipment.type.toLowerCase().includes(searchTerm) ||
-                equipment.modifier.toLowerCase().includes(searchTerm) ||
                 equipment.description.toLowerCase().includes(searchTerm)
             );
         });
@@ -901,12 +900,10 @@ class GOGCharacterApp {
           <button class="btn-add-equipment" 
                   data-name="${equipment.name}"
                   data-type="${equipment.type}"
-                  data-modifier="${equipment.modifier}"
                   data-description="${equipment.description}">
             添加
           </button>
         </div>
-          <div class="equipment-description">属性影响：${equipment.modifier}</div>
           <div class="equipment-description">${equipment.description}</div>
         </div>
       `).join('');
@@ -1130,9 +1127,7 @@ class GOGCharacterApp {
     addEquipmentToCharacter(equipment) {
         this.currentCharacter.equipment = this.currentCharacter.equipment || [];
         this.currentCharacter.equipment.push({
-            name: equipment.name,
-            type: equipment.type,
-            modifier: equipment.modifier,
+            name: equipment.name+'('+equipment.type+')',
             description: equipment.description,
         });
 
@@ -1590,7 +1585,7 @@ class GOGCharacterApp {
         this.setupTableBinding('skills-container', 'skills', ['name', 'proficiency', 'uses', 'description']);
 
         // 装备表格
-        this.setupTableBinding('equipment-container', 'equipment', ['name', 'type', 'modifier', 'description']);
+        this.setupTableBinding('equipment-container', 'equipment', ['name', 'description']);
 
         // 物品表格
         this.setupTableBinding('inventory-container', 'inventory', ['name', 'weight', 'description', 'quantity']);
@@ -2078,8 +2073,6 @@ class GOGCharacterApp {
             const row = document.createElement('tr');
             row.innerHTML = `
       <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
-      <td><div class="auto-height-content" contenteditable="true">${item.type || ''}</div></td>
-      <td><div class="auto-height-content" contenteditable="true">${item.modifier || ''}</div></td>
       <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
       <td><button class="btn-danger" data-index="${index}">删除</button></td>
     `;
@@ -2393,7 +2386,6 @@ class GOGCharacterApp {
                 const equipmentData = {
                     name: e.target.dataset.name,
                     type: e.target.dataset.type,
-                    modifier: e.target.dataset.modifier,
                     description: e.target.dataset.description
                 };
                 this.addEquipmentToCharacter(equipmentData);
@@ -2461,7 +2453,7 @@ class GOGCharacterApp {
 
                 // 收集动态数据（技能、装备、物品）
                 character.skills = this.collectSkillsData();
-                character.equipment = this.collectTableData('equipment-container', ['name', 'type', 'modifier', 'description']);
+                character.equipment = this.collectTableData('equipment-container', ['name', 'description']);
                 character.inventory = this.collectInventoryData();
 
                 // 保存到数据库
@@ -2748,8 +2740,6 @@ class GOGCharacterApp {
         document.getElementById('add-equipment').addEventListener('click', () => {
             this.currentCharacter.equipment.push({
                 name: '',
-                type: '',
-                modifier: '',
                 description: ''
             });
             this.renderEquipment(this.currentCharacter.equipment);
