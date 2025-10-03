@@ -861,7 +861,6 @@ class GOGCharacterApp {
 
             return (
                 equipment.name.toLowerCase().includes(searchTerm) ||
-                equipment.type.toLowerCase().includes(searchTerm) ||
                 equipment.description.toLowerCase().includes(searchTerm)
             );
         });
@@ -895,11 +894,9 @@ class GOGCharacterApp {
         <div class="item-header">
           <div style="padding-left: 5px;margin: 0px;font-size: 14px;">
           <span class="equipment-name" style="font-weight: bold;">${equipment.name}</span>
-          <span class="equipment-type">(${equipment.type})</span>
           </div>
           <button class="btn-add-equipment" 
                   data-name="${equipment.name}"
-                  data-type="${equipment.type}"
                   data-description="${equipment.description}">
             添加
           </button>
@@ -1127,7 +1124,7 @@ class GOGCharacterApp {
     addEquipmentToCharacter(equipment) {
         this.currentCharacter.equipment = this.currentCharacter.equipment || [];
         this.currentCharacter.equipment.push({
-            name: equipment.name+'('+equipment.type+')',
+            name: equipment.name,
             description: equipment.description,
         });
 
@@ -2385,7 +2382,6 @@ class GOGCharacterApp {
             if (e.target.classList.contains('btn-add-equipment')) {
                 const equipmentData = {
                     name: e.target.dataset.name,
-                    type: e.target.dataset.type,
                     description: e.target.dataset.description
                 };
                 this.addEquipmentToCharacter(equipmentData);
