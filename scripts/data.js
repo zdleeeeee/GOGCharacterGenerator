@@ -57,11 +57,12 @@ window.staticData = {
             { name: "踏枝无痕A", class: "怀武炁术法", description: "敏捷；消耗：5hp/h；效果：使身体轻灵，可以在脆弱或狭窄的立足点（如细树枝、墙头、缆绳）上自如移动而不会跌落。" },
         ],
         "智慧": [
-            { name: "知识（）", class: "基础", description: "智慧；学术知识，如历史、地理、魔法理论等（选择学科）" },
-            { name: "解构", class: "基础", description: "智慧；破解机关、谜题，理解文字内容" },
+            { name: "知识（博物）", class: "基础", description: "智慧；涵盖自然万物，包括生物学、地质学、气象学、天文学等。" },
+            { name: "知识（人文）", class: "基础", description: "智慧；涵盖文明造物，包括历史、地理、文学、艺术、民俗、法律等。" },
+            { name: "知识（奥秘）", class: "基础", description: "智慧；涵盖超自然领域，包括魔法理论、神明谱系、权柄特性、灾厄知识等。" },
+            { name: "知识（数理）", class: "基础", description: "智慧；涵盖逻辑与结构，包括数学、物理、机械原理、建筑学等。" },
             { name: "查阅", class: "基础", description: "智慧；翻阅图书、提取要点、快速记忆" },
             { name: "外语（）", class: "基础", description: "智慧；理解和表达外语的能力（选择某种语言）" },
-            { name: "表演（）", class: "基础", description: "智慧；选择某项表演能力，如演奏乐器、歌唱、舞蹈、戏剧等" },
         ],
         "魅力": [
             { name: "说服", class: "基础", description: "魅力；通过理性论证说服他人" },
@@ -74,7 +75,7 @@ window.staticData = {
         "感知": [
             { name: "侦察", class: "基础", description: "感知；察觉环境变化" },
             { name: "洞悉", class: "基础", description: "感知；解读他人想法" },
-            { name: "医药", class: "基础", description: "感知；诊断疾病、稳定濒死队友、基础医疗知识" },
+            { name: "医药", class: "基础", description: "感知；诊断疾病、稳定濒死队友、基础医疗知识、医疗物品使用" },
             { name: "灵感", class: "基础", description: "感知；直觉、预感、创造性解决问题" },
             { name: "针灸术C", class: "怀武炁术法", description: "感知；消耗：2mp，需要银针；效果：通过银针将“炁”渡入患者特定穴道。成功则可消除目标一个【眩晕】或【痛苦】状态，并恢复（熟练度）点健康。对疾病和毒素效果减半。" },
         ],
