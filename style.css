@@ -11,7 +11,7 @@ body {
     font-family: 'Segoe UI', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #f6f6f6;
+    background-color: #fafafa;
     margin: 0;
     padding: 0;
     display: flex;
@@ -30,12 +30,12 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     padding: 20px;
     background-color: #ffffff;
     color: #333333;
-    border: 2px solid #dddddd;
-    border-radius: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 20px;
 }
 
 h1,
@@ -85,10 +85,10 @@ button:hover {
 
 .section {
     background-color: #ffffff;
-    border-radius: 12px;
+    border-radius: 20px;
     padding: 20px;
-    border: 2px solid #dddddd;
-    margin-bottom: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 20px;
 }
 
 label {
