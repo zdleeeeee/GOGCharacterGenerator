@@ -70,7 +70,7 @@ window.staticData = {
             { name: "魅惑", class: "基础", description: "魅力；通过个人魅力影响他人情绪或行为" },
             { name: "欺瞒", class: "基础", description: "魅力；说谎、伪装、欺骗" },
             { name: "驯兽", class: "基础", description: "魅力；训练、安抚或指挥动物" },
-            { name: "精神抗性", class: "基础", description: "魅力；抵抗精神影响、幻术、控制" },
+            { name: "意志", class: "基础", description: "魅力；抵抗精神影响、幻术、控制" },
         ],
         "感知": [
             { name: "侦察", class: "基础", description: "感知；察觉环境变化" },
