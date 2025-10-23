@@ -639,7 +639,7 @@ input.current-value {
 .mana-bar {
     background: #3498db;
     z-index: 2;
-    /* 蓝色魔力条 */
+    /* 蓝色精力条 */
 }
 
 .health-base-bar {

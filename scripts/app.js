@@ -1423,7 +1423,7 @@ class GOGCharacterApp {
             }
         });
 
-        // 渲染健康和魔力
+        // 渲染健康和精力
         this.updateMaxValues(isGod);
         this.updateSkillProficiencyLeft();
     }
@@ -1503,7 +1503,7 @@ class GOGCharacterApp {
             };
         });
 
-        // 收集健康和魔力
+        // 收集健康和精力
         attributes.HP = {
             base: parseInt(document.getElementById('attr-HP-base').value) || 0,
             current: parseInt(document.getElementById('attr-HP-current').value) || 0

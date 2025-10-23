@@ -590,7 +590,7 @@ class DataHandler {
       new TableRow({
         children: [
           new TableCell({
-            children: [new Paragraph({ text: '魔力' })], width: { size: 20, type: WidthType.PERCENTAGE }, verticalAlign: VerticalAlign.CENTER,
+            children: [new Paragraph({ text: '精力' })], width: { size: 20, type: WidthType.PERCENTAGE }, verticalAlign: VerticalAlign.CENTER,
           }),
           new TableCell({
             children: [new Paragraph({ text: `${attributes.MP.base}` })],
