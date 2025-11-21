@@ -26,6 +26,7 @@ body {
     padding-left: 5px;
     padding-right: 5px;
     flex-shrink: 0;
+    transition: all 0.3s;
 }
 
 header {
@@ -84,18 +85,23 @@ button:hover {
     grid-template-columns: 1fr 1fr;
     gap: 0px;
     background-color: #ffffff;
-    padding: 15px 15px;
-    border-radius: 30px;
-    box-shadow: 0px 5px 15px #eeeeee;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0px 3px 10px #eeeeee;
+    border: 1px solid #eeeeee;
     margin-bottom: 25px;
     margin-top: 30px;
 }
 
 .section {
-    border-radius: 20px;
+    border-radius: 0px;
     padding: 20px;
-    border: 1px solid #dddddd;
-    margin-bottom: 20px;
+    border-top: 2px solid #eeeeee;
+    margin-bottom: 0px;
+}
+
+.basic-attribution-container .section {
+    border-top: none;
 }
 
 label {
@@ -170,7 +176,6 @@ textarea {
     -webkit-overflow-scrolling: touch;
     /* iOS平滑滚动 */
     width: 100%;
-    /* 确保宽度不超出视口 */
 }
 
 .table-auto table {
@@ -216,6 +221,13 @@ textarea {
     outline: none;
 }
 
+.blessing-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0px;
+}
+
+.blessing-skills-table,
 .skills-list,
 .items-list {
     width: 100%;
@@ -223,21 +235,23 @@ textarea {
     margin-top: 10px;
 }
 
+.blessing-table td,
 .blessing-skills-table td,
 .skills-list td,
 .items-list td {
     padding: 0px;
     border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     overflow-x: hidden;
 }
 
+.blessing-table th,
 .blessing-skills-table th,
 .skills-list th,
 .items-list th {
     padding: 6px;
     border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     overflow-x: hidden;
     background-color: #f2f2f2;
 }
@@ -325,22 +339,26 @@ td input[type="number"] {
 }
 
 .tag-delete {
-    width: 20px;
-    height: 20px;
-    margin-left: 5px;
-    margin-right: 2px;
-    margin-top: 2px;
-    margin-bottom: 2px;
+    width: 22px;
+    height: 22px;
+    margin-left: 4px;
+    margin-right: 1px;
+    margin-top: 1px;
+    margin-bottom: 1px;
     border: none;
     background-color: transparent;
     border-radius: 50%;
-    color: #333333;
+    color: #999999;
     text-align: center;
+    justify-content: center;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .tag-delete:hover {
-    background-color: #66666630;
+    background-color: #e74c3c;
+    color: #ffffff;
+    transition: all 0.2s;
 }
 
 .basic-attribution-container {
@@ -362,7 +380,7 @@ td input[type="number"] {
 /* 肖像区域样式 */
 .character-portrait-container {
     display: flex;
-    margin-top: 10px;
+    margin-top: 0px;
     flex-direction: column;
     gap: 0px;
     justify-content: center;
@@ -373,7 +391,7 @@ td input[type="number"] {
     width: 160px;
     height: 200px;
     margin: 0 auto;
-    border: 2px dashed #eeeeee;
+    border: 1px solid #eeeeee;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -397,7 +415,7 @@ td input[type="number"] {
 }
 
 #portrait-placeholder {
-    color: #999;
+    color: #eeeeee;
     text-align: center;
     padding: 20px;
 }
@@ -406,7 +424,12 @@ td input[type="number"] {
 .character-form-fields {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    column-gap: 10px;
+    column-gap: 5px;
+}
+
+.character-form-fields .form-group{
+    margin-top: 0;
+    align-items: center;
 }
 
 /* 描述区域（单独一行） */
@@ -417,26 +440,42 @@ td input[type="number"] {
 /* 赐福section的布局 */
 .blessing-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    align-content: start;
+    grid-template-columns: 1fr 200px;
+}
+
+.blessing-grid .form-group {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.btn.blessing-list-btn {
+    margin: 0 5px 0 auto;
+    width: 30px;
+    border-radius: 10px;
+    padding: 3px;
+    color: #dddddd;
+}
+
+.btn.blessing-list-btn:hover {
+    background: #f2f2f2;
+    color: #666666;
 }
 
 input.blessingFullName {
-    text-align: center;
+    text-align: left;
     font-size: 16px;
     font-weight: bold;
-    color: #666666;
-    margin-bottom: 20px;
+    color: #333333;
+    margin-bottom: 10px;
+    padding: 0;
 }
 
 @media (max-width: 768px) {
-
-    .blessing-grid {
+    .character-sheet {
         grid-template-columns: 1fr;
     }
 
-    .character-sheet {
+    .blessing-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -447,52 +486,6 @@ input.blessingFullName {
     }
 }
 
-.blessing-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 25px;
-}
-
-.blessing-table td {
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-.blessing-table th {
-    border: 1px solid #ddd;
-    text-align: center;
-    background-color: #f2f2f2;
-}
-
-.blessing-table input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 4px;
-}
-
-.blessing-table textarea.blessing-skill {
-    width: 100%;
-    min-height: 60px;
-    resize: vertical;
-    /* 允许垂直调整大小 */
-    padding: 6px;
-    border: 1px solid #ddd;
-    font-family: inherit;
-    font-size: 14px;
-}
-
-/* 鼠标悬停效果 */
-.blessing-table textarea.blessing-skill:hover {
-    border-color: #aaa;
-}
-
-/* 聚焦效果 */
-.blessing-table textarea.blessing-skill:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 3px rgba(74, 144, 226, 0.3);
-    outline: none;
-}
-
 .auto-height-content {
     height: min-content;
     font-size: 14px;
@@ -501,11 +494,12 @@ input.blessingFullName {
     padding: 6px;
     white-space: pre-wrap;
     word-break: break-word;
-    line-height: 1.1;
+    line-height: 1.4;
     outline: none;
     -webkit-user-modify: read-write-plaintext-only;
 }
 
+.blessing-table .auto-height-cell
 .blessing-skills-table .auto-height-cell,
 .items-list .auto-height-cell,
 .skills-list .auto-height-cell {
@@ -517,88 +511,26 @@ input.blessingFullName {
     line-height: 1.4;
 }
 
-.blessing-skills-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.blessing-skills-table td {
-    border: 1px solid #dddddd;
-    text-align: left;
-}
-
-.blessing-skills-table th {
-    border: 1px solid #dddddd;
-    background-color: #f2f2f2;
-    text-align: center;
-}
-
 /* 属性系统 */
-.isGod-container {
-    display: grid;
-    grid-template-columns: 25% 75%;
-}
-
-.btn-isGod {
-    margin-left: 15px;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    min-height: min-content;
-    min-width: max-content;
-    background: none;
-}
-
-.btn-isGod:hover {
-    background: none;
-}
-
 .attribute-controls {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.attribute-controls input {
-    width: 50px;
-    text-align: center;
-}
-
-.attribute-controls span,
-input.base-value,
-input.status-adj,
-input.blessing-adj {
-    font-size: 12px;
+input.base-value {
+    font-size: 14px;
     font-weight: normal;
     padding: 0;
     margin: 0;
-    max-width: 40px;
-}
-
-input.base-value {
+    width: 30px;
+    text-align: center;
     color: #666666;
 }
 
-input.status-adj {
-    color: #d35400;
-}
-
-input.blessing-adj {
-    color: #3498db;
-}
-
-.attribute-controls .total-value {
-    min-width: 30px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 16px;
-    border-bottom: 1px solid #dddddd;
-}
-
 input.current-value {
-    min-width: 30px;
+    display: flex;
+    width: 30px;
     text-align: center;
     font-weight: bold;
     font-size: 16px;
@@ -607,7 +539,7 @@ input.current-value {
 }
 
 .max-value {
-    color: #7f8c8d;
+    color: #666666;
     margin-left: 0px;
 }
 
@@ -620,7 +552,7 @@ input.current-value {
 .health-bar-container,
 .mana-bar-container {
     position: relative;
-    width: 100px;
+    width: 120px;
     height: 12px;
     background: #eee;
     border-radius: 6px;
@@ -692,16 +624,26 @@ input.current-value {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-radius: 4px;
+    border-radius: 10px;
     top: 0 !important;
+    height: 30px;
+    transition: all 0.3s;
 }
 
-.nav-btn:active {
-    top: 0;
+.nav-btn.active {
+    background: #333333;
+    font-weight: bold;
+    color: #ffffff;
 }
 
 .nav-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #f2f2f2;
+}
+
+.nav-btn.active:hover {
+    background: #444444;
+    font-weight: bold;
+    color: #ffffff;
 }
 
 .nav-btn i {
@@ -715,25 +657,29 @@ input.current-value {
 }
 
 .data-panel {
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ffffff;
+    position: fixed;
+    bottom: 65px;
+    left: 120%;
+    width: 600px;
+    max-width: 95%;
+    height: 480px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
     border-radius: 12px;
-    width: 200px;
-    height: 400px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-    z-index: 1102;
-    margin-bottom: 15px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    display: block;
+    transition: all 0.3s;
 }
 
 .data-button-container {
+    margin: 0 auto;
     padding: 20px;
-    margin-bottom: 20px;
-    max-height: 300px;
-    overflow-y: auto;
+    z-index: 1104;
+    min-height: 0;
+    max-height: 385px;
+    max-width: 580px;
+    overflow-y: scroll;
 }
 
 .data-button-container::-webkit-scrollbar {
@@ -744,7 +690,7 @@ input.current-value {
 .data-button-container::-webkit-scrollbar-thumb {
     background-color: #eeeeee;
     border-radius: 5px;
-    border: 2px solid #ffffff;
+    border: 2px solid #ffffff00;
 }
 
 .data-button-container::-webkit-scrollbar-thumb:hover {
@@ -753,7 +699,7 @@ input.current-value {
 }
 
 .data-button-container::-webkit-scrollbar-button {
-    background-color: #ffffff;
+    background-color: #ffffff00;
     height: 3px;
 }
 
@@ -769,7 +715,7 @@ input.current-value {
     text-align: center;
     border-bottom: 1px solid #eeeeee;
     color: #333333;
-    background-color: none;
+    background: none;
     cursor: pointer;
     margin: 0px auto;
     font-weight: normal;
@@ -806,31 +752,50 @@ input.current-value {
 }
 .dice-panel {
     position: fixed;
-    bottom: 50px;
-    left: 0px;
-    right: 0px;
+    bottom: 65px;
+    left: 120%;
+    width: 600px;
+    max-width: 95%;
     height: 480px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border-radius: 12px 12px 0px 0px;
-    box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     z-index: 5;
-    display: none;
+    display: block;
+    transition: all 0.3s;
 }
 
 /* 图鉴面板 */
 .roster-panel {
     position: fixed;
-    bottom: 50px;
-    left: 0px;
-    right: 0px;
+    bottom: 65px;
+    left: 120%;
+    width: 600px;
+    max-width: 95%;
     height: 480px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border-radius: 12px 12px 0px 0px;
-    box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.1);
-    z-index: 4;
-    display: none;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    display: block;
+    transition: all 0.3s;
+}
+
+.data-panel.active,
+.dice-panel.active,
+.roster-panel.active {
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: all 0.3s;
+}
+
+.data-panel:hover,
+.dice-panel:hover,
+.roster-panel:hover {
+    box-shadow: 0 5px 100px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
 }
 
 .panel-header {
@@ -873,7 +838,7 @@ input.current-value {
 .dice-panel-list {
     display: none;
     margin: 0 auto;
-    padding: 0 10px 10px 10px;
+    padding: 0 0px 10px 0px;
 }
 
 .dice-config {
@@ -1399,7 +1364,7 @@ input[type="text"].dice-expression:hover {
     padding: 8px 15px;
     color: #666666;
     border-left: 1px solid #eeeeee;
-    border-radius: 0px 8px 0px 0px;
+    border-radius: 0px 7px 0px 0px;
     background: #f2f2f2;
     cursor: pointer;
     text-align: center;
@@ -1444,6 +1409,10 @@ input[type="text"].dice-expression:hover {
     cursor: pointer;
     transition: all 0.3s ease;
     user-select: none;
+}
+
+.select-selected.style1:hover {
+    background-color: #eeeeee80;
 }
 
 .select-selected:after {
@@ -1575,16 +1544,6 @@ input[type="text"].dice-expression:hover {
         grid-template-columns: 1fr;
     }
 
-    .data-panel {
-        left: auto;
-        right: 0;
-        transform: none;
-    }
-
-    .dices-list {
-        grid-template-columns: 1fr;
-    }
-
     .tab-btn {
         padding: 12px 10px 8px 8px;
         background: none;
@@ -1594,10 +1553,6 @@ input[type="text"].dice-expression:hover {
         text-orientation: upright;
         letter-spacing: 8px;
         text-align: center;
-    }
-
-    .isGod-container {
-        grid-template-columns: 1fr;
     }
 
     input.blessingFullName {
@@ -1610,6 +1565,10 @@ input[type="text"].dice-expression:hover {
 
     .roster-list {
         height: 390px;
+    }
+
+    .dices-list {
+        grid-template-columns: 1fr;
     }
 
     .search-controls {

@@ -131,23 +131,29 @@ window.staticData = {
 
     inventory: {
         "食物": [
-            { name: "米饭", weight: 0.5, description: "可以消除一点饥饿值" }
+            { name: "米饭", description: "可以消除一点饥饿值" }
         ],
         "钱币": [
-            { name: "汇率", weight: 0, description: "优玛币：0；怀武币：0；赫尔韦林币：0；博拉迪亚币：0；漠益币：0；巴兰门币：0；德买西亚币：0；汗国币：0；魏国币；天之原地之国币：0；" }
+            { name: "#家徒四壁", description: "满足基本食物与饮水；购买任何非必需品都需进行成功鉴定。容易被盘查、驱逐；社交鉴定（如上流场所）获得劣势。" },
+            { name: "#量入为出", description: "购买日常装备、普通食宿、城內交通。购买昂贵物品（如魔法材料、精良武器）需进行成功鉴定。" },
+            { name: "#手有余粮", description: "购买精良装备、住上等旅馆、雇佣向导、进行短途旅行。可能被小偷盯上；在社交中容易被当成“肥羊”。" },
+            { name: "#生活富裕", description: "购买稀有物品、魔法装备、包下整个旅店、贿赂官员、投资商业。高调消费会引起地方势力（如贵族、黑帮）的注意。" },
+            { name: "#一掷千金", description: "购买绝大多数神明遗物之外的物品；能用钱解决的事，基本都不是事。是各方势力觊觎和讨好的目标；所有与金钱相关的社交互动，GM均可强制引入复杂剧情。" },
+            { name: "汇率", description: "优玛币：0；怀武币：0；赫尔韦林币：0；博拉迪亚币：0；漠益币：0；巴兰门币：0；德买西亚币：0；汗国币：0；魏国币；天之原地之国币：0；" }
         ],
         "医疗物品": [
-            { name: "止血绷带", weight: 0, description: "" },
+            { name: "止血绷带", description: "" },
         ],
         "药剂": [
-            { name: "魔力回复剂", weight: 0.5, description: "" },
+            { name: "魔力回复剂", description: "" },
         ],
         "储备/其他物品": [
-            { name: "墨水", weight: 0.5, description: "" },
-            { name: "蜡烛", weight: 0, description: "" },
-            { name: "柴火", weight: 0.5, description: "" },
-            { name: "羽毛", weight: 0, description: "" },
-            { name: "普通子弹", weight: 0, description: "" },
+            { name: "物品点*10", description: "" },
+            { name: "墨水", description: "" },
+            { name: "蜡烛", description: "" },
+            { name: "柴火", description: "" },
+            { name: "羽毛", description: "" },
+            { name: "普通子弹", description: "" },
         ],
     },
 

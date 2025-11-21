@@ -58,28 +58,28 @@ class GOGCharacterApp {
         this.showToast(greeting, 3000, bgGradient);
 
     }
-
+    
     // 切换骰子面板
     toggleDicePanel() {
         const panel = document.getElementById('dice-panel');
-        if (panel.style.display === 'block') {
+        if (panel.classList.contains('active')) {
             this.closeDicePanel();
         } else {
             this.openDicePanel();
         }
     }
     openDicePanel() {
-        const panel = document.getElementById('dice-panel');
+        this.closeDataPanel();
+        this.closeRosterPanel();
         const mainContainer = document.getElementById('main-container');
         const icon = document.getElementById('show-dice-icon');
-        panel.style.display = 'block';
+        document.getElementById('dice-panel').classList.add('active');
         mainContainer.style.paddingBottom = '480px';
         icon.style.backgroundImage = 'linear-gradient(217deg, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0) 70.71%),linear-gradient(127deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0) 70.71%),linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%)'
         icon.querySelector('.fa-solid').style.fontSize = '22px';
-        document.getElementById('roster-panel').style.display = 'none';
     }
     closeDicePanel() {
-        document.getElementById('dice-panel').style.display = 'none';
+        document.getElementById('dice-panel').classList.remove('active');
         const mainContainer = document.getElementById('main-container');
         const icon = document.getElementById('show-dice-icon');
         mainContainer.style.paddingBottom = '60px';
@@ -314,37 +314,50 @@ class GOGCharacterApp {
     // 切换图鉴面板
     toggleRosterPanel() {
         const panel = document.getElementById('roster-panel');
-        if (panel.style.display === 'block') {
+        if (panel.classList.contains('active')) {
             this.closeRosterPanel();
         } else {
             this.openRosterPanel();
         }
     }
     openRosterPanel() {
-        const panel = document.getElementById('roster-panel');
+        this.closeDicePanel();
+        this.closeDataPanel();
         const mainContainer = document.getElementById('main-container');
-        panel.style.display = 'block';
         mainContainer.style.paddingBottom = '480px';
-        document.getElementById('dice-panel').style.display = 'none';
-        const icon = document.getElementById('show-dice-icon');
-        icon.style.backgroundImage = 'linear-gradient(0deg, #333333, #333333)';
-        icon.querySelector('.fa-solid').style.fontSize = '20px';
+        document.getElementById('roster-panel').classList.add('active');
+        document.getElementById('show-roster').classList.add('active');
         this.renderCharacterList();
     }
     closeRosterPanel() {
-        document.getElementById('roster-panel').style.display = 'none';
+        document.getElementById('roster-panel').classList.remove('active');
         const mainContainer = document.getElementById('main-container');
         mainContainer.style.paddingBottom = '60px';
+        document.getElementById('show-roster').classList.remove('active');
     }
 
     // 切换数据面板
     toggleDataPanel() {
         const panel = document.getElementById('data-panel');
-        if (panel.style.display === 'block') {
-            document.getElementById('data-panel').style.display = 'none';
+        if (panel.classList.contains('active')) {
+            this.closeDataPanel()
         } else {
-            document.getElementById('data-panel').style.display = 'block';
+            this.openDataPanel()
         }
+    }
+    closeDataPanel() {
+        document.getElementById('data-panel').classList.remove('active');
+        const mainContainer = document.getElementById('main-container');
+        mainContainer.style.paddingBottom = '60px';
+        document.getElementById('show-data').classList.remove('active');
+    }
+    openDataPanel() {
+        this.closeDicePanel();
+        this.closeRosterPanel();
+        const mainContainer = document.getElementById('main-container');
+        mainContainer.style.paddingBottom = '480px';
+        document.getElementById('data-panel').classList.add('active');
+        document.getElementById('show-data').classList.add('active');
     }
 
     // 渲染图鉴
@@ -361,15 +374,16 @@ class GOGCharacterApp {
             <span>${char.class}</span>
             <span>${char.blessing}Lv.${char.blessinglevel}</span>
           </div>
-          <div style="display: grid;grid-template-columns: 1fr 1fr 1fr; margin-top:0px;">
-            <span>HP: <strong>${char.attributes.HP.current}</strong> /${char.attributes.HP.base + 2 * (char.isGod === '神明' ?
-                Math.max(0, char.attributes.STR.base + char.attributes.STR.statusAdj + char.attributes.STR.blessingAdj) :
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.STR.base + char.attributes.STR.statusAdj + char.attributes.STR.blessingAdj)))
+          <div style="display: grid;grid-template-columns: 1fr 1fr; margin-top:0px;">
+            <span>HP: <strong>${char.attributes.HP.current}</strong> /${char.attributes.HP.base + 
+                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.STR)) + 
+                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.DEX))
             }</span>
-            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base + (char.isGod === '神明' ?
-                Math.max(0, char.attributes.MAG.base + char.attributes.MAG.statusAdj + char.attributes.MAG.blessingAdj) :
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.MAG.base + char.attributes.MAG.statusAdj + char.attributes.MAG.blessingAdj)))}</span>
-            <span>BXP: <strong>${char.soul}</strong>%</span>
+            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base + 
+                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.INT)) + 
+                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.CHA)) + 
+                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.WIS))
+            }</span>
           </div>
         </div>
         <div class="character-actions">
@@ -967,7 +981,6 @@ class GOGCharacterApp {
 
             return (
                 inventory.name.toLowerCase().includes(searchTerm) ||
-                inventory.weight.toLowerCase().includes(searchTerm) ||
                 inventory.description.toLowerCase().includes(searchTerm)
             );
         });
@@ -1001,11 +1014,9 @@ class GOGCharacterApp {
         <div class="item-header">
           <div style="padding-left: 5px;margin: 0px;font-size: 14px;">
           <span class="inventory-name" style="font-weight: bold;">${Inventory.name}</span>
-          <span class="inventory-weight">(${Inventory.weight} kg)</span>
           </div>
           <button class="btn-add-inventory" 
                   data-name="${Inventory.name}"
-                  data-weight="${Inventory.weight}"
                   data-description="${Inventory.description}"
                   data-category="${category}">
             添加
@@ -1041,7 +1052,7 @@ class GOGCharacterApp {
         const skillsWithUnlearnedTag = blessing.skills.map(skill => {
             return {
                 ...skill,
-                description: `【未学习】${skill.description}`
+                description: `（未学习）${skill.description}`
             };
         });
         this.currentCharacter.blessingSkills = skillsWithUnlearnedTag;
@@ -1051,7 +1062,7 @@ class GOGCharacterApp {
         document.getElementById('blessingFullName').value = blessing.fullName;
         this.renderBlessingSystem(blessing.system, blessing.name);
         this.renderBlessingSkills(skillsWithUnlearnedTag);
-        this.showToast(`权柄 【${blessing.name}】 已应用`);
+        this.showToast(`权柄**${blessing.name}**已应用`);
     }
     addSkillToCharacter(skillData) {
         const categories = [];
@@ -1088,7 +1099,7 @@ class GOGCharacterApp {
             catemess.push(`智慧`);
         }
 
-        let toastmessage = `技能${skillData.name}已添加到类别` + catemess.join('、') + `中`;
+        let toastmessage = `技能**${skillData.name}**已添加到类别` + catemess.join('、') + `中`;
 
         categories.forEach(category => {
             if (!this.currentCharacter.skills[category]) {
@@ -1129,21 +1140,14 @@ class GOGCharacterApp {
         });
 
         this.renderEquipment(this.currentCharacter.equipment);
-        this.showToast(`装备${equipment.name}已添加`);
+        this.showToast(`装备**${equipment.name}**已添加`);
     }
     addInventoryToCharacter(item) {
-        this.currentCharacter.inventory[item.category] = this.currentCharacter.inventory[item.category] || [];
-        this.currentCharacter.inventory[item.category].push({
-            name: item.name,
-            weight: item.weight,
-            description: item.description,
-            quantity: 1,
-        });
+        this.currentCharacter.inventory = this.currentCharacter.inventory || '';
+        this.currentCharacter.inventory += `\n${item.name}${item.description ? '：'+item.description : '' }`;
 
-        this.renderInventory(this.currentCharacter.inventory);
-        this.updateTotalWeight();
-        const category = this.mapItemCategoryNameToKey(item.category);
-        this.showToast(`物品${item.name}(${category})已放入背包`);
+        document.getElementById('inventory').innerText = this.currentCharacter.inventory || '';
+        this.showToast(`物品**${item.name}**已放入背包`);
     }
     applyClass(clnm, clcat) {
         const cl = window.staticData.classes[clcat].find(c => c.name === clnm);
@@ -1169,7 +1173,7 @@ class GOGCharacterApp {
 
         document.getElementById('character-class').value = cl.name;
         this.renderSkills(this.currentCharacter.skills);
-        this.showToast(`职业 【${cl.name}】 已应用`);
+        this.showToast(`职业**${cl.name}**已应用`);
     }
 
     // 通用输入绑定方法
@@ -1180,105 +1184,11 @@ class GOGCharacterApp {
         input.value = this.currentCharacter[property] || '';
         input.addEventListener('input', () => {
             this.currentCharacter[property] = input.type === 'number' ? parseInt(input.value) || 0 : input.value;
-            // 如果是灵魂完整度，更新状态标签
-            if (inputId === 'blessing-soul') {
-                this.updateSoulStatus();
-            }
         });
 
-        // 如果是灵魂完整度，初始化状态标签
-        if (inputId === 'blessing-soul') {
-            this.updateSoulStatus();
-            document.getElementById('blessing-soul').value = this.currentCharacter.soul || 0;
-        }
         if (inputId === 'blessing-level') {
             document.getElementById('blessing-level').value = this.currentCharacter.blessinglevel || 0;
         }
-    }
-    updateSoulStatus() {
-        const soulValue = this.currentCharacter.soul || 0;
-        const statusElement = document.getElementById('soul-status');
-        let bkcolor = '#666666';
-        let bkcolor1 = '#888888';
-
-        // 根据灵魂完整度范围设置不同状态
-        if (soulValue > 90) {
-            statusElement.textContent = '神明代行者';
-            bkcolor = '#6d35ddff'; // 中紫色 - 半神领域
-            bkcolor1 = '#8d56faff';
-        } else if (soulValue > 80) {
-            statusElement.textContent = '圣徒';
-            bkcolor = '#ca2cabff'; // 玫红色 - 神圣高阶
-            bkcolor1 = '#ff3bd8ff';
-        } else if (soulValue > 60) {
-            statusElement.textContent = '蒙恩者';
-            bkcolor = '#4169E1'; // 皇家蓝 - 神明恩宠
-            bkcolor1 = '#517cfbff';
-        } else if (soulValue > 40) {
-            statusElement.textContent = '受膏者';
-            bkcolor = '#3ad2e0ff'; // 天青蓝 - 正式祝福
-            bkcolor1 = 'rgba(140, 227, 220, 1)';
-        } else if (soulValue > 20) {
-            statusElement.textContent = '逐圣者';
-            bkcolor = '#3CB371'; // 海洋绿 - 追寻圣道
-            bkcolor1 = '#54de92ff';
-        } else if (soulValue >= 1) {
-            statusElement.textContent = '慕道者';
-            bkcolor = '#e69c5bff'; // 沙褐色 - 初窥门径
-            bkcolor1 = '#f6b175ff';
-        } else if (soulValue === 0) {
-            statusElement.textContent = '世俗之人';
-            bkcolor = '#666666'; // 暗灰色 - 世俗之人
-            bkcolor1 = '#333333';
-        }
-
-        statusElement.style.background = `radial-gradient(circle 0px at center center, ${bkcolor1}, ${bkcolor})`;
-        statusElement.style.height = '22px';
-        statusElement.style.textShadow = 'none';
-        statusElement.style.letterSpacing = '6px';
-        statusElement.style.fontSize = '14px';
-        statusElement.style.padding = '4px';
-        statusElement.style.transition = 'all 0.3s ease-out';
-        statusElement.onmouseenter = function () {
-            this.style.background = `radial-gradient(circle 150px at center center, ${bkcolor1}, ${bkcolor})`;
-            this.style.height = '25px';
-            this.style.textShadow = '0 4px 8px rgba(0,0,0,0.3)';
-            this.style.letterSpacing = '12px';
-            this.style.fontSize = '16px';
-            this.style.padding = '4px';
-        };
-
-        // 鼠标离开事件
-        statusElement.onmouseleave = function () {
-            this.style.background = `radial-gradient(circle 0px at center center, ${bkcolor1}, ${bkcolor})`;
-            this.style.height = '22px';
-            this.style.textShadow = 'none';
-            this.style.letterSpacing = '6px';
-            this.style.fontSize = '14px';
-            this.style.padding = '4px';
-        };
-    }
-
-    updateIdentityStyle(button, identity) {
-        const allstyles = {
-            '人类': {
-                color: '#00b6b3ff',
-            },
-            '神明': {
-                color: '#dec11cff',
-            },
-            '其他': {
-                color: '#b93aa6ff',
-            }
-        };
-        const styles = allstyles[identity] || styles['人类'];
-        button.textContent = identity;
-        Object.assign(button.style, {
-            color: styles.color,
-            letterSpacing: '6px',
-            fontSize: '16px',
-            transition: 'all 0.3s ease'
-        });
     }
 
     // 渲染角色详情
@@ -1315,51 +1225,24 @@ class GOGCharacterApp {
             });
         }
         this.bindInputToCharacter('blessing-level', 'blessinglevel');
-        this.bindInputToCharacter('blessing-soul', 'soul');
-
-        // 身份切换按钮绑定
-        const isGodButton = document.getElementById('isGod');
-        if (isGodButton) {
-            this.updateIdentityStyle(isGodButton, this.currentCharacter.isGod || '人类');
-            isGodButton.addEventListener('click', () => {
-                const identities = ['人类', '神明', '其他'];
-                const currentIndex = identities.indexOf(this.currentCharacter.isGod || '人类');
-                const nextIndex = (currentIndex + 1) % identities.length;
-
-                this.currentCharacter.isGod = identities[nextIndex];
-                isGodButton.textContent = this.currentCharacter.isGod;
-
-                const allstyles = {
-                    '人类': {
-                        color: '#00b6b3ff',
-                    },
-                    '神明': {
-                        color: '#dec11cff',
-                    },
-                    '其他': {
-                        color: '#b93aa6ff',
-                    }
-                };
-                const styles = allstyles[identities[nextIndex]] || allstyles['人类'];
-
-                Object.assign(isGodButton.style, {
-                    color: styles.color,
-                    transition: 'all 0.3s ease'
-                });
-
-                // 身份变化触发其他逻辑
-                this.renderAttributes(this.currentCharacter.attributes, this.currentCharacter.isGod);
-            });
-        }
 
         // 动态表格绑定
         this.setupTableBindings();
         this.bindAttributeInputs();
+        
+        // 背包内容绑定
+        const inventoryElement = document.getElementById('inventory');
+        if (inventoryElement) {
+            inventoryElement.innerText = this.currentCharacter.inventory || '';
+            inventoryElement.addEventListener('input', () => {
+                this.currentCharacter.inventory = inventoryElement.innerText;
+            });
+        }
 
         this.bindLogEvents();
 
         // 渲染属性
-        this.renderAttributes(character.attributes, character.isGod);
+        this.renderAttributes(character.attributes);
 
         this.renderPortrait();
 
@@ -1376,10 +1259,6 @@ class GOGCharacterApp {
 
         // 渲染装备列表
         this.renderEquipment(character.equipment);
-
-        // 渲染背包物品
-        this.renderInventory(character.inventory);
-        this.updateTotalWeight();
 
         // 渲染日志系统
         this.renderLogs(character.logs);
@@ -1402,62 +1281,39 @@ class GOGCharacterApp {
     }
 
     // 渲染属性
-    renderAttributes(attributes, isGod) {
+    renderAttributes(attributes) {
         // 渲染前6个属性
         ['STR', 'DEX', 'INT', 'CHA', 'WIS', 'MAG'].forEach(attr => {
-            const base = parseInt(attributes[attr].base) || 0;
-            const statusAdj = parseInt(attributes[attr].statusAdj) || 0;
-            const blessingAdj = parseInt(attributes[attr].blessingAdj) || 0;
-            document.getElementById(`attr-${attr}-status`).value = statusAdj;
-            document.getElementById(`attr-${attr}-blessing`).value = blessingAdj;
-            this.currentCharacter.attributes[attr].statusAdj = statusAdj;
-            this.currentCharacter.attributes[attr].blessingAdj = blessingAdj;
-            if (isGod === '神明') {
-                document.getElementById(`attr-${attr}-base`).value = base;
-                this.currentCharacter.attributes[attr].base = base;
-                document.getElementById(`attr-${attr}-total`).textContent = Math.max(0, base + statusAdj + blessingAdj);
-            } else {
-                document.getElementById(`attr-${attr}-base`).value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, base);
-                this.currentCharacter.attributes[attr].base = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, base);
-                document.getElementById(`attr-${attr}-total`).textContent = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, base + statusAdj + blessingAdj));
-            }
+            const a = parseInt(attributes[attr]) || 0;
+            document.getElementById(`attr-${attr}`).value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, a));
+            this.currentCharacter.attributes[attr] = a;
         });
 
         // 渲染健康和精力
-        this.updateMaxValues(isGod);
-        this.updateSkillProficiencyLeft();
+        this.updateMaxValues();
     }
 
     // 动态计算属性并显示最大值
-    updateMaxValues(isGod) {
+    updateMaxValues() {
         // 获取当前页面上的值
-        const strBase = parseInt(document.getElementById('attr-STR-base').value) || 0;
-        const strStatus = parseInt(document.getElementById('attr-STR-status').value) || 0;
-        const strBlessing = parseInt(document.getElementById('attr-STR-blessing').value) || 0;
-        let strTotal = Math.max(0, strBase + strStatus + strBlessing);
-
-        const magBase = parseInt(document.getElementById('attr-MAG-base').value) || 0;
-        const magStatus = parseInt(document.getElementById('attr-MAG-status').value) || 0;
-        const magBlessing = parseInt(document.getElementById('attr-MAG-blessing').value) || 0;
-        let magTotal = Math.max(0, magBase + magStatus + magBlessing);
-
-        if (isGod !== '神明') {
-            strTotal = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, strTotal);
-            magTotal = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, magTotal);
-        }
+        const str = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, parseInt(document.getElementById('attr-STR').value) || 0));
+        const dex = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, parseInt(document.getElementById('attr-DEX').value) || 0));
+        const int = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, parseInt(document.getElementById('attr-INT').value) || 0));
+        const cha = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, parseInt(document.getElementById('attr-CHA').value) || 0));
+        const wis = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, parseInt(document.getElementById('attr-WIS').value) || 0));
 
         let hpBase = parseInt(document.getElementById('attr-HP-base').value) || 0;
         let mpBase = parseInt(document.getElementById('attr-MP-base').value) || 0;
-        if (isGod !== '神明') {
-            hpBase = Math.min(GOGCharacterApp.MAX_HP_MP_BASE, hpBase);
-            mpBase = Math.min(GOGCharacterApp.MAX_HP_MP_BASE, mpBase);
-        }
+
+        hpBase = Math.min(GOGCharacterApp.MAX_HP_MP_BASE, hpBase);
+        mpBase = Math.min(GOGCharacterApp.MAX_HP_MP_BASE, mpBase);
+
         this.currentCharacter.attributes.HP.base = hpBase;
         this.currentCharacter.attributes.MP.base = mpBase;
 
         // 计算最大值
-        const hpMax = hpBase + strTotal * 2;
-        const mpMax = mpBase + magTotal;
+        const hpMax = hpBase + str + dex;
+        const mpMax = mpBase + int + cha + wis;
 
         // 更新显示
         document.getElementById('attr-HP-max').textContent = hpMax;
@@ -1496,11 +1352,7 @@ class GOGCharacterApp {
 
         // 收集前6个属性
         ['STR', 'DEX', 'INT', 'CHA', 'WIS', 'MAG'].forEach(attr => {
-            attributes[attr] = {
-                base: parseInt(document.getElementById(`attr-${attr}-base`).value) || 0,
-                statusAdj: parseInt(document.getElementById(`attr-${attr}-status`).value) || 0,
-                blessingAdj: parseInt(document.getElementById(`attr-${attr}-blessing`).value) || 0
-            };
+            attributes[attr] = parseInt(document.getElementById(`attr-${attr}`).value) || 0
         });
 
         // 收集健康和精力
@@ -1520,31 +1372,27 @@ class GOGCharacterApp {
     bindAttributeInputs() {
         // 基础6属性
         ['STR', 'DEX', 'INT', 'CHA', 'WIS', 'MAG'].forEach(attr => {
-            ['base', 'status', 'blessing'].forEach(type => {
-                const input = document.getElementById(`attr-${attr}-${type}`);
-                if (!input) return;
+            const input = document.getElementById(`attr-${attr}`);
+            if (!input) return;
 
-                // 设置初始值
-                const value = this.currentCharacter.attributes?.[attr]?.[type] || 0;
-                input.value = value;
+            // 设置初始值
+            const value = this.currentCharacter.attributes?.[attr] || 0;
+            input.value = value;
 
-                // 添加事件监听
-                input.addEventListener('change', () => {
-                    if (!this.currentCharacter.attributes) {
-                        this.currentCharacter.attributes = {};
-                    }
-                    if (!this.currentCharacter.attributes[attr]) {
-                        this.currentCharacter.attributes[attr] = {};
-                    }
-                    if (type === 'base' && this.currentCharacter.isGod !== '神明') {
-                        input.value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, input.value);
-                    }
+            // 添加事件监听
+            input.addEventListener('change', () => {
+                if (!this.currentCharacter.attributes) {
+                    this.currentCharacter.attributes = 0;
+                }
+                if (!this.currentCharacter.attributes[attr]) {
+                    this.currentCharacter.attributes[attr] = 0;
+                }
+                input.value = Math.min(GOGCharacterApp.MAX_ATTRIBUTE_BASE, input.value);
 
-                    this.currentCharacter.attributes[attr][type] = parseInt(input.value) || 0;
-                    this.renderAttributes(this.collectAttributes(), this.currentCharacter.isGod);
-                    //this.updateMaxValues();
-                    //this.updateSkillProficiencyLeft();
-                });
+                this.currentCharacter.attributes[attr] = parseInt(input.value) || 0;
+                this.renderAttributes(this.collectAttributes());
+                //this.updateMaxValues();
+                //this.updateSkillProficiencyLeft();
             });
         });
 
@@ -1566,12 +1414,12 @@ class GOGCharacterApp {
                     if (!this.currentCharacter.attributes[type]) {
                         this.currentCharacter.attributes[type] = {};
                     }
-                    if (subType === 'base' && this.currentCharacter.isGod !== '神明') {
+                    if (subType === 'base') {
                         input.value = Math.min(GOGCharacterApp.MAX_HP_MP_BASE, input.value);
                     }
 
                     this.currentCharacter.attributes[type][subType] = parseInt(input.value) || 0;
-                    this.updateMaxValues(this.currentCharacter.isGod);
+                    this.updateMaxValues();
                 });
             });
         });
@@ -1583,9 +1431,6 @@ class GOGCharacterApp {
 
         // 装备表格
         this.setupTableBinding('equipment-container', 'equipment', ['name', 'description']);
-
-        // 物品表格
-        this.setupTableBinding('inventory-container', 'inventory', ['name', 'weight', 'description', 'quantity']);
 
         // 赐福等级信息表格
         this.setupTableBinding('blessing-container', 'blessingSystem', ['level', 'attribute', 'skill', 'corruption']);
@@ -1620,27 +1465,7 @@ class GOGCharacterApp {
                 if (!this.currentCharacter.skills[category]) {
                     this.currentCharacter.skills[category] = [];
                 }
-            } else if (property === 'inventory') {
-                const category = row.dataset.category;
-                const index = parseInt(row.dataset.index);
-
-                if (!category || isNaN(index)) return;
-
-                const inputs = row.querySelectorAll('input, .auto-height-content');
-                fields.forEach((field, i) => {
-                    let value = inputs[i].value;
-                    if (inputs[i].classList.contains('auto-height-content')) {
-                        value = inputs[i].innerText;
-                    }
-                    this.currentCharacter.inventory[category][index][field] = this.convertFieldValue(field, value);
-                });
-
-                // 安全更新数据
-                if (!this.currentCharacter.inventory[category]) {
-                    this.currentCharacter.inventory[category] = [];
-                }
-            }
-            else {
+            } else {
                 const index = Array.from(container.children).indexOf(row);
                 if (index === -1) return;
 
@@ -1867,8 +1692,6 @@ class GOGCharacterApp {
         // 特殊处理技能表格
         if (containerId === 'skills-container') {
             return this.collectSkillsData();
-        } else if (containerId === 'inventory-container') {
-            return this.collectInventoryData();
         }
 
         const rows = container.querySelectorAll('tbody > tr');
@@ -1934,44 +1757,10 @@ class GOGCharacterApp {
 
         return skillsData;
     }
-    collectInventoryData() {
-        const inventoryData = {
-            equipment: [],    // 装备
-            food: [],         // 食物
-            currency: [],     // 钱币
-            medical: [],      // 医疗物品
-            potions: [],      // 药剂
-            supplies: []      // 储备/其他物品
-        };
-
-        // 获取所有技能行（跳过类别标题行）
-        const container = document.getElementById('inventory-container');
-        const itemRows = container.querySelectorAll('tr.item-row');
-
-        itemRows.forEach(row => {
-            const category = row.dataset.category;
-            const inputs = row.querySelectorAll('input, .auto-height-content');
-
-            if (inputs.length >= 4) { // name, weight, description, quantity
-                const item = {
-                    name: inputs[0].innerText.trim(),
-                    weight: parseFloat(inputs[1].value) || 0,
-                    description: inputs[2].innerText.trim(),
-                    quantity: parseFloat(inputs[3].value) || 0,
-                };
-
-                if (inventoryData[category]) {
-                    inventoryData[category].push(item);
-                }
-            }
-        });
-
-        return inventoryData;
-    }
 
     convertFieldValue(field, value) {
         // 确定哪些字段应该是数字类型
-        const numericFields = ['proficiency', 'uses', 'weight', 'quantity'];
+        const numericFields = ['proficiency', 'uses'];
 
         if (numericFields.includes(field)) {
             const num = parseFloat(value);
@@ -1992,7 +1781,7 @@ class GOGCharacterApp {
             tagElement.textContent = status;
 
             const deleteButton = document.createElement('button');
-            deleteButton.textContent = '×';
+            deleteButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             deleteButton.className = 'tag-delete';
             deleteButton.onclick = () => this.removeStatusTag(status);
 
@@ -2020,7 +1809,7 @@ class GOGCharacterApp {
             categoryRow.className = 'skill-category-row';
             categoryRow.innerHTML = `
             <td colspan="5" class="skill-category-header" style="margin:6px auto;text-align: center;background: #f2f2f2">
-                <strong>${this.getCategoryName(category)}类技能</strong>
+                <strong>${this.getCategoryName(category)} ${this.currentCharacter.attributes[category] || ''}</strong>
             </td>
         `;
             skillsContainer.appendChild(categoryRow);
@@ -2077,57 +1866,6 @@ class GOGCharacterApp {
         });
     }
 
-    // 渲染背包物品
-    renderInventory(inventoryArray) {
-        const inventoryContainer = document.getElementById('inventory-container');
-        inventoryContainer.innerHTML = '';
-
-        Object.entries(inventoryArray).forEach(([category, items]) => {
-            if (items.length === 0) return;
-
-            // 添加类别标题行
-            const categoryRow = document.createElement('tr');
-            categoryRow.className = 'item-category-row';
-            categoryRow.innerHTML = `
-            <td colspan="5" class="item-category-header" style="margin:6px auto;text-align: center;background: #f2f2f2">
-                <strong>${this.getCategoryName(category)}</strong>
-            </td>
-        `;
-            inventoryContainer.appendChild(categoryRow);
-
-            // 添加该类别下的技能
-            items.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.className = 'item-row';
-                row.dataset.category = category;
-                row.dataset.index = index;
-                row.innerHTML = `
-                <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
-                <td><input type="number" min="0" step="0.5" value="${item.weight || 0}"></td>
-                <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
-                <td><input type="number" min="0" value="${item.quantity || 0}"></td>
-                <td><button class="btn-danger" data-category="${category}" data-index="${index}">删除</button></td>
-            `;
-                inventoryContainer.appendChild(row);
-            });
-        });
-    }
-
-    // 计算总负重
-    updateTotalWeight() {
-        let totalWeight = 0.0;
-        const inventoryData = this.collectInventoryData();
-        if (inventoryData) {
-            Object.values(inventoryData).forEach(categoryItems => {
-                categoryItems.forEach(item => {
-                    totalWeight += (parseFloat(item.weight) || 0.0) * (parseFloat(item.quantity) || 0.0);
-                });
-            });
-        }
-        const displayElement = document.getElementById('total-weight');
-        displayElement.textContent = totalWeight;
-    }
-
     // 渲染日志
     renderLogs(logArray) {
         const container = document.getElementById('log-sections');
@@ -2140,7 +1878,7 @@ class GOGCharacterApp {
             logElement.innerHTML = `
                 <div class="log-header">
                     <div class="log-title auto-height-content" contenteditable="true">${log.title}</div>
-                    <button class="delete-log">删除</button>
+                    <button class="delete-log"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="log-content auto-height-content" contenteditable="true">${log.content}</div>
             `;
@@ -2158,29 +1896,6 @@ class GOGCharacterApp {
             toast.classList.remove('toast-visible');
         }, duration);
     }
-
-    // 辅助方法：从表格收集数据
-    /* collectTableData(containerId, fields) {
-        const container = document.getElementById(containerId);
-        const rows = container.querySelectorAll('tr');
-        const data = [];
-    
-        rows.forEach(row => {
-            const inputs = row.querySelectorAll('input');
-            const item = {};
-    
-            fields.forEach((field, index) => {
-                const value = inputs[index].value;
-                item[field] = field === 'proficiency' || field === 'uses' || field === 'weight' || field === 'quantity'
-                    ? parseFloat(value)
-                    : value;
-            });
-    
-            data.push(item);
-        });
-    
-        return data;
-    }; */
 
     // 设置事件监听
     setupEventListeners() {
@@ -2393,7 +2108,6 @@ class GOGCharacterApp {
             if (e.target.classList.contains('btn-add-inventory')) {
                 const inventoryData = {
                     name: e.target.dataset.name,
-                    weight: e.target.dataset.weight,
                     description: e.target.dataset.description,
                     category: e.target.dataset.category
                 };
@@ -2433,9 +2147,8 @@ class GOGCharacterApp {
                     blessinglevel: parseInt(document.getElementById('blessing-level').value),
                     blessingSystem: this.collectBlessingData(),
                     blessingSkills: this.collectBlessingSkills(),
-                    isGod: this.currentCharacter.isGod || '',
-                    soul: parseInt(document.getElementById('blessing-soul').value),
                     attributes: this.collectAttributes(),
+                    inventory: document.getElementById('inventory').innerText.trim(),
                     logs: this.currentCharacter.logs || []
                 };
 
@@ -2447,10 +2160,9 @@ class GOGCharacterApp {
                 // 创建/更新角色对象
                 const character = new Character(characterData);
 
-                // 收集动态数据（技能、装备、物品）
+                // 收集动态数据（技能、装备）
                 character.skills = this.collectSkillsData();
                 character.equipment = this.collectTableData('equipment-container', ['name', 'description']);
-                character.inventory = this.collectInventoryData();
 
                 // 保存到数据库
                 const savedCharacter = await this.db.saveCharacter(character);
@@ -2741,18 +2453,6 @@ class GOGCharacterApp {
             this.renderEquipment(this.currentCharacter.equipment);
         });
 
-        // 添加物品
-        document.getElementById('add-item').addEventListener('click', () => {
-            const category = document.getElementById('item-category-select').value;
-            this.currentCharacter.inventory[category].push({
-                name: '',
-                weight: 0,
-                description: '',
-                quantity: 1
-            });
-            this.renderInventory(this.currentCharacter.inventory);
-        });
-
         // 添加日志
         document.getElementById('add-log').addEventListener('click', () => {
             this.currentCharacter.logs.push({
@@ -2763,21 +2463,12 @@ class GOGCharacterApp {
             this.renderLogs(this.currentCharacter.logs);
         });
 
-        // 删除技能/装备/物品的处理
+        // 删除技能/装备的处理
         document.getElementById('equipment-container').addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-danger')) {
                 const index = parseInt(e.target.dataset.index);
                 this.currentCharacter.equipment.splice(index, 1);
                 this.renderEquipment(this.currentCharacter.equipment);
-            }
-        });
-        document.getElementById('inventory-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
-                const category = e.target.dataset.category;
-                const index = parseInt(e.target.dataset.index);
-                this.currentCharacter.inventory[category].splice(index, 1);
-                this.renderInventory(this.currentCharacter.inventory);
-                this.updateTotalWeight();
             }
         });
         document.getElementById('skills-container').addEventListener('click', (e) => {
@@ -2795,21 +2486,6 @@ class GOGCharacterApp {
             if (e.target.classList.contains('auto-height-content') ||
                 e.target.type === 'number') {
                 this.updateSkillProficiencyLeft();
-            }
-        });
-
-        // 背包表格变化时更新总重
-        document.getElementById('inventory-container').addEventListener('input', (e) => {
-            if (e.target.type === 'number') {
-                this.updateTotalWeight();
-            }
-        })
-        document.getElementById('add-item').addEventListener('click', () => {
-            setTimeout(() => this.updateTotalWeight(), 0);
-        });
-        document.getElementById('inventory-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
-                setTimeout(() => this.updateTotalWeight(), 0);
             }
         });
 

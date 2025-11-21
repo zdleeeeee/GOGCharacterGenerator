@@ -61,24 +61,22 @@ class Character {
       name: '',
       description: ''
     }));  // 权柄特技数据结构
-    this.soul = data.soul || 0;
 
     this.age = data.age || 1;
     this.alignment = data.alignment || '守序善良';
     this.nationality = data.nationality || '';
     this.class = data.class || '';  // 职业
     this.description = data.description || '';
-    this.isGod = data.isGod || '人类';  // 身份
     this.attributes = data.attributes || {
-      STR: { base: 5, statusAdj: 0, blessingAdj: 0 },
-      DEX: { base: 5, statusAdj: 0, blessingAdj: 0 },
-      INT: { base: 5, statusAdj: 0, blessingAdj: 0 },
-      CHA: { base: 5, statusAdj: 0, blessingAdj: 0 },
-      WIS: { base: 5, statusAdj: 0, blessingAdj: 0 },
-      MAG: { base: 5, statusAdj: 0, blessingAdj: 0 },
+      STR: 3,
+      DEX: 3,
+      INT: 3,
+      CHA: 3,
+      WIS: 3,
+      MAG: 3,
 
-      HP: { base: 25, current: 35 },
-      MP: { base: 10, current: 15 }
+      HP: { base: 25, current: 31 },
+      MP: { base: 5, current: 14 }
     };
 
     this.status = data.status || [];
@@ -92,14 +90,7 @@ class Character {
       MAG: []  // 法力类技能
     };
     this.equipment = data.equipment || [];
-    this.inventory = data.inventory || {
-      equipment: [],    // 装备
-      food: [],         // 食物
-      currency: [],     // 钱币
-      medical: [],      // 医疗物品
-      potions: [],      // 药剂
-      supplies: []      // 储备/其他物品
-    };
+    this.inventory = data.inventory || '';
     this.logs = data.logs || [];
     this.createdAt = data.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();
