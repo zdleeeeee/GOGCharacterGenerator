@@ -42,7 +42,7 @@ window.staticData = {
 
     skills: {
         "力量": [
-            { name: "运动", class: "基础", description: "力量；攀爬、游泳、跳跃等需要体力的活动" },
+            { name: "运动", class: "基础", description: "力量/感知；攀爬、游泳、跳跃等需要体力的活动" },
             { name: "角斗", class: "基础", description: "力量；蛮力对抗、挣脱束缚、抢夺物品、近身格斗" },
             { name: "强韧", class: "基础", description: "力量；抵抗中毒、疾病、疲劳、物理伤害的体质" },
             { name: "械斗", class: "基础", description: "力量；使用近战武器（如剑、斧）的能力" },

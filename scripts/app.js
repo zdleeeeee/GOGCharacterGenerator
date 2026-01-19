@@ -58,7 +58,7 @@ class GOGCharacterApp {
         this.showToast(greeting, 3000, bgGradient);
 
     }
-    
+
     // 切换骰子面板
     toggleDicePanel() {
         const panel = document.getElementById('dice-panel');
@@ -97,9 +97,9 @@ class GOGCharacterApp {
         <div class="item-header">
           <h5 style="padding-top: 0px;">${dc.name}</h5>
           <div class="header-actions">
-            <button class="btn-roll  toggle-icon" title="投掷组合" style="padding: 0; margin: 0px;"><i class="fa-solid fa-dice-d6"></i></button>
+            <button class="btn-roll toggle-icon" title="投掷组合" style="padding: 0; margin: 0px;"><i class="fa-solid fa-dice-d6"></i></button>
             <button class="btn-load toggle-icon" title="编辑组合" style="padding: 0; margin: 0px;"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button class="btn-delete toggle-icon" title="删除组合" style="padding: 0; margin:0px;"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn-delete toggle-icon" title="删除组合" style="padding: 0; margin:0px;"><i class="fa-regular fa-trash-can"></i></button>
           </div>
         </div>
         <div>
@@ -277,7 +277,6 @@ class GOGCharacterApp {
     }
 
     loadPresetToForm(preset) {
-        document.getElementById('dice-panel').style.height = 'max-content';
         document.getElementById('dice-panel-list').classList.remove('active');
         document.getElementById('dice-config').classList.add('active');
 
@@ -375,14 +374,14 @@ class GOGCharacterApp {
             <span>${char.blessing}Lv.${char.blessinglevel}</span>
           </div>
           <div style="display: grid;grid-template-columns: 1fr 1fr; margin-top:0px;">
-            <span>HP: <strong>${char.attributes.HP.current}</strong> /${char.attributes.HP.base + 
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.STR)) + 
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.DEX))
+            <span>HP: <strong>${char.attributes.HP.current}</strong> /${char.attributes.HP.base +
+            Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.STR)) +
+            Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.DEX))
             }</span>
-            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base + 
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.INT)) + 
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.CHA)) + 
-                Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.WIS))
+            <span>MP: <strong>${char.attributes.MP.current}</strong> /${char.attributes.MP.base +
+            Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.INT)) +
+            Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.CHA)) +
+            Math.min(GOGCharacterApp.MAX_ATTRIBUTE_VALUE, Math.max(0, char.attributes.WIS))
             }</span>
           </div>
         </div>
@@ -454,11 +453,8 @@ class GOGCharacterApp {
         container.innerHTML = filteredBlessings.map(blessing => `
       <div class="blessing-item" data-name="${blessing.name}">
         <div class="blessing-header">
-            <h5>${blessing.fullName}</h5>
-            <div class="header-actions">
+            <div class="blessing-item-name">${blessing.fullName}<span class="show-more-icon">展开</span></div>
             <button class="btn-apply-blessing">应用</button>
-            <span class="toggle-icon">+</span>
-            </div>
         </div>
         <div class="blessing-details" style="display:none">
         <div class="blessing-system">
@@ -467,7 +463,7 @@ class GOGCharacterApp {
                 `).join('')}
             </div>
                 <div class="blessing-skills">
-                    <h5>权柄技能</h5>
+                    <h5>权柄特技</h5>
                     ${blessing.skills.map(skill => `
                         <p><strong>${skill.name}:</strong> ${skill.description}</p>
                     `).join('')}
@@ -477,17 +473,18 @@ class GOGCharacterApp {
     `).join('');
         // 点击标题切换折叠状态
         container.querySelectorAll('.blessing-header').forEach(header => {
-            header.addEventListener('click', (e) => {
+            const bnm = header.querySelector('.blessing-item-name');
+            bnm.addEventListener('click', (e) => {
                 // 防止点击应用按钮时触发折叠
                 if (e.target.closest('.btn-apply-blessing')) return;
 
                 const item = header.closest('.blessing-item');
                 const details = item.querySelector('.blessing-details');
-                const toggleIcon = header.querySelector('.toggle-icon');
+                const toggleIcon = header.querySelector('.show-more-icon');
 
                 const isHidden = details.style.display === 'none';
                 details.style.display = isHidden ? 'block' : 'none';
-                toggleIcon.textContent = isHidden ? '-' : '+';
+                toggleIcon.textContent = isHidden ? '收起' : '展开';
             });
         });
 
@@ -603,16 +600,14 @@ class GOGCharacterApp {
 
         Object.entries(skillsByCategory).forEach(([category, skills]) => {
             const categoryElement = document.createElement('div');
-            categoryElement.className = 'skill-category';
+            categoryElement.className = 'category-item';
 
             // 创建分类标题（可点击折叠）
             const header = document.createElement('div');
-            header.className = 'skill-category-header';
+            header.className = 'category-header';
             header.innerHTML = `
-        <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">-</span>
-        </div>
+            <span class="show-more-icon">收起</span>
       `;
 
             // 创建技能列表容器
@@ -624,9 +619,8 @@ class GOGCharacterApp {
             listContainer.innerHTML = skills.map(skill => `
         <div class="skill-item">
         <div class="item-header">
-          <div style="padding-left: 5px;margin: 0px;font-size: 14px;">
-          <span class="skill-name" style="font-weight: bold;">${skill.name}</span>
-          <span class="skill-class">(${skill.class})</span>
+          <div class="item-name">${skill.name}
+          <span class="item-class">(${skill.class})</span>
           </div>
           <button class="btn-add-skill" 
                   data-name="${skill.name}"
@@ -643,7 +637,7 @@ class GOGCharacterApp {
             header.addEventListener('click', () => {
                 const isHidden = listContainer.style.display === 'none';
                 listContainer.style.display = isHidden ? 'block' : 'none';
-                header.querySelector('.toggle-icon').textContent = isHidden ? '-' : '+';
+                header.querySelector('.show-more-icon').textContent = isHidden ? '收起' : '展开';
             });
 
             categoryElement.appendChild(header);
@@ -772,16 +766,14 @@ class GOGCharacterApp {
 
         Object.entries(classesByCategory).forEach(([category, classes]) => {
             const categoryElement = document.createElement('div');
-            categoryElement.className = 'class-category';
+            categoryElement.className = 'category-item';
 
             // 创建分类标题（可点击折叠）
             const header = document.createElement('div');
-            header.className = 'class-category-header';
+            header.className = 'category-header';
             header.innerHTML = `
-        <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">-</span>
-        </div>
+            <span class="show-more-icon">收起</span>
       `;
 
             // 创建职业列表容器
@@ -792,9 +784,8 @@ class GOGCharacterApp {
             listContainer.innerHTML = classes.map(cl => `
         <div class="class-item">
         <div class="item-header">
-          <div style="padding: 5px;margin: 0px;font-size: 14px;">
-          <span class="class-name" style="font-weight: bold;">${cl.name}</span>
-          <span class="class-type">(${cl.type})</span>
+          <div class="item-name">${cl.name}
+          <span class="item-class">(${cl.type})</span>
           </div>
           <button class="btn-apply-class" 
                   data-name="${cl.name}"
@@ -816,7 +807,7 @@ class GOGCharacterApp {
             header.addEventListener('click', () => {
                 const isHidden = listContainer.style.display === 'none';
                 listContainer.style.display = isHidden ? 'block' : 'none';
-                header.querySelector('.toggle-icon').textContent = isHidden ? '-' : '+';
+                header.querySelector('.show-more-icon').textContent = isHidden ? '收起' : '展开';
             });
 
             categoryElement.appendChild(header);
@@ -888,15 +879,13 @@ class GOGCharacterApp {
 
         Object.entries(equipmentsByCategory).forEach(([category, equipments]) => {
             const categoryElement = document.createElement('div');
-            categoryElement.className = 'equipment-category';
+            categoryElement.className = 'category-item';
 
             const header = document.createElement('div');
-            header.className = 'equipment-category-header';
+            header.className = 'category-header';
             header.innerHTML = `
-        <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">-</span>
-        </div>
+            <span class="show-more-icon">收起</span>
       `;
 
             const listContainer = document.createElement('div');
@@ -906,9 +895,7 @@ class GOGCharacterApp {
             listContainer.innerHTML = equipments.map(equipment => `
         <div class="equipment-item">
         <div class="item-header">
-          <div style="padding-left: 5px;margin: 0px;font-size: 14px;">
-          <span class="equipment-name" style="font-weight: bold;">${equipment.name}</span>
-          </div>
+          <div class="item-name">${equipment.name}</div>
           <button class="btn-add-equipment" 
                   data-name="${equipment.name}"
                   data-description="${equipment.description}">
@@ -922,7 +909,7 @@ class GOGCharacterApp {
             header.addEventListener('click', () => {
                 const isHidden = listContainer.style.display === 'none';
                 listContainer.style.display = isHidden ? 'block' : 'none';
-                header.querySelector('.toggle-icon').textContent = isHidden ? '-' : '+';
+                header.querySelector('.show-more-icon').textContent = isHidden ? '收起' : '展开';
             });
 
             categoryElement.appendChild(header);
@@ -994,15 +981,13 @@ class GOGCharacterApp {
 
         Object.entries(inventoryByCategory).forEach(([category, inventory]) => {
             const categoryElement = document.createElement('div');
-            categoryElement.className = 'inventory-category';
+            categoryElement.className = 'category-item';
 
             const header = document.createElement('div');
-            header.className = 'inventory-category-header';
+            header.className = 'category-header';
             header.innerHTML = `
-        <div class="item-header">
             <h5>${category}</h5>
-            <span class="toggle-icon">-</span>
-        </div>
+            <span class="show-more-icon">收起</span>
       `;
 
             const listContainer = document.createElement('div');
@@ -1012,8 +997,8 @@ class GOGCharacterApp {
             listContainer.innerHTML = inventory.map(Inventory => `
         <div class="inventory-item">
         <div class="item-header">
-          <div style="padding-left: 5px;margin: 0px;font-size: 14px;">
-          <span class="inventory-name" style="font-weight: bold;">${Inventory.name}</span>
+          <div class="item-name">
+          ${Inventory.name}
           </div>
           <button class="btn-add-inventory" 
                   data-name="${Inventory.name}"
@@ -1029,7 +1014,7 @@ class GOGCharacterApp {
             header.addEventListener('click', () => {
                 const isHidden = listContainer.style.display === 'none';
                 listContainer.style.display = isHidden ? 'block' : 'none';
-                header.querySelector('.toggle-icon').textContent = isHidden ? '-' : '+';
+                header.querySelector('.show-more-icon').textContent = isHidden ? '收起' : '展开';
             });
 
             categoryElement.appendChild(header);
@@ -1062,7 +1047,7 @@ class GOGCharacterApp {
         document.getElementById('blessingFullName').value = blessing.fullName;
         this.renderBlessingSystem(blessing.system, blessing.name);
         this.renderBlessingSkills(skillsWithUnlearnedTag);
-        this.showToast(`权柄**${blessing.name}**已应用`);
+        this.showToast(`权柄<span style="color: lime">${blessing.name}</span>已应用`);
     }
     addSkillToCharacter(skillData) {
         const categories = [];
@@ -1099,7 +1084,7 @@ class GOGCharacterApp {
             catemess.push(`智慧`);
         }
 
-        let toastmessage = `技能**${skillData.name}**已添加到类别` + catemess.join('、') + `中`;
+        let toastmessage = `技能<span style="color: lime">${skillData.name}</span>已添加到类别<span style="color: SkyBlue">` + catemess.join('、') + `</span>中`;
 
         categories.forEach(category => {
             if (!this.currentCharacter.skills[category]) {
@@ -1108,15 +1093,12 @@ class GOGCharacterApp {
 
             this.currentCharacter.skills[category].push({
                 name: skillData.name,
-                proficiency: 0,
-                description: processedDescription,
-                uses: 0
+                description: processedDescription
             });
 
         })
 
         this.renderSkills(this.currentCharacter.skills);
-        // this.updateSkillProficiencyLeft();
         this.showToast(toastmessage);
     }
 
@@ -1140,14 +1122,14 @@ class GOGCharacterApp {
         });
 
         this.renderEquipment(this.currentCharacter.equipment);
-        this.showToast(`装备**${equipment.name}**已添加`);
+        this.showToast(`装备<span style="color: lime">${equipment.name}</span>已添加`);
     }
     addInventoryToCharacter(item) {
         this.currentCharacter.inventory = this.currentCharacter.inventory || '';
-        this.currentCharacter.inventory += `\n${item.name}${item.description ? '：'+item.description : '' }`;
+        this.currentCharacter.inventory += `\n${item.name}${item.description ? '：' + item.description : ''}`;
 
         document.getElementById('inventory').innerText = this.currentCharacter.inventory || '';
-        this.showToast(`物品**${item.name}**已放入背包`);
+        this.showToast(`物品<span style="color: lime">${item.name}</span>已放入背包`);
     }
     applyClass(clnm, clcat) {
         const cl = window.staticData.classes[clcat].find(c => c.name === clnm);
@@ -1165,15 +1147,13 @@ class GOGCharacterApp {
         cl.skills.forEach(skill => {
             this.currentCharacter.skills.PRF.push({
                 name: skill.name,
-                proficiency: 0,
-                description: skill.description,
-                uses: 0
+                description: skill.description
             });
         })
 
         document.getElementById('character-class').value = cl.name;
         this.renderSkills(this.currentCharacter.skills);
-        this.showToast(`职业**${cl.name}**已应用`);
+        this.showToast(`职业<span style="color: lime">${cl.name}</span>已应用`);
     }
 
     // 通用输入绑定方法
@@ -1229,7 +1209,7 @@ class GOGCharacterApp {
         // 动态表格绑定
         this.setupTableBindings();
         this.bindAttributeInputs();
-        
+
         // 背包内容绑定
         const inventoryElement = document.getElementById('inventory');
         if (inventoryElement) {
@@ -1255,7 +1235,6 @@ class GOGCharacterApp {
 
         // 渲染技能列表
         this.renderSkills(character.skills);
-        this.updateSkillProficiencyLeft();
 
         // 渲染装备列表
         this.renderEquipment(character.equipment);
@@ -1392,7 +1371,6 @@ class GOGCharacterApp {
                 this.currentCharacter.attributes[attr] = parseInt(input.value) || 0;
                 this.renderAttributes(this.collectAttributes());
                 //this.updateMaxValues();
-                //this.updateSkillProficiencyLeft();
             });
         });
 
@@ -1427,7 +1405,7 @@ class GOGCharacterApp {
 
     setupTableBindings() {
         // 技能表格
-        this.setupTableBinding('skills-container', 'skills', ['name', 'proficiency', 'uses', 'description']);
+        this.setupTableBinding('skills-container', 'skills', ['name', 'description']);
 
         // 装备表格
         this.setupTableBinding('equipment-container', 'equipment', ['name', 'description']);
@@ -1458,7 +1436,7 @@ class GOGCharacterApp {
                     if (inputs[i].classList.contains('auto-height-content')) {
                         value = inputs[i].innerText;
                     }
-                    this.currentCharacter.skills[category][index][field] = this.convertFieldValue(field, value);
+                    this.currentCharacter.skills[category][index][field] = value;
                 });
 
                 // 安全更新数据
@@ -1476,7 +1454,7 @@ class GOGCharacterApp {
                     if (inputs[i].classList.contains('auto-height-content')) {
                         value = inputs[i].innerText;
                     }
-                    this.currentCharacter[property][index][field] = this.convertFieldValue(field, value);
+                    this.currentCharacter[property][index][field] = value;
                 });
             }
 
@@ -1509,7 +1487,7 @@ class GOGCharacterApp {
         });
 
         document.getElementById('log-sections').addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-log')) {
+            if (e.target.closest('.delete-log')) {
                 const logSection = e.target.closest('.log-section');
                 const logId = parseInt(logSection.dataset.id);
 
@@ -1615,7 +1593,7 @@ class GOGCharacterApp {
             <div class="auto-height-content" contenteditable="true" >${row.skill || ''}</div>
         </td>
         <td class="auto-height-cell"><div class="auto-height-content" contenteditable="true" >${row.corruption || ''}</div></td>
-        <td><button class="btn-danger" data-index="${index}">删除</button></td>
+        <td><button class="btn-danger" data-index="${index}"><i class="fa-regular fa-trash-can"></i></button></td>
       `;
             container.appendChild(tr);
         });
@@ -1659,8 +1637,8 @@ class GOGCharacterApp {
             const tr = document.createElement('tr');
             tr.innerHTML = `
         <td class="auto-height-cell"><div class="auto-height-content blessing-skill-name" contenteditable="true">${skill.name || ''}</div></td>
-        <td class="auto-height-cell"><div class="auto-height-content blessing-skill-desc" contenteditable="true">${skill.description || ''}</div></td>
-        <td><button class="btn-danger" data-index="${index}">删除</button></td>
+        <td class="auto-height-cell"><div class="auto-height-content blessing-skill-desc" contenteditable="true" style="text-align: left;">${skill.description || ''}</div></td>
+        <td><button class="btn-danger" data-index="${index}"><i class="fa-regular fa-trash-can"></i></button></td>
       `;
             container.appendChild(tr);
         });
@@ -1715,7 +1693,7 @@ class GOGCharacterApp {
                     value = input.value;
                 }
                 // 根据字段类型转换值
-                item[field] = this.convertFieldValue(field, value);
+                item[field] = value;
             });
             data.push(item);
         });
@@ -1741,12 +1719,10 @@ class GOGCharacterApp {
             const category = row.dataset.category;
             const inputs = row.querySelectorAll('input, .auto-height-content');
 
-            if (inputs.length >= 4) { // name, proficiency, uses, description
+            if (inputs.length >= 2) { // name, proficiency, uses, description
                 const skill = {
                     name: inputs[0].innerText.trim(),
-                    proficiency: parseInt(inputs[1].value) || 0,
-                    uses: parseInt(inputs[2].value) || 0,
-                    description: inputs[3].innerText.trim()
+                    description: inputs[1].innerText.trim()
                 };
 
                 if (skillsData[category]) {
@@ -1756,18 +1732,6 @@ class GOGCharacterApp {
         });
 
         return skillsData;
-    }
-
-    convertFieldValue(field, value) {
-        // 确定哪些字段应该是数字类型
-        const numericFields = ['proficiency', 'uses'];
-
-        if (numericFields.includes(field)) {
-            const num = parseFloat(value);
-            return isNaN(num) ? 0 : num;
-        }
-
-        return value;
     }
 
     // 渲染状态标签
@@ -1808,7 +1772,7 @@ class GOGCharacterApp {
             const categoryRow = document.createElement('tr');
             categoryRow.className = 'skill-category-row';
             categoryRow.innerHTML = `
-            <td colspan="5" class="skill-category-header" style="margin:6px auto;text-align: center;background: #f2f2f2">
+            <td colspan="5" class="skill-category-header" style="margin:6px auto;text-align: center;background: #f2f2f2;">
                 <strong>${this.getCategoryName(category)} ${this.currentCharacter.attributes[category] || ''}</strong>
             </td>
         `;
@@ -1822,32 +1786,12 @@ class GOGCharacterApp {
                 row.dataset.index = index;
                 row.innerHTML = `
                 <td><div class="auto-height-content" contenteditable="true">${skill.name || ''}</div></td>
-                <td><input type="number" min="0" max="5" value="${skill.proficiency || 0}"></td>
-                <td><input type="number" min="0" value="${skill.uses || 0}"></td>
-                <td><div class="auto-height-content" contenteditable="true">${skill.description || ''}</div></td>
-                <td><button class="btn-danger" data-category="${category}" data-index="${index}">删除</button></td>
+                <td><div class="auto-height-content" contenteditable="true" style="text-align: left;">${skill.description || ''}</div></td>
+                <td><button class="btn-danger" data-category="${category}" data-index="${index}"><i class="fa-regular fa-trash-can"></i></button></td>
             `;
                 skillsContainer.appendChild(row);
             });
         });
-    }
-
-    // 计算熟练总点数
-    updateSkillProficiencyLeft() {
-        // 计算已分配熟练度
-        let usedProficiency = 0;
-        const skillsData = this.collectSkillsData();
-        if (skillsData) {
-            Object.values(skillsData).forEach(categorySkills => {
-                categorySkills.forEach(skill => {
-                    usedProficiency += parseInt(skill.proficiency) || 0;
-                });
-            });
-        }
-
-        // 更新显示
-        const displayElement = document.getElementById('skill-prof-left');
-        displayElement.textContent = usedProficiency;
     }
 
     // 渲染装备列表
@@ -1859,8 +1803,8 @@ class GOGCharacterApp {
             const row = document.createElement('tr');
             row.innerHTML = `
       <td><div class="auto-height-content" contenteditable="true">${item.name || ''}</div></td>
-      <td><div class="auto-height-content" contenteditable="true">${item.description || ''}</div></td>
-      <td><button class="btn-danger" data-index="${index}">删除</button></td>
+      <td><div class="auto-height-content" contenteditable="true" style="text-align: left;">${item.description || ''}</div></td>
+      <td><button class="btn-danger" data-index="${index}"><i class="fa-regular fa-trash-can"></i></button></td>
     `;
             equipmentContainer.appendChild(row);
         });
@@ -1888,7 +1832,7 @@ class GOGCharacterApp {
 
     showToast(message, duration = 2000, bk = 'rgba(0, 0, 0, 0.7)') {
         const toast = document.getElementById('toast');
-        toast.textContent = message;
+        toast.innerHTML = message;
         toast.classList.add('toast-visible');
         toast.style.background = bk;
 
@@ -1948,7 +1892,6 @@ class GOGCharacterApp {
                 if (document.getElementById('dice-config').classList.contains('active')) {
                     document.getElementById('dice-config').classList.remove('active');
                     document.getElementById('dice-panel-list').classList.add('active');
-                    document.getElementById('dice-panel').style.height = '480px';
                 }
             }
         });
@@ -1977,7 +1920,6 @@ class GOGCharacterApp {
         document.getElementById('back-to-list').addEventListener('click', () => {
             document.getElementById('dice-config').classList.remove('active');
             document.getElementById('dice-panel-list').classList.add('active');
-            document.getElementById('dice-panel').style.height = '480px';
         });
 
         // 仅保存
@@ -2244,7 +2186,13 @@ class GOGCharacterApp {
                     selected.addEventListener('click', (e) => {
                         e.stopPropagation();
                         closeAllSelect(selected);
-                        items.style.display = (items.style.display === 'block') ? 'none' : 'block';
+                        if (items.classList.contains('select-items-active')) {
+                            items.classList.remove('select-items-active');
+                            setTimeout(() => { items.style.display = 'none'; }, 299);
+                        } else {
+                            items.style.display = 'block';
+                            setTimeout(() => { items.classList.add('select-items-active'); }, 0);
+                        }
                         selected.classList.toggle('select-arrow-active');
                     });
 
@@ -2352,6 +2300,13 @@ class GOGCharacterApp {
             this.renderPortrait();
         });
 
+        const attributes = document.querySelectorAll('.current-value');
+        attributes.forEach(attr => {
+            attr.addEventListener('change', () => {
+                this.renderSkills(this.currentCharacter.skills);
+            })
+        })
+
         // 添加状态标签
         document.getElementById('add-tag').addEventListener('click', () => {
             const newTagInput = document.getElementById('new-tag');
@@ -2394,7 +2349,7 @@ class GOGCharacterApp {
 
         // 删除赐福等级信息表格行处理
         document.getElementById('blessing-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
+            if (e.target.closest('.btn-danger')) {
                 const index = parseInt(e.target.dataset.index);
                 this.currentCharacter.blessingSystem.splice(index, 1);
                 this.renderBlessingSystem(this.currentCharacter.blessingSystem, this.currentCharacter.blessing);
@@ -2412,13 +2367,12 @@ class GOGCharacterApp {
 
         // 删除赐福特技表格行处理
         document.getElementById('blessing-skills-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
+            if (e.target.closest('.btn-danger')) {
                 const index = parseInt(e.target.dataset.index);
                 this.currentCharacter.blessingSkills.splice(index, 1);
                 this.renderBlessingSkills(this.currentCharacter.blessingSkills);
             }
         });
-
 
         // 添加技能
         document.getElementById('add-skill').addEventListener('click', () => {
@@ -2436,12 +2390,9 @@ class GOGCharacterApp {
 
             this.currentCharacter.skills[category].push({
                 name: '',
-                proficiency: 0,
-                uses: 0,
                 description: ''
             });
             this.renderSkills(this.currentCharacter.skills);
-            this.updateSkillProficiencyLeft();
         });
 
         // 添加装备
@@ -2465,19 +2416,19 @@ class GOGCharacterApp {
 
         // 删除技能/装备的处理
         document.getElementById('equipment-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
+            if (e.target.closest('.btn-danger')) {
                 const index = parseInt(e.target.dataset.index);
                 this.currentCharacter.equipment.splice(index, 1);
                 this.renderEquipment(this.currentCharacter.equipment);
             }
         });
         document.getElementById('skills-container').addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-danger')) {
-                const category = e.target.dataset.category;
-                const index = parseInt(e.target.dataset.index);
+            const deleteButton = e.target.closest('.btn-danger');
+            if (deleteButton) {
+                const category = deleteButton.dataset.category;
+                const index = parseInt(deleteButton.dataset.index);
                 this.currentCharacter.skills[category].splice(index, 1);
                 this.renderSkills(this.currentCharacter.skills);
-                this.updateSkillProficiencyLeft();
             }
         });
 
@@ -2485,7 +2436,6 @@ class GOGCharacterApp {
         document.getElementById('skills-container').addEventListener('input', (e) => {
             if (e.target.classList.contains('auto-height-content') ||
                 e.target.type === 'number') {
-                this.updateSkillProficiencyLeft();
             }
         });
 
@@ -2499,7 +2449,8 @@ class GOGCharacterApp {
 
             selectItems.forEach((item) => {
                 if (elmnt !== item && elmnt !== item.previousElementSibling) {
-                    item.style.display = 'none';
+                    item.classList.remove('select-items-active');
+                    setTimeout(() => { item.style.display = 'none'; }, 299);
                 }
             });
 
@@ -2520,7 +2471,13 @@ class GOGCharacterApp {
             selected.addEventListener('click', (e) => {
                 e.stopPropagation();
                 closeAllSelect(selected);
-                items.style.display = (items.style.display === 'block') ? 'none' : 'block';
+                if (items.classList.contains('select-items-active')) {
+                    items.classList.remove('select-items-active');
+                    setTimeout(() => { items.style.display = 'none'; }, 299);
+                } else {
+                    items.style.display = 'block';
+                    setTimeout(() => { items.classList.add('select-items-active'); }, 0);
+                }
                 selected.classList.toggle('select-arrow-active');
             });
 

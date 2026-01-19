@@ -11,21 +11,22 @@ body {
     font-family: 'Segoe UI', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #fafafa;
+    background-color: #f8f8f8;
     margin: 0;
     padding: 0;
+    align-items: center;
     display: flex;
+    height: 100vh;
     flex-direction: column;
 }
 
 .container {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding-bottom: 60px;
-    padding-top: 20px;
-    padding-left: 5px;
-    padding-right: 5px;
-    flex-shrink: 0;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+    flex: 1;
+    overflow-y: auto; /* 内容过多时出现垂直滚动条 */
+    box-sizing: border-box;
     transition: all 0.3s;
 }
 
@@ -79,29 +80,45 @@ button:hover {
 }
 
 .character-sheet {
-    display: grid;
+    width: 2000px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
     position: relative;
-    z-index: 2;
-    grid-template-columns: 1fr 1fr;
     gap: 0px;
-    background-color: #ffffff;
-    padding: 10px 15px;
+    background-color: #fbfbfb;
+    border: 1px solid #dddddd;
     border-radius: 20px;
-    box-shadow: 0px 3px 10px #eeeeee;
-    border: 1px solid #eeeeee;
-    margin-bottom: 25px;
-    margin-top: 30px;
+    margin: 10px auto 20px auto;
 }
 
 .section {
-    border-radius: 0px;
-    padding: 20px;
-    border-top: 2px solid #eeeeee;
-    margin-bottom: 0px;
+    border-radius: 20px;
+    padding: 20px 20px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    margin: 10px 5px;
+    transition: all 0.3s ease;
 }
 
-.basic-attribution-container .section {
-    border-top: none;
+.column-container {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0;
+}
+
+.column-container:nth-child(1) {
+    flex: 0 0 20%;
+}
+
+.column-container:nth-child(2) {
+    flex: 0 0 50%;
+}
+
+.column-container:nth-child(3) {
+    flex: 0 0 30%;
 }
 
 label {
@@ -146,10 +163,6 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
-input[type="number"] {
-    -moz-appearance: textfield;
-}
-
 input[type="text"]:focus {
     outline: none;
 }
@@ -191,13 +204,13 @@ textarea {
 }
 
 .table-auto::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #888888;
     border-radius: 4px;
 }
 
 .attributes-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
     margin-bottom: 15px;
 }
@@ -240,7 +253,7 @@ textarea {
 .skills-list td,
 .items-list td {
     padding: 0px;
-    border: 1px solid #dddddd;
+    border-bottom: 1px solid #ecf2f1;
     text-align: center;
     overflow-x: hidden;
 }
@@ -250,7 +263,7 @@ textarea {
 .skills-list th,
 .items-list th {
     padding: 6px;
-    border: 1px solid #dddddd;
+    border: 0px solid #dddddd;
     text-align: center;
     overflow-x: hidden;
     background-color: #f2f2f2;
@@ -277,22 +290,26 @@ textarea {
 
 .btn-danger {
     padding: 7px 15px;
-    background-color: white;
+    background-color: transparent;
     color: #dddddd;
-    border: 1px solid #eeeeee;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     text-align: center;
     min-height: min-content;
     min-width: max-content;
-    transition: all 0.3s;
+    transition: all 0.1s;
 }
 
 .btn-danger:hover {
-    background-color: #e74c3c;
-    color: #ffffff;
-    border-color: #e74c3c;
+    background-color: transparent;
+    font-weight: bold;
+    color: #e74c3c;
+    font-size: 18px;
+    min-height: min-content;
+    min-width: max-content;
+    text-shadow: 0px 3px 10px #ffcece;
+    transition: all 0.1s;
 }
 
 td .btn-danger {
@@ -317,13 +334,24 @@ td input[type="number"] {
 
 .tag {
     display: inline-block;
-    background-color: #e9ecef;
+    background-color: #ffffff00;
+    color: #666666;
+    border: 1px solid #dddddd;
     padding: 3px 3px 3px 12px;
     border-radius: 15px;
     margin-right: 5px;
     margin-bottom: 5px;
     font-size: 14px;
     text-align: center;
+    transition: all 0.2s;
+}
+
+.tag:hover {
+    background-color: #f2f2f280;
+    border: 1px solid #aaaaaa;
+    color: #333333;
+    cursor: default;
+    transition: all 0.2s;
 }
 
 .tag-input {
@@ -347,34 +375,25 @@ td input[type="number"] {
     margin-bottom: 1px;
     border: none;
     background-color: transparent;
-    border-radius: 50%;
-    color: #999999;
+    color: #aaaaaa;
     text-align: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.1s;
 }
 
 .tag-delete:hover {
-    background-color: #e74c3c;
-    color: #ffffff;
-    transition: all 0.2s;
-}
-
-.basic-attribution-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 15px;
-    grid-column: span 2;
-    /* 确保这个容器也跨两列 */
+    background-color: transparent;
+    color: #e74c3c;
+    text-shadow: 0px 3px 10px #ffcece;
+    transition: all 0.1s;
 }
 
 /* 基本信息网格布局 */
 .character-info-grid {
     display: grid;
-    grid-template-columns: 164px 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
-    margin-bottom: 20px;
 }
 
 /* 肖像区域样式 */
@@ -435,6 +454,11 @@ td input[type="number"] {
 /* 描述区域（单独一行） */
 .form-group.full-width {
     grid-column: 1 / -1;
+    display: block;
+}
+
+.form-group.full-width .auto-height-content {
+    padding: 0;
 }
 
 /* 赐福section的布局 */
@@ -448,17 +472,22 @@ td input[type="number"] {
     margin-bottom: 5px;
 }
 
-.btn.blessing-list-btn {
-    margin: 0 5px 0 auto;
-    width: 30px;
-    border-radius: 10px;
-    padding: 3px;
-    color: #dddddd;
+.btn.th-add-btn {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #333333;
+    font-weight: bold;
+    transition: all 0.1s;
 }
 
-.btn.blessing-list-btn:hover {
-    background: #f2f2f2;
-    color: #666666;
+.btn.th-add-btn:hover {
+    background: none;
+    color: #12de48;
+    font-size: 16px;
+    text-shadow: 0px 3px 10px #3bff6f;
+    transition: all 0.1s;
 }
 
 input.blessingFullName {
@@ -470,7 +499,7 @@ input.blessingFullName {
     padding: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px) {    
     .character-sheet {
         grid-template-columns: 1fr;
     }
@@ -480,18 +509,12 @@ input.blessingFullName {
     }
 }
 
-@media (max-width: 1100px) {
-    .basic-attribution-container {
-        grid-template-columns: 1fr;
-    }
-}
-
 .auto-height-content {
     height: min-content;
     font-size: 14px;
     /* 关键属性 */
     overflow-y: auto;
-    padding: 6px;
+    padding: 5px;
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.4;
@@ -558,6 +581,7 @@ input.current-value {
     border-radius: 6px;
     margin-left: 0px;
     overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 .health-bar,
@@ -593,16 +617,11 @@ input.current-value {
 
 /* 底部导航栏 */
 .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    left: 0;
     height: 40px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    width: 100vw;
+    background: #ffffff;
     border-top: 1px solid #bbbbbb;
     padding: 8px 0;
-    z-index: 3;
     /*box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);*/
 }
 
@@ -663,7 +682,7 @@ input.current-value {
     width: 600px;
     max-width: 95%;
     height: 480px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
     border-radius: 12px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -741,31 +760,6 @@ input.current-value {
     text-align: center;
 }
 
-/* 骰子面板 */
-#show-dice-icon:hover {
-    transform: rotate(360deg);
-    transition: all 1s ease;
-}
-#show-dice-icon {
-    transform: rotate(0deg);
-    transition: all 1s ease;
-}
-.dice-panel {
-    position: fixed;
-    bottom: 65px;
-    left: 120%;
-    width: 600px;
-    max-width: 95%;
-    height: 480px;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    border-radius: 12px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    z-index: 5;
-    display: block;
-    transition: all 0.3s;
-}
-
 /* 图鉴面板 */
 .roster-panel {
     position: fixed;
@@ -774,7 +768,7 @@ input.current-value {
     width: 600px;
     max-width: 95%;
     height: 480px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
     border-radius: 12px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -811,6 +805,72 @@ input.current-value {
     color: #333333;
 }
 
+/* 骰子面板 */
+#show-dice-icon:hover {
+    transform: rotate(360deg);
+    transition: all 1s ease;
+}
+#show-dice-icon {
+    transform: rotate(0deg);
+    transition: all 1s ease;
+}
+.dice-panel {
+    position: fixed;
+    bottom: 65px;
+    left: 120%;
+    width: 600px;
+    max-width: 95%;
+    max-height: 480px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-icon {
+    cursor: pointer;
+    margin: 10px;
+    width: max-content;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px;
+    color: #666666;
+    transition: all 0.3s ease;
+}
+
+.toggle-icon.btn-load:hover {
+    background: none;
+    color: DeepSkyBlue;
+}
+
+.toggle-icon.btn-delete:hover {
+    background: none;
+    color: OrangeRed;
+}
+
+.btn-roll:hover {
+    color: Gold;
+    background: none;
+    transform: rotate(30deg);
+    transition: all 0.3s;
+}
+
+.btn-roll {
+    transform: rotate(0deg);
+    transition: all 0.3s;
+}
+
 .dice-panel-header-btn {
     font-size: 14px;
     color: #666666;
@@ -824,15 +884,7 @@ input.current-value {
     background: #eeeeee80;
 }
 
-.btn-roll:hover {
-    transform: rotate(30deg);
-    transition: all 0.3s;
-}
 
-.btn-roll {
-    transform: rotate(0deg);
-    transition: all 0.3s;
-}
 
 .dice-config,
 .dice-panel-list {
@@ -934,22 +986,28 @@ input[type="text"].dice-expression:hover {
     font-weight: normal;
     padding: 7px 0px;
     font-size: 14px;
+    text-align: center;
     justify-content: center;
     border-width: 1px;
     background: none;
-    border-radius: 10px;
+    border-radius: 18px;
 }
 
 .portrait-controls .btn-danger {
     margin: 6px;
-    color: #ff4343;
-    border-color: #ff4343;
+    color: #ff8888;
+    border-color: #ff8888;
     font-weight: normal;
     width: 80px;
     padding: 8px 0px;
     border-width: 1px;
     background: none;
-    border-radius: 10px;
+    border-radius: 18px;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    justify-content: center;
 }
 
 .portrait-controls label.btn:hover {
@@ -958,7 +1016,8 @@ input[type="text"].dice-expression:hover {
 }
 
 .portrait-controls .btn-danger:hover {
-    background-color: #e74c3c40;
+    background-color: #ff777720;
+    text-shadow: none;
 }
 
 .modal-content {
@@ -1072,12 +1131,12 @@ input[type="text"].dice-expression:hover {
     gap: 5px;
     z-index: 1105;
     max-width: 300px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #eeeeee;
     transition: all 0.3s ease;
 }
 
 .roster-item:hover {
-    background-color: #eeeeee50;
+    background-color: #f2f2f240;
 }
 
 .roster-avatar {
@@ -1107,7 +1166,7 @@ input[type="text"].dice-expression:hover {
 .btn-export,
 .btn-delete {
     flex: 1;
-    background: #eeeeee;
+    background: #f2f2f280;
     color: #666666;
     border: none;
     padding: 6px 12px;
@@ -1117,6 +1176,11 @@ input[type="text"].dice-expression:hover {
     font-size: 12px;
     min-width: min-content;
     width: fit-content;
+}
+
+.btn-export {
+    border-right: 1px solid #eeeeee;
+    border-left: 1px solid #eeeeee;
 }
 
 .btn-load:hover,
@@ -1130,7 +1194,6 @@ input[type="text"].dice-expression:hover {
     display: flex;
     flex: 1 0 100%;
     display: flex;
-    gap: 1px;
 }
 
 /* roster-tabs */
@@ -1147,10 +1210,11 @@ input[type="text"].dice-expression:hover {
     border-radius: 17px;
     cursor: pointer;
     text-align: center;
+    transition: all 0.2s;
 }
 
 .tab-btn.active {
-    box-shadow: 0 3px 0 0px #e1e1e1;
+    box-shadow: 0 3px 0 #e1e1e1;
     background-color: #eeeeee;
     font-weight: bold;
     color: #333333;
@@ -1179,6 +1243,14 @@ input[type="text"].dice-expression:hover {
     margin: 10px;
     border: 1px solid #eeeeee;
     border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.skill-item:first-child,
+.equipment-item:first-child,
+.inventory-item:first-child,
+.class-item:first-child {
+    margin-top: 0px;
 }
 
 .dice-item {
@@ -1201,17 +1273,69 @@ input[type="text"].dice-expression:hover {
     margin: 0;
 }
 
-.item-header,
-.blessing-header {
+.item-header {
     display: flex;
     justify-content: space-between;
 }
 
-.item-header h5,
-.blessing-header h5 {
-    padding-left: 5px;
-    padding-top: 8px;
-    margin: 0px;
+.blessing-header {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.category-header,
+.blessing-item-name {
+    margin: 0 10px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.category-header>h5 {
+    margin: auto 0;
+    padding: 5px 5px;
+    flex-grow: 1;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.blessing-header>.blessing-item-name {
+    margin: 0 10px 0 0;
+    padding: 5px 10px;
+    flex-grow: 1;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.category-item {
+    margin: 0 5px 5px 0;
+    padding: 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid #dddddd00;
+}
+
+.category-item:has(.category-header:hover) {
+    cursor: pointer;
+    background: #f2f2f280;
+    border: 1px solid #dddddd;
+    transition: all 0.3s ease;
+}
+
+.blessing-item:has(.blessing-item-name:hover) {
+    cursor: pointer;
+    background: #f2f2f280;
+    border: 1px solid #dddddd;
+    transition: all 0.3s ease;
+}
+
+.item-header h5 {
+    margin: auto 5px;
+    padding: 5px 0px;
     font-size: 14px;
 }
 
@@ -1221,28 +1345,35 @@ input[type="text"].dice-expression:hover {
     margin: 10px 0px 5px 0px;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.item-name {
+    padding-left: 5px;
+    margin: auto 0px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.toggle-icon {
+.item-class {
+    font-weight: normal;
+}
+
+.show-more-icon {
     cursor: pointer;
-    margin: 10px;
+    margin: auto 15px;
     width: max-content;
-    min-width: 20px;
-    height: 20px;
-    font-size: 11px;
+    height: min-content;
+    font-size: 14px;
     font-weight: bold;
     text-align: center;
     border-radius: 10px;
-    color: #666666;
-    background: #eeeeee;
+    color: #66666600;
+    transition: all 0.3s ease;
+    background: none;
 }
 
-.toggle-icon:hover {
-    background: #dddddd;
+.category-header:hover .show-more-icon,
+.blessing-item-name:hover .show-more-icon {
+    color: #999999;
+    transition: all 0.3s ease;
 }
 
 .btn-apply-blessing,
@@ -1250,7 +1381,7 @@ input[type="text"].dice-expression:hover {
 .btn-add-equipment,
 .btn-add-inventory,
 .btn-apply-class {
-    margin: 0;
+    margin: auto 0;
     padding: 6px 12px;
     font-size: 12px;
     text-align: center;
@@ -1341,45 +1472,68 @@ input[type="text"].dice-expression:hover {
 
 /* 日志系统 */
 .log-section {
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    margin: 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    border-radius: 0px;
+    margin: 5px;
 }
 
 .log-header {
     border-radius: 8px 8px 0px 0px;
-    background: #f2f2f2;
     display: flex;
 }
 
 .log-title {
     flex-grow: 1;
     font-weight: bold;
-    text-align: center;
-    padding: 8px 15px;
+    text-align: left;
+    justify-content: center;
+    font-size: 16px;
+    margin-top: 5px;
+    padding: 0px 0px 5px 5px;
+    transition: all 0.2s;
+}
+
+.log-title:hover {
+    text-shadow: 0px 2px 5px #dddddd;
+    padding-left: 10px;
+    transition: all 0.2s;
 }
 
 .delete-log {
     min-width: max-content;
-    padding: 8px 15px;
-    color: #666666;
-    border-left: 1px solid #eeeeee;
-    border-radius: 0px 7px 0px 0px;
-    background: #f2f2f2;
+    padding: 7px 14px 3px 14px;
+    color: #999999;
+    border-radius: 0px 7px 0px 7px;
     cursor: pointer;
     text-align: center;
     font-size: 14px;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: all 0.1s;
 }
 
 .delete-log:hover {
-    background-color: #e74c3c;
-    color: #ffffff;
+    color: #e74c3c;
+    text-shadow: 0px 3px 10px #ffcece;
+    font-size: 18px;
+    padding: 5px 12px 1px 12px;
+    background-color: transparent;
+    transition: all 0.1s;
 }
 
 .log-content {
-    padding: 8px 15px;
+    padding: 0px 5px 0px 10px;
+    margin: 2px 15px 10px 10px;
+    color: #666666;
+    border-left: 2px solid #aaaaaa;
+    transition: all 0.1s;
+}
+
+.log-content:hover {
+    color: #333333;
+    padding-left: 15px;
+    border-left: 3px solid #aaaaaa;
+    transition: all 0.1s;
 }
 
 /* 自定义select样式 */
@@ -1400,7 +1554,7 @@ input[type="text"].dice-expression:hover {
 .select-selected {
     width: 100%;
     background: transparent;
-    padding: 8px 0px 8px 8px;
+    padding: 8px 0px 8px 5px;
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 14px;
@@ -1436,19 +1590,31 @@ input[type="text"].dice-expression:hover {
 /* 选项列表 */
 .select-items {
     position: absolute;
-    background-color: #f6f6f6;
+    background: #ffffff;
     top: 100%;
     left: 0;
     right: 0;
     z-index: 99;
     margin-top: 5px;
-    max-height: 310px;
+    margin-bottom: 5px;
+    border: 1px solid #dddddd;
     overflow-y: auto;
     display: none;
-    border: solid #333333;
-    border-width: 0px 0px 4px 0px;
-    border-radius: 6px;
-    padding: 2px;
+    max-height: 0px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px #eeeeee;
+    padding: 2px 6px;
+    transition: all 0.3s ease;
+}
+
+.select-items.select-items-active {
+    max-height: 250px;
+    transition: all 0.3s ease;
+}
+
+.select-items.select-items-active:hover {
+    box-shadow: 0px 5px 40px #eeeeee;
+    transition: all 0.3s ease;
 }
 
 /* 选项项样式 */
@@ -1458,24 +1624,19 @@ input[type="text"].dice-expression:hover {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.2s;
-    border-radius: 4px;
+    border-radius: 10px;
     color: #666666;
 }
 
 .select-item:hover {
-    background-color: #ffffff;
+    background-color: #f8f8f8;
 }
 
 /* 相同选项样式 */
 .select-same-as-selected {
-    background-color: #333333;
-    color: #dddddd;
+    color: #333333;
     font-weight: bold;
-}
-
-.select-same-as-selected:hover {
-    background-color: #666666;
-    color: #ffffff;
+    border: 1px solid #eeeeee;
 }
 
 /* 焦点状态 */
@@ -1496,25 +1657,25 @@ input[type="text"].dice-expression:hover {
     outline: none;
 }
 
-.select-style-2 .select-items::-webkit-scrollbar {
+.select-items::-webkit-scrollbar {
     background-color: transparent;
-    width: 12px;
+    width: 8px;
 }
 
-.select-style-2 .select-items::-webkit-scrollbar-thumb {
-    background-color: #aaaaaa;
-    border-radius: 6px;
-    border: 4px solid #f6f6f6;
+.select-items::-webkit-scrollbar-thumb {
+    background-color: #eeeeee;
+    border-radius: 4px;
+    border: 2px solid #ffffff;
 }
 
-.select-style-2 .select-items::-webkit-scrollbar-thumb:hover {
-    background-color: #666666;
+.select-items::-webkit-scrollbar-thumb:hover {
+    background-color: #dddddd;
     cursor: pointer;
 }
 
-.select-style-2 .select-items::-webkit-scrollbar-button {
-    background-color: #f6f6f6;
-    height: 3px;
+.select-items::-webkit-scrollbar-button {
+    background: transparent;
+    height: 10px;
 }
 
 /* 提示 */
@@ -1540,8 +1701,15 @@ input[type="text"].dice-expression:hover {
 /* 响应式调整 */
 @media (max-width: 480px) {
 
-    .character-info-grid {
-        grid-template-columns: 1fr;
+    .character-sheet {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .column-container:nth-child(1),
+    .column-container:nth-child(2),
+    .column-container:nth-child(3) {
+        flex: 1 0 auto;
     }
 
     .tab-btn {
@@ -1560,7 +1728,7 @@ input[type="text"].dice-expression:hover {
     }
 
     .attributes-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 
     .roster-list {

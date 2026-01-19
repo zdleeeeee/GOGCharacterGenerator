@@ -237,33 +237,16 @@ class DataHandler {
           spacing: { after: 200 }  // 调整这个值控制间距大小
         }),
 
-        // 技能
+        // 特技
         new Paragraph({
           heading: HeadingLevel.HEADING_2,
           spacing: { after: 200 },
           children: [
             new TextRun({
-              text: "技能系统",
+              text: "特技",
               bold: true,
               size: 26,
               color: "333333"
-            }),
-          ],
-        }),
-        new Paragraph({
-          spacing: { after: 200 },
-          children: [
-            new TextRun({
-              text: `技能熟练度总点数：`,
-              bold: true,
-              size: 20,
-              color: "666666"
-            }),
-            new TextRun({
-              text: `${document.getElementById('skill-prof-left').textContent.toString()}`,
-              bold: true,
-              size: 20,
-              color: '28a745'
             }),
           ],
         }),
@@ -802,9 +785,7 @@ class DataHandler {
         return new TableRow({
           children: [
             new TableCell({ children: [new Paragraph({ text: skill.name })], width: { size: 20, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: skill.proficiency.toString() })], width: { size: 10, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: skill.uses.toString() })], width: { size: 10, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 60, type: WidthType.PERCENTAGE } }),
+            new TableCell({ children: [new Paragraph({ text: skill.description })], width: { size: 80, type: WidthType.PERCENTAGE } }),
           ],
         });
       });
@@ -812,13 +793,11 @@ class DataHandler {
       tables.push(
         new Table({
           layout: TableLayoutType.AUTOFIT,
-          columnWidths: [1776, 888, 888, 5328],
+          columnWidths: [1776, 7104],
           rows: [
             new TableRow({
               children: [
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "技能名", bold: true })] })], shading: { fill: "f2f2f2" } }),
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "熟练度", bold: true })] })], shading: { fill: "f2f2f2" } }),
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "经验", bold: true })] })], shading: { fill: "f2f2f2" } }),
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "描述", bold: true })] })], shading: { fill: "f2f2f2" } }),
               ],
             }),
