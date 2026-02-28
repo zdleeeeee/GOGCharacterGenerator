@@ -62,8 +62,6 @@ class Character {
       description: ''
     }));  // 权柄特技数据结构
 
-    this.age = data.age || 1;
-    this.alignment = data.alignment || '守序善良';
     this.nationality = data.nationality || '';
     this.class = data.class || '';  // 职业
     this.description = data.description || '';

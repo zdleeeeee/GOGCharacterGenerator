@@ -261,7 +261,7 @@ class DataHandler {
           spacing: { after: 200 },
           children: [
             new TextRun({
-              text: "装备系统",
+              text: "装备",
               bold: true,
               size: 26,
               color: "333333"
@@ -307,7 +307,7 @@ class DataHandler {
                 new TableCell({
                   children: [
                     new Paragraph({
-                      children: character.inventory.split('\n').map(line =>
+                      children: character.inventory.trim().split('\n').map(line =>
                         new TextRun({
                           text: line,
                           break: 1 // 在每个 TextRun 后添加换行
@@ -329,13 +329,13 @@ class DataHandler {
           spacing: { after: 200 }  // 调整这个值控制间距大小
         }),
 
-        // 日志
+        // 断章
         new Paragraph({
           heading: HeadingLevel.HEADING_2,
           spacing: { after: 200 },
           children: [
             new TextRun({
-              text: "日志系统",
+              text: "断章",
               bold: true,
               size: 24,
               color: "333333"
@@ -434,20 +434,22 @@ class DataHandler {
                   c => c.charCodeAt(0)
                 ),
                 transformation: {
-                  width: 120,
-                  height: 150,
+                  width: 90,
+                  height: 112.5,
                 },
               }),
             ],
+            margins: { top: 0, bottom: 0, left: 0, right: 0 }
           })
         ],
-        rowSpan: 5,
+        rowSpan: 4,
         verticalAlign: "center",
-        width: { size: 20, type: WidthType.PERCENTAGE }
+        width: { size: 15, type: WidthType.PERCENTAGE },
+        margins: { top: 0, bottom: 0, left: 0, right: 0 }
       }) :
       new TableCell({
         children: [new Paragraph({ text: "无头像" })],
-        rowSpan: 5,
+        rowSpan: 4,
         verticalAlign: "center",
         width: { size: 20, type: WidthType.PERCENTAGE },
         shading: { fill: "f2f2f2" }
@@ -455,7 +457,7 @@ class DataHandler {
 
     return new Table({
       layout: TableLayoutType.AUTOFIT,
-      columnWidths: [1776, 3552, 3552],
+      columnWidths: [1332, 3774, 3774],
       width: { size: 100, type: WidthType.PERCENTAGE },
       borders: {
         top: { style: BorderStyle.SINGLE, size: 4, color: "dddddd" },
@@ -477,7 +479,7 @@ class DataHandler {
                   new TextRun({ text: character.name || "未知", color: "333333" })
                 ]
               })],
-              width: { size: 80, type: WidthType.PERCENTAGE },
+              width: { size: 82.5, type: WidthType.PERCENTAGE },
               verticalAlign: VerticalAlign.CENTER,
               columnSpan: 2,
               margins: { top: 40, bottom: 40, left: 100, right: 100 }
@@ -496,14 +498,14 @@ class DataHandler {
                   new TextRun({ text: character.player || "未知", color: "333333" })
                 ]
               })],
-              width: { size: 80, type: WidthType.PERCENTAGE },
+              width: { size: 82.5, type: WidthType.PERCENTAGE },
               columnSpan: 2,
               margins: { top: 40, bottom: 40, left: 100, right: 100 }
             })
           ],
         }),
 
-        // 第三行：性别和年龄
+        // 第三行：性别和国籍
         new TableRow({
           children: [
             // 第一格被肖像占用，跳过
@@ -514,34 +516,7 @@ class DataHandler {
                   new TextRun({ text: character.gender || "未知", color: "333333" })
                 ]
               })],
-              width: { size: 40, type: WidthType.PERCENTAGE },
-              margins: { top: 40, bottom: 40, left: 100, right: 100 }
-            }),
-            new TableCell({
-              children: [new Paragraph({
-                children: [
-                  new TextRun({ text: "年龄: ", bold: true, color: "666666" }),
-                  new TextRun({ text: character.age?.toString() || "未知", color: "333333" })
-                ]
-              })],
-              width: { size: 40, type: WidthType.PERCENTAGE },
-              margins: { top: 40, bottom: 40, left: 100, right: 100 }
-            })
-          ],
-        }),
-
-        // 第四行：阵营和国籍
-        new TableRow({
-          children: [
-            // 第一格被肖像占用，跳过
-            new TableCell({
-              children: [new Paragraph({
-                children: [
-                  new TextRun({ text: "阵营: ", bold: true, color: "666666" }),
-                  new TextRun({ text: character.alignment || "未知", color: "333333" })
-                ]
-              })],
-              width: { size: 40, type: WidthType.PERCENTAGE },
+              width: { size: 41.25, type: WidthType.PERCENTAGE },
               margins: { top: 40, bottom: 40, left: 100, right: 100 }
             }),
             new TableCell({
@@ -551,13 +526,13 @@ class DataHandler {
                   new TextRun({ text: character.nationality || "未知", color: "333333" })
                 ]
               })],
-              width: { size: 40, type: WidthType.PERCENTAGE },
+              width: { size: 41.25, type: WidthType.PERCENTAGE },
               margins: { top: 40, bottom: 40, left: 100, right: 100 }
             })
           ],
         }),
 
-        // 第五行：职业和赐福
+        // 第四行：职业和赐福
         new TableRow({
           children: [
             // 第一格被肖像占用，跳过
@@ -568,7 +543,7 @@ class DataHandler {
                   new TextRun({ text: character.class || "未知", color: "333333" })
                 ]
               })],
-              width: { size: 40, type: WidthType.PERCENTAGE },
+              width: { size: 41.25, type: WidthType.PERCENTAGE },
               margins: { top: 40, bottom: 40, left: 100, right: 100 }
             }),
             new TableCell({
@@ -578,13 +553,13 @@ class DataHandler {
                   new TextRun({ text: character.blessing || "未知", color: "333333" })
                 ]
               })],
-              width: { size: 40, type: WidthType.PERCENTAGE },
+              width: { size: 41.25, type: WidthType.PERCENTAGE },
               margins: { top: 40, bottom: 40, left: 100, right: 100 }
             })
           ],
         }),
 
-        // 第六行：描述（横跨整行）
+        // 第五行：描述（横跨整行）
         new TableRow({
           children: [
             new TableCell({

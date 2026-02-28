@@ -65,42 +65,6 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="character-age">年龄</label>
-                                <input type="number" id="character-age" min="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="character-alignment">阵营</label>
-                                <div class="select-container">
-                                    <div class="custom-select" tabindex="0">
-                                        <select id="character-alignment">
-                                            <option value="守序善良">守序善良</option>
-                                            <option value="中立善良">中立善良</option>
-                                            <option value="混乱善良">混乱善良</option>
-                                            <option value="守序中立">守序中立</option>
-                                            <option value="绝对中立">绝对中立</option>
-                                            <option value="混乱中立">混乱中立</option>
-                                            <option value="守序邪恶">守序邪恶</option>
-                                            <option value="中立邪恶">中立邪恶</option>
-                                            <option value="混乱邪恶">混乱邪恶</option>
-                                        </select>
-                                        <div class="select-selected">守序善良</div>
-                                        <div class="select-items">
-                                            <div class="select-item" data-value="守序善良">守序善良</div>
-                                            <div class="select-item" data-value="中立善良">中立善良</div>
-                                            <div class="select-item" data-value="混乱善良">混乱善良</div>
-                                            <div class="select-item" data-value="守序中立">守序中立</div>
-                                            <div class="select-item" data-value="绝对中立">绝对中立</div>
-                                            <div class="select-item" data-value="混乱中立">混乱中立</div>
-                                            <div class="select-item" data-value="守序邪恶">守序邪恶</div>
-                                            <div class="select-item" data-value="中立邪恶">中立邪恶</div>
-                                            <div class="select-item" data-value="混乱邪恶">混乱邪恶</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
                                 <label for="character-nationality">国籍</label>
                                 <input type="text" id="character-nationality">
                             </div>
@@ -187,7 +151,7 @@
                         <!-- 标签将通过JavaScript动态生成 -->
                     </div>
                     <div class="tag-input">
-                        <input type="text" id="new-tag" placeholder="示例：疯狂(1)：魅力-1，法力-1"
+                        <input type="text" id="new-tag" placeholder="tap [Enter] to add status"
                             style="padding: 7px 15px; border-radius: 0; border: none; border-right: 1px solid #eeeeee;">
                         <button id="add-tag" class="btn"
                             style="border-radius: 0px 7px 7px 0px;border: none; height: 100%;">添加</button>
@@ -346,12 +310,12 @@
                     </div>
                 </div>
                 <div class="section">
-                    <h2>叙事标签</h2>
+                    <h2>断章</h2>
                     <div id="log-sections">
                         <!-- 标签将通过JavaScript动态生成 -->
                     </div>
                     <div class="form-group" style="margin-top: 15px;">
-                        <button id="add-log" class="btn">添加日志</button>
+                        <button id="add-log" class="btn">添加断章</button>
                     </div>
                 </div>
             </div>
@@ -362,29 +326,27 @@
         <div class="nav-container">
             <!-- 新建按钮 -->
             <button id="new-character" class="nav-btn" title="新建角色">
-                <span class="nav-text">新建</span>
+                <span class="nav-text"><i class="fa-solid fa-user-plus"></i></span>
             </button>
 
             <!-- 保存按钮 -->
             <button id="save-character" class="nav-btn" title="保存角色">
-                <span class="nav-text">保存</span>
+                <span class="nav-text"><i class="fa-solid fa-floppy-disk"></i></span>
             </button>
 
             <button id="show-dice" class="nav-btn" title="显示骰子面板">
-                <span class="nav-text" id="show-dice-icon"
-                    style="background-image: linear-gradient(0deg, #333333, #333333); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><i
-                        class="fa-solid fa-dice-d6"></i></span>
+                <span class="nav-text"><i class="fa-solid fa-dice-d6"></i></span>
             </button>
 
             <!-- 图鉴按钮 -->
             <button id="show-roster" class="nav-btn" title="显示角色列表">
-                <span class="nav-text">图鉴</span>
+                <span class="nav-text"><i class="fa-solid fa-user"></i></span>
             </button>
 
             <!-- 数据管理按钮 (带下拉面板) -->
             <div class="nav-dropdown">
                 <button id="show-data" class="nav-btn" title="数据管理">
-                    <span class="nav-text">数据</span>
+                    <span class="nav-text"><i class="fa-solid fa-gear"></i></span>
                 </button>
             </div>
         </div>
@@ -429,7 +391,7 @@
     </div>
     <!-- 头像上传控件 -->
     <div class="portrait-controls" id="portrait-controls">
-        <button class="close-result-modal" id="close-portrait-controls">×</button>
+        <button class="close-result-modal" id="close-portrait-controls"><i class="fa-solid fa-circle-xmark"></i></button>
         <label for="upload-portrait" class="btn">上传肖像</label>
         <input type="file" id="upload-portrait" accept="image/*" style="display: none;">
         <button id="remove-portrait" class="btn btn-danger">移除肖像</button>
@@ -439,7 +401,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4>投掷结果</h4>
-                <button class="close-result-modal" id="close-result-modal">×</button>
+                <button class="close-result-modal" id="close-result-modal"><i class="fa-solid fa-circle-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <div id="dice-calculation"></div>

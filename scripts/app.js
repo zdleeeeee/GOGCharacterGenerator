@@ -72,19 +72,15 @@ class GOGCharacterApp {
         this.closeDataPanel();
         this.closeRosterPanel();
         const mainContainer = document.getElementById('main-container');
-        const icon = document.getElementById('show-dice-icon');
         document.getElementById('dice-panel').classList.add('active');
+        document.getElementById('show-dice').classList.add('active');
         mainContainer.style.paddingBottom = '480px';
-        icon.style.backgroundImage = 'linear-gradient(217deg, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0) 70.71%),linear-gradient(127deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0) 70.71%),linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%)'
-        icon.querySelector('.fa-solid').style.fontSize = '22px';
     }
     closeDicePanel() {
         document.getElementById('dice-panel').classList.remove('active');
+        document.getElementById('show-dice').classList.remove('active');
         const mainContainer = document.getElementById('main-container');
-        const icon = document.getElementById('show-dice-icon');
         mainContainer.style.paddingBottom = '60px';
-        icon.style.backgroundImage = 'linear-gradient(0deg, #333333, #333333)';
-        icon.querySelector('.fa-solid').style.fontSize = '20px';
     }
 
     // 渲染骰子列表
@@ -1191,8 +1187,6 @@ class GOGCharacterApp {
             });
         }
         this.bindInputToCharacter('character-gender', 'gender');
-        this.bindInputToCharacter('character-age', 'age');
-        this.bindInputToCharacter('character-alignment', 'alignment');
         this.bindInputToCharacter('character-nationality', 'nationality');
         this.bindInputToCharacter('character-class', 'class');
         this.bindInputToCharacter('character-blessing', 'blessing');
@@ -2068,7 +2062,7 @@ class GOGCharacterApp {
         // 保存角色
         document.getElementById('save-character').addEventListener('click', async () => {
             const saveBtn = document.getElementById('save-character');
-            const originalText = saveBtn.textContent;
+            const originalText = saveBtn.innerHTML;
 
             try {
                 saveBtn.textContent = '保存中...';
@@ -2079,8 +2073,6 @@ class GOGCharacterApp {
                     name: document.getElementById('character-name').innerText.trim(),
                     player: document.getElementById('player-name').innerText.trim(),
                     gender: document.getElementById('character-gender').value,
-                    age: parseInt(document.getElementById('character-age').value),
-                    alignment: document.getElementById('character-alignment').value,
                     nationality: document.getElementById('character-nationality').value,
                     class: document.getElementById('character-class').value,
                     blessing: document.getElementById('character-blessing').value,
@@ -2118,7 +2110,7 @@ class GOGCharacterApp {
                 console.error('保存错误:', error);
                 alert(`保存失败: ${error.message}`);
             } finally {
-                saveBtn.textContent = originalText;
+                saveBtn.innerHTML = originalText;
                 saveBtn.disabled = false;
             }
         });
